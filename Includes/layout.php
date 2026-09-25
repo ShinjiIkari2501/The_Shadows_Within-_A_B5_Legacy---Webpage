@@ -93,20 +93,18 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(26, 47, 122, 0.2) !important;
             }
 
-            /* UNZERSTÖRBARER NAV-SCHRIFTEN-VEKTOR (SYNCHRONISIERT MIT MAIN PAGE!) */
+            /* UNZERSTÖRBARER NAV-SCHRIFTEN-VEKTOR */
             mainNav ul li a, mainNav a, .main-nav a {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 letter-spacing: 0.5px !important;
-                color: #ffffff !important; /* Weiß für inaktive Links */
+                color: #ffffff !important; 
                 text-decoration: none !important;
                 font-weight: bold !important;
-                /* Gibt den inaktiven Links dasselbe subtile blaue Glühen im Ruhezustand */
                 text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
                 transition: all 0.2s ease !important;
             }
 
-            /* Hover-Effekt für die restliche Navigation */
             mainNav ul li a:hover {
                 color: #ff9900 !important;
                 text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
@@ -156,64 +154,51 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-sizing: border-box !important;
             }
 
-                        /* ==========================================================================
-               UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT STABIL & GELEITET
+            /* ==========================================================================
+               UNTERER KONSOLEN-RAHMEN (Footer) - NARRATIVE FLUSS-MATRIX
                ========================================================================== */
             footer {
                 grid-column: span 2 !important;      
-                display: block !important;
-                width: 100% !important;
-                height: 50px !important; /* Gibt der Box genug vertikalen Raum */
-                padding: 12px 20px !important;
+                display: flex !important;                  
+                justify-content: space-between !important; /* Drückt die Links nach links und das Copyright nach rechts */
+                align-items: center !important;            
+                padding: 0 20px !important;
+                height: 45px !important; /* Hauchdünne Originalgröße reaktiviert */
                 box-sizing: border-box !important;
-                position: relative !important;
             }
 
-            /* UNZERSTÖRBARES UPGRADE: Setzt die perfekte Schriftgröße für den gesamten Footer */
-            footer, footer p, footer span, footer ul li a, body footer {
+            /* SYSTEMWEITES SCHRIFTEN-UPGRADE FÜR DEN GANZEN FOOTER-BEREICH */
+            footer, footer p, footer span, footer a, body footer {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 font-weight: bold !important;
-                font-size: 1.05em !important; /* HAARGENAU DIE GRÖSSE DEINES NAVI-MENÜS! */
+                font-size: 0.95em !important; /* Perfekte, harmonische Lesegröße */
                 text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
             }
 
-            /* LINKS-AUSRICHTUNG: Verankert die Menü-Links felsenfest auf der linken Flanke */
-            footer ul {
-                margin: 0 !important;
-                padding: 0 !important;
-                display: inline-block !important;
-                float: left !important;
-                list-style-type: none !important;
+            /* DIE LINKS-FLANKE IM FOOTER */
+            footer .footer-links {
+                display: flex !important;
+                gap: 25px !important; /* Symmetrischer Abstand zwischen den Links */
             }
 
-            footer ul li {
-                display: inline-block !important;
-                margin-right: 25px !important; /* Abstand zwischen den einzelnen Links */
-            }
-
-            footer ul li a {
+            footer .footer-links a {
                 color: #ffffff !important;
                 text-decoration: none !important;
                 transition: all 0.2s ease !important;
             }
 
-            footer ul li a:hover {
+            footer .footer-links a:hover {
                 color: #ff9900 !important;
                 text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
             }
 
-            /* RECHTS-AUSRICHTUNG: Zwingt das Copyright absolut bündig an das rechte Ende */
+            /* DIE RECHTE COPY-FLANKE IM FOOTER */
             footer p {
-                display: inline-block !important;
-                float: right !important;
-                text-align: right !important;
                 margin: 0 !important;
-                padding: 0 !important;
+                text-align: right !important;
                 color: rgba(255, 255, 255, 0.6) !important;
             }
-
-
         }
 
         /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
@@ -241,13 +226,13 @@ function renderLayout($seitenTitel, $seitenInhalt) {
         <?php echo $seitenInhalt; ?>
     </main>
 
-    <!-- Der unzerstörbare Konsolen-Footer -->
+    <!-- Der unzerstörbare Konsolen-Footer (LISTENFREI OPTIMIERT!) -->
     <footer>
-        <ul>
-            <li><a href="Contact.php">📡 Com-Array</a></li>
-            <li><a href="Impressum.php">Impressum</a></li>
-            <li><a href="Datasecurity.php">Data Security</a></li>
-        </ul>
+        <div class="footer-links">
+            <a href="Contact.php">📡 Com-Array</a>
+            <a href="Impressum.php">Impressum</a>
+            <a href="Datasecurity.php">Data Security</a>
+        </div>
         <p>&copy; 2026 Shinji2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
     </footer>
 </body>
