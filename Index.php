@@ -4,7 +4,11 @@
 // 1. Die Layout-Zentrale laden (Sie startet auch automatisch die Session)
 require_once 'Includes/layout.php'; 
 
-// 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
+// Bindet die Login-Prüfung direkt an vorderster Front auf der Hauptseite ein
+require_once 'Login.php';
+
+// (Danach läuft dein normaler Code weiter...)
+require_once 'Includes/layout.php'; 
 ob_start(); 
 ?>
 
