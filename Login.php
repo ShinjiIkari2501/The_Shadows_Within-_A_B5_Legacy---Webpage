@@ -1,5 +1,5 @@
 <?php
-// HTTPS-SICHERHEITS-PHALANX: Zwingt den Server, Sessions sicher über das Internet zu übertragen
+// HTTPS-SICHERHEITS-PHALANX: Zwingt den Server, Sessions sicher über HTTPS zu übertragen
 ini_set('session.cookie_secure', '1');
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
@@ -42,13 +42,10 @@ if (isset($_POST['loginSubmit'])) {
         $_SESSION['eingeloggt'] = true;
         $_SESSION['username'] = $username;
         
-        $_SESSION['flash_message'] = "🔒 UPLINK ESTABLISHED: Security Clearance Granted. Terminal Sync Complete.";
-        
         // Zwingt den Browser, den Cache zu leeren und leitet sicher weiter
         header("Location: index.php");
         exit();
     } else {
-        $_SESSION['flash_message_error'] = "⚠️ ACCESS DENIED: Invalid Security Credentials or Unknown Sector Entity.";
         header("Location: index.php");
         exit();
     }
