@@ -160,15 +160,17 @@ function renderLayout($seitenTitel, $seitenInhalt) {
             footer {
                 grid-column: span 2 !important;      
                 display: flex !important;                  
-                justify-content: space-between !important; /* Drückt die Links nach links und das Copyright nach rechts */
+                flex-direction: row !important;
+                justify-content: space-between !important; /* Drückt Links nach links, Text nach rechts */
                 align-items: center !important;            
                 padding: 0 20px !important;
                 height: 45px !important; /* Hauchdünne Originalgröße reaktiviert */
                 box-sizing: border-box !important;
+                background-color: rgba(13, 20, 59, 0.75) !important;
             }
 
             /* SYSTEMWEITES SCHRIFTEN-UPGRADE FÜR DEN GANZEN FOOTER-BEREICH */
-            footer, footer p, footer span, footer a, body footer {
+            footer, footer p, footer span, footer a, body footer, footer .footer-links a {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 font-weight: bold !important;
@@ -176,10 +178,13 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
             }
 
-            /* DIE LINKS-FLANKE IM FOOTER */
+            /* DIE LINKS-FLANKE IM FOOTER: Werden felsenfest links nebeneinander aufgereiht */
             footer .footer-links {
                 display: flex !important;
-                gap: 25px !important; /* Symmetrischer Abstand zwischen den Links */
+                flex-direction: row !important;
+                gap: 25px !important; 
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
             footer .footer-links a {
@@ -193,12 +198,15 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
             }
 
-            /* DIE RECHTE COPY-FLANKE IM FOOTER */
+            /* DIE RECHTE COPY-FLANKE IM FOOTER: Bleibt starr rechtsbündig */
             footer p {
                 margin: 0 !important;
+                padding: 0 !important;
                 text-align: right !important;
                 color: rgba(255, 255, 255, 0.6) !important;
+                flex-grow: 0 !important;
             }
+            
         }
 
         /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
