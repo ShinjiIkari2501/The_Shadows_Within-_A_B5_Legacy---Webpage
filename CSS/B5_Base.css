@@ -28,7 +28,7 @@
 
 /* --- PLASMASCHIRM-ÜBERSCHRIFTEN (Jetzt einheitlich in B5Station!) --- */
 body h1, main h2, h1, h2, h3, main h3 {
-    font-family: 'B5Station', Arial, sans-serif !important; /* ➔ KORREKTUR: Auf B5Station umgestellt! */
+    font-family: 'SerpentineB5', Arial, sans-serif !important; 
     letter-spacing: 1.5px;       
     text-align: center;      
     color: #ff9900;          
@@ -74,7 +74,7 @@ main p {
 
 /* --- FOOTER-COPYRIGHT SYSTEM ALIGNMENT --- */
 footer, footer p, body footer, footer span, footer ul li a {
-    font-family: 'B5Station', Arial, sans-serif !important; /* ➔ KORREKTUR: Lädt jetzt die breite Stationsschrift! */
+    font-family: 'B5Station', Arial, sans-serif !important; 
     font-size: 0.85em !important;
     letter-spacing: 1.2px !important;            
     color: rgba(255, 255, 255, 0.5) !important; 
