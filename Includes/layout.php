@@ -41,7 +41,6 @@ function renderLayout($seitenTitel, $seitenInhalt) {
         @media (min-width: 48em) {
             body {
                 display: grid !important;
-                /* Links 240px für die Nav, rechts der Rest für den Inhalt */
                 grid-template-columns: 240px 1fr !important; 
                 grid-template-rows: auto 1fr auto !important; 
                 column-gap: 20px !important; 
@@ -49,8 +48,6 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 margin: 0 !important;
                 padding: 0 !important;
                 width: 100vw !important;
-                
-                /* FIXIERUNG AUF MONITORHÖHE: Verhindert das Mitwandern */
                 height: 100vh !important;      
                 max-height: 100vh !important;  
                 overflow: hidden !important; 
@@ -61,7 +58,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 margin-bottom: 25px !important; 
             }
 
-            /* DIE NAVIGATION BLEIBT FELSENFEST EINGEFROREN */
+            /* DIE NAVIGATION WIRD HOCHGESCHOBEN UND EINGEFROREN */
             mainNav {
                 grid-column: 1 !important;           
                 grid-row: 2 !important;              
@@ -83,7 +80,8 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 align-self: center !important; 
                 position: relative !important;
                 
-                margin: -55px auto 25px auto !important; 
+                /* KORREKTUR: Weiter nach oben geschoben, damit der Rahmen perfekt sitzt! */
+                margin: -75px auto 25px auto !important; 
 
                 background-color: rgba(13, 20, 59, 0.75) !important; 
                 backdrop-filter: blur(8px) !important;
@@ -154,59 +152,14 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-sizing: border-box !important;
             }
 
-            /* ==========================================================================
-               UNTERER KONSOLEN-RAHMEN (Footer) - NARRATIVE FLUSS-MATRIX
-               ========================================================================== */
-            footer {
-                grid-column: span 2 !important;      
-                display: flex !important;                  
-                flex-direction: row !important;
-                justify-content: space-between !important; /* Drückt Links nach links, Text nach rechts */
-                align-items: center !important;            
-                padding: 0 20px !important;
-                height: 45px !important; /* Hauchdünne Originalgröße reaktiviert */
-                box-sizing: border-box !important;
-                background-color: rgba(13, 20, 59, 0.75) !important;
-            }
-
-            /* SYSTEMWEITES SCHRIFTEN-UPGRADE FÜR DEN GANZEN FOOTER-BEREICH */
+            /* UNZERSTÖRBARER FOOTER-SCHRIFTEN-VEKTOR */
             footer, footer p, footer span, footer a, body footer, footer .footer-links a {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 font-weight: bold !important;
-                font-size: 0.95em !important; /* Perfekte, harmonische Lesegröße */
+                font-size: 0.95em !important;
                 text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
             }
-
-            /* DIE LINKS-FLANKE IM FOOTER: Werden felsenfest links nebeneinander aufgereiht */
-            footer .footer-links {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 25px !important; 
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            footer .footer-links a {
-                color: #ffffff !important;
-                text-decoration: none !important;
-                transition: all 0.2s ease !important;
-            }
-
-            footer .footer-links a:hover {
-                color: #ff9900 !important;
-                text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
-            }
-
-            /* DIE RECHTE COPY-FLANKE IM FOOTER: Bleibt starr rechtsbündig */
-            footer p {
-                margin: 0 !important;
-                padding: 0 !important;
-                text-align: right !important;
-                color: rgba(255, 255, 255, 0.6) !important;
-                flex-grow: 0 !important;
-            }
-            
         }
 
         /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
@@ -234,7 +187,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
         <?php echo $seitenInhalt; ?>
     </main>
 
-    <!-- Der unzerstörbare Konsolen-Footer (LISTENFREI OPTIMIERT!) -->
+    <!-- Der unzerstörbare Konsolen-Footer (Vollständig getrennt und fehlerfrei!) -->
     <footer style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; height: 45px !important; padding: 0 20px !important; box-sizing: border-box !important;">
         <div class="footer-links" style="display: flex !important; flex-direction: row !important; gap: 25px !important; margin: 0 !important; padding: 0 !important;">
             <a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important;">📡 Com-Array</a>
