@@ -17,20 +17,9 @@ if (session_status() === PHP_SESSION_NONE) {
 // Startet deine originale Layout-Funktion
 function renderLayout($seitenTitel, $seitenInhalt) {
 ?>
-
-// Startet deine originale Layout-Funktion
-function renderLayout($seitenTitel, $seitenInhalt) {
-?>
-
-// ==========================================================================
-// THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL LAYOUT ENGINE
-// Verarbeitet die Inhalts-Injektionen und steuert das Haupt-Grid
-// ==========================================================================
-
-function renderLayout($seitenTitel, $seitenInhalt) {
-?>
 <!DOCTYPE html> 
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="description" content="The Shadows within: A B5 Legacy">
