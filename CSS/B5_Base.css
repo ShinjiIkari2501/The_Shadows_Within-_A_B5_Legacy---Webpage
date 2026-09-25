@@ -1,3 +1,8 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - BASE SECTOR
+   System-Status: Sektor 1 aktiv. Wurzelrelative Schriftpfade verankert.
+   ========================================================================== */
+
 /* --- SYSTEM-RESET --- */
 * {
     margin: 0;
@@ -5,9 +10,25 @@
     box-sizing: border-box; 
 }
 
-/* --- PLASMASCHIRM-ÜBERSCHRIFTEN --- */
+/* --- TACTICAL DISPLAY SCHRIFTARTEN --- */
+@font-face {
+    font-family: 'B5Station';
+    /* Wurzelrelativer Pfad ab dem XAMPP-Standardverzeichnis */
+    src: url('/Project/B5_Project/Fonts/babylon5_station_bold.ttf') format('truetype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SerpentineB5';
+    src: url('/Project/B5_Project/Fonts/serpentine_medium.otf') format('opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --- PLASMASCHIRM-ÜBERSCHRIFTEN (SerpentineB5) --- */
 body h1, main h2, h1, h2, h3 {
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
+    font-family: 'SerpentineB5', Arial, sans-serif;
     letter-spacing: 1.5px;       
     text-align: center;      
     color: #ff9900;          
@@ -20,10 +41,30 @@ body h1 {
     font-size: 2.2em;
 }
 
-/* --- TERMINAL-TEXTFLUSS --- */
+/* ==========================================================================
+   GLOBALES CORE-RASTER (Body)
+   Zwingt die gesamte Station ins perfekte Vollbild-Interface
+   ========================================================================== */
+body {
+    display: grid; 
+    grid-template-rows: auto auto 1fr auto; /* Oben Banner, Mitte Inhalt, Unten Footer */
+    background-color: hsl(245, 93%, 5%);    /* Tiefes Weltraum-Schwarzblau */
+    color: hsl(0, 9%, 98%); 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); 
+    
+    /* REPARATUR FÜR DIE BÜNDIGKEIT AM UNTEREN RAND: */
+    margin: 0;
+    padding: 0;
+    width: 100vw;       /* Nimmt die exakte Breite des Bildschirms ein */
+    height: 100vh;      /* Nimmt die exakte Höhe des Bildschirms ein */
+    max-height: 100vh;  
+    overflow: hidden;   /* Verhindert, dass das gesamte Browserfenster unkontrolliert scrollt */
+}
+
+/* --- TERMINAL-TEXTFLUSS (SerpentineB5) --- */
 main p {
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    color: rgb(96, 172, 243);            
+    font-family: 'SerpentineB5', Arial, sans-serif;
+    color: rgb(96, 172, 243);            /* Klassisches BabCom-Blau */
     text-shadow: 0 0 4px rgba(96, 172, 243, 0.4), 1px 1px 1px rgba(0, 0, 0, 0.9); 
     line-height: 1.8;          
     letter-spacing: 0.9px;       
