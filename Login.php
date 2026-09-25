@@ -3,21 +3,17 @@
 // THE SHADOWS WITHIN: A B5 LEGACY - SECURE LOGIN INTERFACE
 // ==========================================================================
 
-// LIVE-PROXYSCHUTZ: Erkennt die HTTPS-Verschlüsselung von Render.com vollautomatisch
-if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-    $_SERVER['HTTPS'] = 'on';
+// REAKTOR-RETTUNG: Zwingt PHP, Sessions im beschreibbaren temporären Ordner von Render zu speichern!
+if (!is_dir('/tmp/php_sessions')) {
+    mkdir('/tmp/php_sessions', 0777, true);
 }
+ini_set('session.save_path', '/tmp/php_sessions');
 
-// Zwingt den Server, Sessions stabil und sicher zu verarbeiten
+// Zwingt den Server, Sessions stabil und ohne Proxy-Verluste zu verarbeiten
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 
-// Falls die Verbindung sicher ist, aktivieren wir das Secure-Flag passend für den Browser
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
-    ini_set('session.cookie_secure', '1');
-}
-
-// Startet die Session-Zentrale
+// Startet die Session-Zentrale blitzsauber
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
