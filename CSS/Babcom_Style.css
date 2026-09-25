@@ -1,8 +1,8 @@
 /* ==========================================================================
-   THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL INTERFACE MAIN CORE
+   THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL INTERFACE ROUTER
    ========================================================================== */
 
-/* 1. FONTS INJECTION (Absolut an vorderster Front) */
+/* 1. Die Schriftarten-Injektion */
 @font-face {
     font-family: 'B5Station';
     src: url('../Fonts/babylon5_station_bold.ttf') format('truetype');
@@ -17,90 +17,8 @@
     font-style: normal;
 }
 
-/* 2. SYSTEM-RESET & BASE FUNDAMENT */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; 
-}
-
-body h1, main h2, h1, h2, h3 {
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    letter-spacing: 1.5px;       
-    text-align: center;      
-    color: #ff9900;          
-    text-shadow: 0 0 8px rgba(255, 153, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.8); 
-    margin-bottom: 20px;
-    font-size: 1.6em;
-}
-
-body h1 {
-    font-size: 2.2em;
-}
-
-/* HINTERGRUND-RELAIS: Setzt nur die Weltraumfarbe, kein störendes Grid! */
-body {
-    background-color: hsl(245, 93%, 5%) !important; /* Tiefes Weltraum-Schwarzblau */
-    color: hsl(0, 9%, 98%); 
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); 
-}
-
-main p {
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    color: rgb(96, 172, 243);            
-    text-shadow: 0 0 4px rgba(96, 172, 243, 0.4), 1px 1px 1px rgba(0, 0, 0, 0.9); 
-    line-height: 1.8;          
-    letter-spacing: 0.9px;       
-    padding: 20px;              
-    text-align: center;
-}
-
-/* 3. NAVIGATION DESIGN */
-mainNav ul li a {
-    color: #ffffff !important;
-    text-decoration: none;
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    font-size: 1.05em;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
-}
-
-mainNav ul li a:hover {
-    color: #ff9900 !important;
-    text-shadow: 0 0 5px rgba(255, 153, 0, 0.8);
-}
-
-/* 4. LAYOUT MODULES & BOXEN */
-fieldset {
-    border: 1px solid rgba(96, 172, 243, 0.3) !important;
-    padding: 15px !important;
-    border-radius: 6px !important;
-    background-color: rgba(5, 7, 20, 0.4) !important;
-}
-
-legend {
-    color: #ff9900 !important;
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    padding: 0 10px !important;
-    font-size: 0.95em !important;
-    text-shadow: 0 0 4px rgba(255, 153, 0, 0.4) !important;
-}
-
-.formButton {
-    background-color: rgba(60, 60, 60, 0.4) !important;
-    border: 1px solid rgba(255, 153, 0, 0.4) !important;
-    color: #ffffff !important;
-    padding: 5px 15px !important;
-    cursor: pointer !important;
-    border-radius: 4px !important;
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    text-transform: uppercase !important;
-    transition: all 0.2s ease !important;
-}
-
-.formButton:hover {
-    background-color: rgba(26, 47, 122, 0.6) !important;
-    color: #ff9900 !important;
-    border-color: #ff9900 !important;
-    box-shadow: 0 0 10px rgba(255, 153, 0, 0.5) !important;
-}
+/* 2. Die originalen Layout-Sektoren fehlerfrei nachladen */
+@import url('B5_Base.css');
+@import url('B5_mainNavigation.css');
+@import url('B5_Layout_Modules.css');
+@import url('mediaquery.css');
