@@ -1,4 +1,9 @@
 <?php
+// ==========================================================================
+// THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL LAYOUT ENGINE
+// Verarbeitet die Inhalts-Injektionen und steuert das Haupt-Grid
+// ==========================================================================
+
 // REAKTOR-RETTUNG: Synchronisiert den Speicherpfad mit der Login.php!
 if (!is_dir('/tmp/php_sessions')) {
     mkdir('/tmp/php_sessions', 0777, true);
@@ -8,6 +13,10 @@ ini_set('session.save_path', '/tmp/php_sessions');
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Startet deine originale Layout-Funktion
+function renderLayout($seitenTitel, $seitenInhalt) {
+?>
 
 // Startet deine originale Layout-Funktion
 function renderLayout($seitenTitel, $seitenInhalt) {
