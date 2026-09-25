@@ -154,11 +154,14 @@ function renderLayout($seitenTitel, $seitenInhalt) {
             }
 
             /* ➔ RECHTE KANTE: Zwingt das Copyright-Segment an den rechten Rand */
+            /* ➔ RECHTE KANTE: Zwingt das Copyright-Segment unmissverständlich an den rechten Rand */
             footer p {
-                margin-left: auto !important;
-                margin-right: 15px !important;
+                flex: 1 !important;
                 text-align: right !important;
+                margin-right: 25px !important;
+                padding: 0 !important;
             }
+
         }
 
         /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
