@@ -1,29 +1,23 @@
-/* ==========================================================================
-   THE SHADOWS WITHIN: A B5 LEGACY - BASE SECTOR
-   System-Status: Sektor 1 aktiv. Wurzelrelative Schriftpfade verankert.
-   ========================================================================== */
+/* 🛰️ SCHRIFTEN-FUNDAMENT DIRECT INJECTION */
+@font-face {
+    font-family: 'B5Station';
+    src: url('../Fonts/babylon5_station_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Serpentine';
+    src: url('../Fonts/Serpentine_Medium.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 /* --- SYSTEM-RESET --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box; 
-}
-
-/* --- TACTICAL DISPLAY SCHRIFTARTEN --- */
-@font-face {
-    font-family: 'B5Station';
-    /* Wurzelrelativer Pfad ab dem XAMPP-Standardverzeichnis */
-    src: url('/Project/B5_Project/Fonts/babylon5_station_bold.ttf') format('truetype'); 
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'SerpentineB5';
-    src: url('/Project/B5_Project/Fonts/serpentine_medium.otf') format('opentype'); 
-    font-weight: normal;
-    font-style: normal;
 }
 
 /* --- PLASMASCHIRM-ÜBERSCHRIFTEN (SerpentineB5) --- */
