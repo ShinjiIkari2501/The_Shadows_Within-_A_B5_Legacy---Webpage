@@ -14,4 +14,22 @@
 /* 4. Sektor 3: Gehäuse-Monitore, autarke Scrollbar, Footer und Inhaltsmasken laden */
 @import url('B5_Layout_Modules.css');
 
-/* 🛰️ AKTIVER SEKTOR: Highlighting für die Navigation */
+
+/* ==========================================================================
+   INTERSTELLAR NAV-UPGRADE: REPARATUR-PHALANX FÜR DIE SCHRIFTEN
+   ========================================================================== */
+
+/* Zwingt ALLE Links in deiner Navigation starr auf die B5Station-Schriftart */
+mainNav ul li a, mainNav a, .main-nav a, mainNav ul li {
+    font-family: 'B5Station', Arial, sans-serif !important;
+}
+
+/* Hält deine reinen Login-Texte und Eingabefelder in der perfekt lesbaren Systemschrift */
+mainNav fieldset label, 
+mainNav fieldset input, 
+mainNav fieldset button, 
+mainNav fieldset legend {
+    font-family: Arial, sans-serif !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+}
