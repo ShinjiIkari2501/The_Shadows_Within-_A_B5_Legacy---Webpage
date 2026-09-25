@@ -20,6 +20,7 @@ function renderLayout($seitenTitel, $inhaltHtml) {
 
         <!-- 🛰️ DYNAMISCHE SCHRIFTEN-INJEKTION (Direkt im Head verankert!) -->
         <!-- 🛰️ SYSTEM-WIDE FONTS & LOGO-SYMBOL INJECTION -->
+        <!-- 🛰️ SYSTEM-WIDE FONTS & NAV-FOOTER INJECTION -->
     <style>
         @font-face {
             font-family: 'B5Station';
@@ -35,20 +36,23 @@ function renderLayout($seitenTitel, $inhaltHtml) {
             font-style: normal;
         }
 
-        /* NAVIGATION: Schaltet das linke Menü in JEDEM Zustand auf die breite B5Station um */
-        mainNav ul li a, mainNav a, .main-nav a, mainNav ul li a span {
+        /* ➔ Zwingt die gesamte Navigation (alle Links und Listenpunkte) in die B5Station-Schriftart */
+        mainNav, mainNav ul, mainNav ul li, mainNav ul li a, .main-nav a {
             font-family: 'B5Station', Arial, sans-serif !important;
         }
 
-        /* SYMBOL-BRÜCKE: Zwingt deine Logo-Klassen auf die B5Station, 
-           damit sich das '©' und '%' in die echten Sci-Fi-Symbole verwandeln! */
-        .Logo5, .LogoB, h1 .Logo5, h1 .LogoB, h2 span.Logo5, h2 span.LogoB {
+        /* ➔ Zwingt den gesamten Footer inklusive aller Links und Texte in die B5Station-Schriftart */
+        footer, footer p, footer span, footer ul li a, body footer {
+            font-family: 'B5Station', Arial, sans-serif !important;
+        }
+
+        /* Aktiviert die breite Stationsschrift für deine Logo-Klassen */
+        .Logo5, .LogoB {
             font-family: 'B5Station', Arial, sans-serif !important;
             font-weight: bold !important;
             display: inline-block !important;
         }
     </style>
-
 
     
         <style>
