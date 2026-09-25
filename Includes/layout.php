@@ -234,26 +234,20 @@ function renderLayout($seitenTitel, $seitenInhalt) {
 
     <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer (LICHT-MATRIX REAKTIVIERT!) -->
         <!-- 🛰️ UNZERSTÖRBARER KONSOLEN-FOOTER (TABELLEN-RELAIS FÜR PERFEKTE SYMMETRIE) -->
-    <footer style="display: block !important; height: 50px !important; padding: 10px 20px !important; box-sizing: border-box !important;">
-        <table style="width: 100% !important; height: 100% !important; border-collapse: collapse !important; margin: 0 !important; padding: 0 !important;">
-            <tr style="background: none !important; border: none !important;">
-                
-                <!-- LINKE SPALTE: Verankert deine Links bombenfest auf der linken Flanke -->
-                <td style="text-align: left !important; vertical-align: middle !important; padding: 0 !important; width: 30% !important; background: none !important; border: none !important;">
-                    <a href="Impressum.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; margin-right: 20px !important; display: inline-block !important;">Impressum</a>
-                    <a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; margin-right: 20px !important; display: inline-block !important;">Contact</a>
-                    <a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; display: inline-block !important;">Datasecurity</a>
-                </td>
-                
-                <!-- RECHTE SPALTE: Zwingt das Copyright rücksichtslos bündig an den rechten Rand -->
-                <td style="text-align: right !important; vertical-align: middle !important; padding: 0 !important; width: 70% !important; background: none !important; border: none !important;">
-                    <p style="margin: 0 !important; padding: 0 !important; color: rgba(255, 255, 255, 0.6) !important; display: inline-block !important; text-align: right !important;">
-                        &copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.
-                    </p>
-                </td>
+    <footer style="display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; wrap: nowrap !important; height: 50px !important; padding: 0 20px !important; box-sizing: border-box !important; background-color: rgba(13, 20, 59, 0.75) !important; border-top: 1px solid rgba(96, 172, 243, 0.2) !important; border-radius: 8px !important; margin-bottom: 0px !important; margin-top: auto !important;">
+        
+        <!-- LINKE FLANKE: Die Navigationslinks (DYNAMISCH NEBENEINANDER) -->
+        <div style="display: flex !important; flex-direction: row !important; gap: 20px !important; align-items: center !important; flex-shrink: 0 !important;">
+            <a href="Impressum.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Impressum</a>
+            <a href="Contact.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Contact</a>
+            <a href="Datasecurity.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Datasecurity</a>
+        </div>
+        
+        <!-- RECHTE FLANKE: Das Copyright (RUTSCHT AUTOMATISCH NACH RECHTS AUSSEN) -->
+        <p style="font-family: 'B5Station', Arial, sans-serif !important; margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; padding-left: 20px !important;">
+            &copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.
+        </p>
 
-            </tr>
-        </table>
     </footer>
 </body>
 </html>
