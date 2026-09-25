@@ -232,13 +232,13 @@ function renderLayout($seitenTitel, $seitenInhalt) {
         <?php echo $seitenInhalt; ?>
     </main>
 
-    <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer! -->
+    <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer (LICHT-MATRIX REAKTIVIERT!) -->
     <footer>
         <bottomNav>
             <ul>
-                <li><a href="Impressum.php">Impressum</a></li>
-                <li><a href="Contact.php">Contact</a></li>
-                <li><a href="Datasecurity.php">Datasecurity</a></li>
+                <li><a href="Impressum.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important;">Impressum</a></li>
+                <li><a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important;">Contact</a></li>
+                <li><a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important;">Datasecurity</a></li>
             </ul>
         </bottomNav>
         <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
