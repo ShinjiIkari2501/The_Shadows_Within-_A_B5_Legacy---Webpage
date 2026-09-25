@@ -17,7 +17,7 @@
     font-style: normal;
 }
 
-/* 2. SYSTEM-RESET & BASE FUNDAMENT (Inhalt aus B5_Base.css) */
+/* 2. SYSTEM-RESET & BASE FUNDAMENT */
 * {
     margin: 0;
     padding: 0;
@@ -38,14 +38,11 @@ body h1 {
     font-size: 2.2em;
 }
 
+/* HINTERGRUND-RELAIS: Setzt nur die Weltraumfarbe, kein störendes Grid! */
 body {
-    display: grid; 
-    grid-template-rows: auto auto 1fr auto; 
-    background-color: hsl(245, 93%, 5%) !important; /* Kehrt zum tiefen Weltraum-Schwarzblau zurück! */
+    background-color: hsl(245, 93%, 5%) !important; /* Tiefes Weltraum-Schwarzblau */
     color: hsl(0, 9%, 98%); 
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); 
-    margin: 0;
-    padding: 0;
 }
 
 main p {
@@ -58,7 +55,7 @@ main p {
     text-align: center;
 }
 
-/* 3. NAVIGATION DESIGN (Inhalt aus B5_mainNavigation.css) */
+/* 3. NAVIGATION DESIGN */
 mainNav ul li a {
     color: #ffffff !important;
     text-decoration: none;
@@ -73,40 +70,37 @@ mainNav ul li a:hover {
     text-shadow: 0 0 5px rgba(255, 153, 0, 0.8);
 }
 
-/* 4. LAYOUT MODULES (Inhalt aus B5_Layout_Modules.css) */
+/* 4. LAYOUT MODULES & BOXEN */
 fieldset {
-    border: 1px solid rgba(96, 172, 243, 0.3);
-    padding: 15px;
-    border-radius: 6px;
-    background-color: rgba(5, 7, 20, 0.4);
+    border: 1px solid rgba(96, 172, 243, 0.3) !important;
+    padding: 15px !important;
+    border-radius: 6px !important;
+    background-color: rgba(5, 7, 20, 0.4) !important;
 }
 
 legend {
-    color: #ff9900;
+    color: #ff9900 !important;
     font-family: 'SerpentineB5', Arial, sans-serif !important;
-    padding: 0 10px;
-    font-size: 0.95em;
-    text-shadow: 0 0 4px rgba(255, 153, 0, 0.4);
+    padding: 0 10px !important;
+    font-size: 0.95em !important;
+    text-shadow: 0 0 4px rgba(255, 153, 0, 0.4) !important;
 }
 
 .formButton {
-    background-color: rgba(60, 60, 60, 0.4);
-    border: 1px solid rgba(255, 153, 0, 0.4);
-    color: #ffffff;
-    padding: 5px 15px;
-    cursor: pointer;
-    border-radius: 4px;
+    background-color: rgba(60, 60, 60, 0.4) !important;
+    border: 1px solid rgba(255, 153, 0, 0.4) !important;
+    color: #ffffff !important;
+    padding: 5px 15px !important;
+    cursor: pointer !important;
+    border-radius: 4px !important;
     font-family: 'SerpentineB5', Arial, sans-serif !important;
-    text-transform: uppercase;
-    transition: all 0.2s ease;
+    text-transform: uppercase !important;
+    transition: all 0.2s ease !important;
 }
 
 .formButton:hover {
-    background-color: rgba(26, 47, 122, 0.6);
-    color: #ff9900;
-    border-color: #ff9900;
-    box-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+    background-color: rgba(26, 47, 122, 0.6) !important;
+    color: #ff9900 !important;
+    border-color: #ff9900 !important;
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.5) !important;
 }
-
-/* 5. RESPONSIVE MEDIA OVERRIDE (Achte auf die Groß- und Kleinschreibung eurer Datei!) */
-@import url('mediaquery.css');
