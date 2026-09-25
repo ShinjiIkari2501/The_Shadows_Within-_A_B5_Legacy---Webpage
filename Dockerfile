@@ -1,16 +1,17 @@
 FROM php:8.2-apache
 
-# 1. Kopiert alle hochgeladenen Daten in den temporären Ordner
-COPY . /tmp/project/
+# 1. Kopiert alle hochgeladenen Daten in den Container
+COPY . /var/www/html/
 
-# 2. INTELLIGENTE PLATZHALTER-BRÜCKE: Schiebt den Inhalt des Unterordners
-# direkt in das aktive Hauptverzeichnis, völlig egal wie der Ordner heißt!
-RUN if [ -d /tmp/project/The_Shadows_Within* ]; then \
-        cp -r /tmp/project/The_Shadows_Within*/* /var/www/html/; \
-    elif [ -d /tmp/project/*/index.php ]; then \
-        cp -r /tmp/project/*/* /var/www/html/; \
-    else \
-        cp -r /tmp/project/* /var/www/html/; \
+# 2. VIRTUELLES SPIEGEL-RELAIS (Symlink-Phalanx):
+# Zieht die Dateien auf die Hauptebene heraus, lässt aber gleichzeitig eine 
+# virtuelle Verknüpfung im Unterordner bestehen. Das repariert alle CSS- und Schriftpfade sofort!
+RUN ACTUAL_DIR=$(dirname $(find /var/www/html/ -name "index.php" | head -n 1)) && \
+    if [ "$ACTUAL_DIR" != "/var/www/html" ]; then \
+        cp -r $ACTUAL_DIR/* /var/www/html/ && \
+        FOLDER_NAME=$(basename $ACTUAL_DIR) && \
+        rm -rf /var/www/html/$FOLDER_NAME && \
+        ln -s /var/www/html /var/www/html/$FOLDER_NAME; \
     fi
 
 # 3. Erlaubt dem Server den Zugriff auf die frisch sortierten Daten
