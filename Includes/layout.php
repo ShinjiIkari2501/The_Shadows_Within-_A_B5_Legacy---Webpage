@@ -1,3 +1,11 @@
+<?php
+// ==========================================================================
+// THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL LAYOUT ENGINE
+// Verarbeitet die Inhalts-Injektionen und steuert das Haupt-Grid
+// ==========================================================================
+
+function renderLayout($seitenTitel, $seitenInhalt) {
+?>
 <!DOCTYPE html> 
 <html lang="en">
 <head>
@@ -6,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Daniel Baedorf aka Shinji2501">
     
-    <title>B5 Legacy - Main Terminal</title>
+    <title><?php echo htmlspecialchars($seitenTitel); ?></title>
     
     <!-- Pfad zur zentralen CSS für Farben und Schriften -->
     <link rel="stylesheet" href="CSS/Babcom_Style.css">
@@ -41,6 +49,8 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 width: 100vw !important;
+                
+                /* FIXIERUNG AUF MONITORHÖHE: Verhindert das Mitwandern */
                 height: 100vh !important;      
                 max-height: 100vh !important;  
                 overflow: hidden !important; /* Blockiert das Scrollen des Gesamtframerate-Fensters */
@@ -52,23 +62,32 @@
             }
 
             /* DIE NAVIGATION BLEIBT FELSENFEST EINGEFROREN */
+            /* DIE ERBEUTETE LINKSKONSOLE (Vollständiger Glas-Look reaktiviert!) */
             mainNav {
                 grid-column: 1 !important;           
                 grid-row: 2 !important;              
                 width: 210px !important;               
-                height: 520px !important;   
+                height: 520px !important;   /* Feste, eingefrorene Wunschgröße */
                 box-sizing: border-box !important;
+                
+                /* DIE WAFFE FÜR PERFEKTE INNEN-SYMMETRIE: */
                 display: flex !important;
                 flex-direction: column !important;
-                align-items: center !important;         
-                justify-content: flex-start !important; 
+                align-items: center !important;         /* Zentriert alles absolut exakt von links nach rechts */
+                justify-content: flex-start !important; /* Startet sauber oben und verteilt nach unten */
+                
+                /* EXAKTE INNENABSTÄNDE (Oben und unten perfekt ausbalanciert) */
                 padding-top: 25px !important; 
                 padding-bottom: 25px !important;
                 padding-left: 12px !important;
                 padding-right: 12px !important;
+                
+                /* Horizontale und vertikale Zentrierung im globalen Grid */
                 justify-self: center !important;
                 align-self: center !important; 
                 position: relative !important;
+                
+                /* Der optische Höhenschubs für die perfekte Achse */
                 margin: -55px auto 25px auto !important; 
 
                 /* Der originale Babylon-5 Glasrahmen & Lichtkante */
@@ -85,6 +104,7 @@
                 font-family: 'B5Station', Arial, sans-serif !important;
             }
 
+            /* Sorgt dafür, dass das Login-Inlay die Breite perfekt ausnutzt und zentriert bleibt */
             mainNav fieldset {
                 width: 100% !important;
                 box-sizing: border-box !important;
@@ -92,6 +112,7 @@
                 margin-bottom: 20px !important;
             }
 
+            /* Zentriert die Liste und die Links haargenau von links nach rechts */
             mainNav ul {
                 width: 100% !important;
                 text-align: center !important;
@@ -117,14 +138,17 @@
                 grid-column: 2 !important;           
                 grid-row: 2 !important;              
                 width: 100% !important;              
+                
+                /* DIE RETTUNG: Das Fenster füllt die Reihe und kriegt seine eigene Scrollbar */
                 height: 100% !important;
-                overflow-y: auto !important; 
+                overflow-y: auto !important; /* Aktiviert die autonome Scrollbar NUR rechts */
                 scroll-behavior: smooth !important;  
+                
                 padding-left: 10px !important;
                 padding-right: 25px !important;
                 margin-top: 0px !important;
                 margin-bottom: 25px !important; 
-                padding-bottom: 60px !important; 
+                padding-bottom: 60px !important; /* Platzhalter, damit der fixierte Footer nix verdeckt */
                 box-sizing: border-box !important;
             }
 
@@ -160,51 +184,23 @@
 
     <!-- Hauptfenster für den Inhalt -->
     <main>
-        <!-- ==========================================================================
-             DYNAMISCHES TERMINAL-FLASH-MESSAGE-SYSTEM (INTEGRIERT)
-             ========================================================================== -->
-        
-        <!-- 1. PRÜFUNG AUF ROTEN ALARM (Fehlerfall via isset) -->
-        <?php if (isset($_SESSION['flash_message_error'])): ?>
-            <div style="background-color: rgba(255, 51, 51, 0.2) !important; border: 1px solid #ff3333 !important; color: #ff3333 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 5px #ff3333 !important; letter-spacing: 0.5px !important;">
-                <?php echo $_SESSION['flash_message_error']; ?>
-            </div>
-            <?php 
-            // Automatische Vernichtung: Setzt die Variable für die Zukunft auf null
-            unset($_SESSION['flash_message_error']); 
-            ?>
-        <?php endif; ?>
-
-        <!-- 2. BESTÄTIGUNG: Login war erfolgreich (KORREKTUR: Jetzt in lesbarem B5-Gold!) -->
-        <?php if (isset($_SESSION['flash_message'])): ?>
-            <div style="background-color: rgba(0, 200, 80, 0.15) !important; border: 1px solid #00c850 !important; color: #ff9900 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 6px rgba(255, 153, 0, 0.6) !important; letter-spacing: 0.5px !important;">
-                <?php echo $_SESSION['flash_message']; ?>
-            </div>
-            <?php 
-            // Einmal zeigen, danach sofort aus dem Speicher löschen
-            unset($_SESSION['flash_message']); 
-            ?>
-        <?php endif; ?>
-
-
-        <!-- Hier injiziert PHP den exklusiven Inhalt der jeweiligen Seite hinein -->
-        <?php echo $inhaltHtml; ?>
+        <?php 
+        // Injiziert den dynamischen Inhalt der jeweiligen Unterseite
+        echo $seitenInhalt; 
+        ?>
     </main>
 
-    <!-- Der bündige Footer in deiner Includes/layout.php -->
+    <!-- Der unzerstörbare Konsolen-Footer -->
     <footer>
-        <bottomNav>
-            <ul>
-                <!-- KORREKTUR: Zeigt jetzt exakt auf deine neue Impressum.php -->
-                <li><a href="Impressum.php">Impressum</a></li>
-                <li><a href="Contact.php">Contact</a></li>
-                <li><a href="Datasecurity.php">Datasecurity</a></li>
-            </ul>
-        </bottomNav>
-        <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
+        <ul>
+            <li><a href="Contact.php">📡 Com-Array</a></li>
+            <li><a href="Impressum.php">Impressum</a></li>
+            <li><a href="Datasecurity.php">Data Security</a></li>
+        </ul>
+        <p>&copy; 2026 Shinji2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
     </footer>
-
 </body>
 </html>
 <?php
+}
 ?>
