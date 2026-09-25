@@ -33,3 +33,71 @@ mainNav fieldset legend {
     text-transform: none !important;
     letter-spacing: normal !important;
 }
+
+/* ==========================================================================
+   UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT FIXIERT & REPARIERT
+   ========================================================================== */
+footer {
+    display: block !important;                  
+    font-family: 'B5Station' !important;       
+    letter-spacing: 1px !important;            
+    color: hsl(0, 9%, 98%) !important;         
+    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8) !important; 
+    
+    padding: 10px 20px !important;              
+    height: 50px !important;                   
+    
+    background-color: rgba(13, 20, 59, 0.75) !important; 
+    backdrop-filter: blur(8px) !important;               
+    -webkit-backdrop-filter: blur(8px) !important;       
+    border-top: 1px solid rgba(96, 172, 243, 0.2) !important; 
+    border-radius: 8px !important;                       
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.5) !important; 
+    
+    /* REPARATUR: Kein negatives Verschieben mehr nach unten! */
+    margin-top: auto !important;     
+    margin-bottom: 0px !important; /* Auf 0px fixiert, damit nichts verschwindet */
+    
+    position: sticky !important;           
+    bottom: 0 !important;                  
+    width: 100% !important;
+}
+
+/* Zwingt die Tabelle im Footer zu 100% in die Breite */
+footer table {
+    width: 100% !important;
+    height: 100% !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+}
+
+footer table td {
+    vertical-align: middle !important;
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Hyperlinks im Footer */
+footer table td a {
+    text-decoration: none !important;
+    color: hsl(0, 9%, 98%) !important;
+    font-family: 'B5Station' !important; 
+    margin-right: 20px !important;
+    display: inline-block !important;
+}
+
+footer table td a:hover {
+    color: #ff9900 !important; 
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.6) !important; 
+}
+
+footer p {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: right !important;
+    display: inline-block !important;
+}
