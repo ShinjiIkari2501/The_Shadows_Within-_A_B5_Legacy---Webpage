@@ -207,5 +207,4 @@
 </body>
 </html>
 <?php
-} // <-- Diese wichtige Klammer beendet die PHP-Funktion sauber!
 ?>
