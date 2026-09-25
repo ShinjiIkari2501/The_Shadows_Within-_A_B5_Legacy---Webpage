@@ -96,16 +96,23 @@ main::-webkit-scrollbar-thumb:hover { background: #ff9900; box-shadow: 0 0 8px r
 /* ==========================================================================
    UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT AM RAND FIXIERT
    ========================================================================== */
-footer {
+/* ==========================================================================
+   UNTERER KONSOLEN-RAHMEN (Footer) - UNZERSTÖRBAR IN SERPENTINEB5
+   ========================================================================== */
+footer, footer p, footer ul li a, footer span {
     display: flex;                  
     justify-content: space-between; 
     align-items: center;            
-    font-family: 'B5Station', Arial, sans-serif !important;       
-    letter-spacing: 1px;            
-    color: hsl(0, 9%, 98%);         
-    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8); 
+    
+    /* KORREKTUR: Lädt jetzt einheitlich deine gewünschte Babylon-Schriftart! */
+    font-family: 'SerpentineB5', Arial, sans-serif !important;       
+    letter-spacing: 1.2px !important;            
+    color: rgba(255, 255, 255, 0.5) !important; /* Edles, dezentes Silber */
+    font-size: 0.8em !important;
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.3), 1px 1px 2px rgba(0, 0, 0, 0.8) !important; 
+    
     padding: 10px 20px;              
-    height: 45px;                   /* Feste, definierte Höhe */
+    height: 45px;                   
     box-sizing: border-box;
 
     background-color: rgba(13, 20, 59, 0.75); 
@@ -114,13 +121,12 @@ footer {
     border-top: 1px solid rgba(96, 172, 243, 0.2); 
     border-radius: 8px 8px 0 0; 
 
-    /* DIE BRECHSTANGE: Unabhängig vom Grid ganz unten fixieren */
     position: fixed;           
-    bottom: 0;                  /* Direkt an der Unterkante anleimen */
-    left: 15px;                 /* Symmetrisch links ausgerichtet */
-    right: 15px;                /* Symmetrisch rechts ausgerichtet */
-    width: calc(100% - 30px);   /* Zwingt den Footer auf die perfekte Breite */
-    z-index: 9999;              /* Liegt immer über allen anderen Elementen */
+    bottom: 0;                  
+    left: 15px;                 
+    right: 15px;                
+    width: calc(100% - 30px);   
+    z-index: 9999;              
     margin: 0 !important;
 }
 
