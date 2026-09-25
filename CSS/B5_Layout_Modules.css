@@ -282,3 +282,15 @@ footer p { margin-right: 15px; }
 #zusatzinfo_kontakt {
     display: none !important;
 }
+
+/* ==========================================================================
+   FOOTER-UPGRADE: SYSTEMWEITE B5STATION-ZÜNDUNG
+   ========================================================================== */
+footer, 
+footer p, 
+footer span, 
+footer ul li a, 
+body footer {
+    font-family: 'B5Station', Arial, sans-serif !important;
+}
+
