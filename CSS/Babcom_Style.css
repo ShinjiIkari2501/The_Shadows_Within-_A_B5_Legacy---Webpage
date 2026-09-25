@@ -13,3 +13,12 @@
 
 /* 4. Sektor 3: Gehäuse-Monitore, autarke Scrollbar, Footer und Inhaltsmasken laden */
 @import url('B5_Layout_Modules.css');
+
+/* 🛰️ AKTIVER SEKTOR: Highlighting für die Navigation */
+.main-nav a.active {
+    color: #ff9900 !important; /* Allianzen-Orange */
+    text-shadow: 0 0 8px rgba(255, 153, 0, 0.7) !important; /* Sanfter Neon-Glow */
+    border-left: 3px solid #ff9900; /* Kleiner Taktik-Balken links am Menüpunkt */
+    padding-left: 8px; /* Schiebt den Text leicht nach rechts für den Balken */
+    font-weight: bold;
+}
