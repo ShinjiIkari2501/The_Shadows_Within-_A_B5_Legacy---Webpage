@@ -147,3 +147,65 @@
     </style>
 </head>
 <body>
+    <header>
+        <div>
+            <a href="index.php">
+                <img src="Images/Test1.jpg" width="1450" height="300" alt="Logo">
+            </a>
+        </div>
+    </header>
+
+    <!-- Lädt die linke Flanke (mainNavigation.php) nach -->
+    <?php require_once 'Includes/mainNavigation.php'; ?>
+
+    <!-- Hauptfenster für den Inhalt -->
+    <main>
+        <!-- ==========================================================================
+             DYNAMISCHES TERMINAL-FLASH-MESSAGE-SYSTEM (INTEGRIERT)
+             ========================================================================== -->
+        
+        <!-- 1. PRÜFUNG AUF ROTEN ALARM (Fehlerfall via isset) -->
+        <?php if (isset($_SESSION['flash_message_error'])): ?>
+            <div style="background-color: rgba(255, 51, 51, 0.2) !important; border: 1px solid #ff3333 !important; color: #ff3333 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 5px #ff3333 !important; letter-spacing: 0.5px !important;">
+                <?php echo $_SESSION['flash_message_error']; ?>
+            </div>
+            <?php 
+            // Automatische Vernichtung: Setzt die Variable für die Zukunft auf null
+            unset($_SESSION['flash_message_error']); 
+            ?>
+        <?php endif; ?>
+
+        <!-- 2. BESTÄTIGUNG: Login war erfolgreich (KORREKTUR: Jetzt in lesbarem B5-Gold!) -->
+        <?php if (isset($_SESSION['flash_message'])): ?>
+            <div style="background-color: rgba(0, 200, 80, 0.15) !important; border: 1px solid #00c850 !important; color: #ff9900 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 6px rgba(255, 153, 0, 0.6) !important; letter-spacing: 0.5px !important;">
+                <?php echo $_SESSION['flash_message']; ?>
+            </div>
+            <?php 
+            // Einmal zeigen, danach sofort aus dem Speicher löschen
+            unset($_SESSION['flash_message']); 
+            ?>
+        <?php endif; ?>
+
+
+        <!-- Hier injiziert PHP den exklusiven Inhalt der jeweiligen Seite hinein -->
+        <?php echo $inhaltHtml; ?>
+    </main>
+
+    <!-- Der bündige Footer in deiner Includes/layout.php -->
+    <footer>
+        <bottomNav>
+            <ul>
+                <!-- KORREKTUR: Zeigt jetzt exakt auf deine neue Impressum.php -->
+                <li><a href="Impressum.php">Impressum</a></li>
+                <li><a href="Contact.php">Contact</a></li>
+                <li><a href="Datasecurity.php">Datasecurity</a></li>
+            </ul>
+        </bottomNav>
+        <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
+    </footer>
+
+</body>
+</html>
+<?php
+} // <-- Diese wichtige Klammer beendet die PHP-Funktion sauber!
+?>
