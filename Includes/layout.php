@@ -156,41 +156,63 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-sizing: border-box !important;
             }
 
+                        /* ==========================================================================
+               UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT STABIL & GELEITET
+               ========================================================================== */
             footer {
                 grid-column: span 2 !important;      
-                display: flex !important;                  
-                justify-content: space-between !important; /* Drückt das Menü nach links und den Text nach rechts! */
-                align-items: center !important;            
-                padding: 10px 20px !important;
+                display: block !important;
+                width: 100% !important;
+                height: 50px !important; /* Gibt der Box genug vertikalen Raum */
+                padding: 12px 20px !important;
                 box-sizing: border-box !important;
+                position: relative !important;
             }
 
-            /* UNZERSTÖRBARER FOOTER-SCHRIFTEN-VEKTOR */
+            /* UNZERSTÖRBARES UPGRADE: Setzt die perfekte Schriftgröße für den gesamten Footer */
             footer, footer p, footer span, footer ul li a, body footer {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 font-weight: bold !important;
+                font-size: 1.05em !important; /* HAARGENAU DIE GRÖSSE DEINES NAVI-MENÜS! */
                 text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
             }
 
+            /* LINKS-AUSRICHTUNG: Verankert die Menü-Links felsenfest auf der linken Flanke */
             footer ul {
                 margin: 0 !important;
                 padding: 0 !important;
-                display: flex !important;
-                gap: 15px !important;
+                display: inline-block !important;
+                float: left !important;
+                list-style-type: none !important;
             }
 
-            /* ➔ FINALE RECHTE KANTE: Positioniert das Copyright-Segment absolut bündig rechts */
+            footer ul li {
+                display: inline-block !important;
+                margin-right: 25px !important; /* Abstand zwischen den einzelnen Links */
+            }
+
+            footer ul li a {
+                color: #ffffff !important;
+                text-decoration: none !important;
+                transition: all 0.2s ease !important;
+            }
+
+            footer ul li a:hover {
+                color: #ff9900 !important;
+                text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
+            }
+
+            /* RECHTS-AUSRICHTUNG: Zwingt das Copyright absolut bündig an das rechte Ende */
             footer p {
-                display: block !important;
+                display: inline-block !important;
                 float: right !important;
                 text-align: right !important;
                 margin: 0 !important;
                 padding: 0 !important;
                 color: rgba(255, 255, 255, 0.6) !important;
-                width: auto !important;
-                flex-grow: 1 !important;
             }
+
 
         }
 
