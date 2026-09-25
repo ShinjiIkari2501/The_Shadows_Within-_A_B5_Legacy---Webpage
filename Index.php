@@ -16,8 +16,10 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
     <!-- ==========================================================================
          STATUS A: COMMANDER INTERNES CORE-TERMINAL (EINGELOGGT)
          ========================================================================== -->
-    <h2>ISA Main Terminal - Level 1 Security Clearance</h2>
-    <h3>Welcome back, Commander <?php echo htmlspecialchars($_SESSION['username']); ?></h3>
+        <!-- KORREKTUR: Text läuft in Serpentine, die 5 schaltet dank 'Logo5' auf B5Station um! -->
+    <h2>The Shadows within: A B<span class="Logo5">5</span> Legacy</h2>
+    <h3>Main Terminal / Sector <span class="Logo5">2264</span> Overview</h3>
+
     
     <p>
         🔒 Secure sub-space connection fully established with Tuzanor. 
