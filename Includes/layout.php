@@ -53,7 +53,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 /* FIXIERUNG AUF MONITORHÖHE: Verhindert das Mitwandern */
                 height: 100vh !important;      
                 max-height: 100vh !important;  
-                overflow: hidden !important; /* Blockiert das Scrollen des Gesamtframerate-Fensters */
+                overflow: hidden !important; 
             }
 
             header {
@@ -62,35 +62,29 @@ function renderLayout($seitenTitel, $seitenInhalt) {
             }
 
             /* DIE NAVIGATION BLEIBT FELSENFEST EINGEFROREN */
-            /* DIE ERBEUTETE LINKSKONSOLE (Vollständiger Glas-Look reaktiviert!) */
             mainNav {
                 grid-column: 1 !important;           
                 grid-row: 2 !important;              
                 width: 210px !important;               
-                height: 520px !important;   /* Feste, eingefrorene Wunschgröße */
+                height: 520px !important;   
                 box-sizing: border-box !important;
                 
-                /* DIE WAFFE FÜR PERFEKTE INNEN-SYMMETRIE: */
                 display: flex !important;
                 flex-direction: column !important;
-                align-items: center !important;         /* Zentriert alles absolut exakt von links nach rechts */
-                justify-content: flex-start !important; /* Startet sauber oben und verteilt nach unten */
+                align-items: center !important;         
+                justify-content: flex-start !important; 
                 
-                /* EXAKTE INNENABSTÄNDE (Oben und unten perfekt ausbalanciert) */
                 padding-top: 25px !important; 
                 padding-bottom: 25px !important;
                 padding-left: 12px !important;
                 padding-right: 12px !important;
                 
-                /* Horizontale und vertikale Zentrierung im globalen Grid */
                 justify-self: center !important;
                 align-self: center !important; 
                 position: relative !important;
                 
-                /* Der optische Höhenschubs für die perfekte Achse */
                 margin: -55px auto 25px auto !important; 
 
-                /* Der originale Babylon-5 Glasrahmen & Lichtkante */
                 background-color: rgba(13, 20, 59, 0.75) !important; 
                 backdrop-filter: blur(8px) !important;
                 -webkit-backdrop-filter: blur(8px) !important;
@@ -99,12 +93,13 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(26, 47, 122, 0.2) !important;
             }
 
-            /* ERZWUNGENES SCHRIFTEN-UPGRADE INNEN-NAV */
+            /* UNZERSTÖRBARER NAV-SCHRIFTEN-VEKTOR */
             mainNav, mainNav ul, mainNav ul li, mainNav ul li a {
                 font-family: 'B5Station', Arial, sans-serif !important;
+                text-transform: uppercase !important;
+                letter-spacing: 0.5px !important;
             }
 
-            /* Sorgt dafür, dass das Login-Inlay die Breite perfekt ausnutzt und zentriert bleibt */
             mainNav fieldset {
                 width: 100% !important;
                 box-sizing: border-box !important;
@@ -112,7 +107,6 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 margin-bottom: 20px !important;
             }
 
-            /* Zentriert die Liste und die Links haargenau von links nach rechts */
             mainNav ul {
                 width: 100% !important;
                 text-align: center !important;
@@ -138,31 +132,36 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 grid-column: 2 !important;           
                 grid-row: 2 !important;              
                 width: 100% !important;              
-                
-                /* DIE RETTUNG: Das Fenster füllt die Reihe und kriegt seine eigene Scrollbar */
                 height: 100% !important;
-                overflow-y: auto !important; /* Aktiviert die autonome Scrollbar NUR rechts */
+                overflow-y: auto !important; 
                 scroll-behavior: smooth !important;  
                 
                 padding-left: 10px !important;
                 padding-right: 25px !important;
                 margin-top: 0px !important;
                 margin-bottom: 25px !important; 
-                padding-bottom: 60px !important; /* Platzhalter, damit der fixierte Footer nix verdeckt */
+                padding-bottom: 60px !important; 
                 box-sizing: border-box !important;
-            }
-
-            /* ERZWUNGENES SCHRIFTEN-UPGRADE FOOTER */
-            footer, footer p, footer span, footer ul li a, body footer {
-                font-family: 'B5Station', Arial, sans-serif !important;
             }
 
             footer {
                 grid-column: span 2 !important;      
             }
+
+            /* UNZERSTÖRBARER FOOTER-SCHRIFTEN-VEKTOR */
+            footer, footer p, footer span, footer ul li a, body footer {
+                font-family: 'B5Station', Arial, sans-serif !important;
+            }
+
+            /* ➔ RECHTE KANTE: Zwingt das Copyright-Segment an den rechten Rand */
+            footer p {
+                margin-left: auto !important;
+                margin-right: 15px !important;
+                text-align: right !important;
+            }
         }
 
-        /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG (Logo5 & LogoB) */
+        /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
         .Logo5, .LogoB, h1 .Logo5, h1 .LogoB, h2 span.Logo5, h2 span.LogoB {
             font-family: 'B5Station', Arial, sans-serif !important;
             font-weight: bold !important;
@@ -184,10 +183,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
 
     <!-- Hauptfenster für den Inhalt -->
     <main>
-        <?php 
-        // Injiziert den dynamischen Inhalt der jeweiligen Unterseite
-        echo $seitenInhalt; 
-        ?>
+        <?php echo $seitenInhalt; ?>
     </main>
 
     <!-- Der unzerstörbare Konsolen-Footer -->
