@@ -37,21 +37,27 @@ if (isset($_POST['loginSubmit'])) {
         $loginErfolgreich = true;
     }
 
-    // Auswertung der Sicherheits-Credentials
+    // ==========================================================================
+    // AUSWERTUNG DER CREDENTIALS: Schleifen-sichere relative Umleitung!
+    // ==========================================================================
     if ($loginErfolgreich === true) {
         $_SESSION['eingeloggt'] = true;
         $_SESSION['username'] = $username;
+        unset($_SESSION['login_error']); // Löscht alte Fehlermeldungen bei Erfolg
         
-        // Zwingt den Browser, den Cache zu leeren und leitet sicher weiter
-        header("Location: index.php");
+        // KORREKTUR: './' bricht den Groß-/Kleinschreibungs-Krieg im Internet sofort!
+        header("Location: ./");
         exit();
     } else {
-        header("Location: index.php");
+        // SCHLEIFEN-BRECHER: Setzt ein Fehlersignal im Speicher, statt blind im Kreis zu routen!
+        $_SESSION['login_error'] = "ACCESS DENIED: Invalid Security Credentials.";
+        header("Location: ./");
         exit();
     }
 
 } else {
-    header("Location: index.php");
+    // Falls jemand die Datei ohne Formular aufruft, neutral zurück zur Hauptseite schieben
+    header("Location: ./");
     exit();
 }
 ?>
