@@ -71,14 +71,14 @@ main p {
     padding: 20px;              
     text-align: center;
 }
+
 /* --- FOOTER-COPYRIGHT SYSTEM ALIGNMENT --- */
-footer, footer p, body footer, footer span {
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    font-size: 0.8em !important;
-    letter-spacing: 1.2px !important;
-    color: rgba(255, 255, 255, 0.4) !important; /* Dezentes Silber, damit es edel aussieht */
+footer, footer p, body footer, footer span, footer ul li a {
+    font-family: 'B5Station', Arial, sans-serif !important; /* ➔ KORREKTUR: Lädt jetzt die breite Stationsschrift! */
+    font-size: 0.85em !important;
+    letter-spacing: 1.2px !important;            
+    color: rgba(255, 255, 255, 0.5) !important; 
     text-align: center !important;
-    line-height: 1.4 !important;
 }
 
 /* REPARATUR-RELAIS FÜR DAS LINKS-MENÜ (Macht das Login-Feld sofort wieder perfekt lesbar!) */
