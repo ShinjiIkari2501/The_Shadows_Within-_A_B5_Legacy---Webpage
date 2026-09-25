@@ -17,7 +17,7 @@
     font-style: normal;
 }
 
-/* 2. Die originalen Layout-Sektoren fehlerfrei nachladen */
+/* 2. Die originalen Layout-Sektoren nachladen */
 @import url('B5_Base.css');
 @import url('B5_mainNavigation.css');
 @import url('B5_Layout_Modules.css');
