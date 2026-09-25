@@ -1,6 +1,4 @@
 <?php 
-// 1. Die Login-Prüfung an allererster Stelle laden, noch VOR jeglicher HTML-Ausgabe!
-require_once 'Login.php';
 
 // 2. Die Layout-Zentrale laden
 require_once 'Includes/layout.php'; 
