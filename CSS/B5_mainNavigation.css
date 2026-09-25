@@ -155,3 +155,12 @@ mainNav ul li a:hover {
     text-shadow: 0 0 5px rgba(255, 153, 0, 0.8) !important;
 }
 
+/* ==========================================================================
+   INTERSTELLAR NAV-UPGRADE: ERZWINGT B5STATION FÜR ALLE LINKS
+   ========================================================================== */
+mainNav ul li a, 
+mainNav a, 
+.main-nav a, 
+mainNav ul li {
+    font-family: 'B5Station', Arial, sans-serif !important;
+}
