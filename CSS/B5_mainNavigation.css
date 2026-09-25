@@ -30,6 +30,9 @@
                 /* Sitzt absolut stabil zentriert */
                 margin: -25px auto 25px auto !important; 
                 position: relative !important;
+                
+                /* Zwingt die Grund-Schriftart des Kastens auf B5Station */
+                font-family: 'B5Station', Arial, sans-serif !important;
             }
 
 /* --- THE LOGIN INLAY (Fieldset) --- */
@@ -54,10 +57,12 @@ mainNav fieldset label {
     display: block;
     margin-top: 10px;
     margin-bottom: 4px;  
-    font-family: 'B5Station', Arial, sans-serif !important;
+    font-family: Arial, sans-serif !important; /* Systemschrift für bessere Lesbarkeit */
     font-size: 0.9em;
     text-align: left;
     font-weight: bold;
+    text-transform: none !important;
+    letter-spacing: normal !important;
 }
 
 mainNav fieldset input {
@@ -69,6 +74,7 @@ mainNav fieldset input {
     padding: 6px;
     font-size: 0.95em;
     box-sizing: border-box;
+    font-family: Arial, sans-serif !important;
 }
 
 mainNav fieldset input:focus {
@@ -94,11 +100,12 @@ mainNav fieldset button {
     border: 1px solid #ffffff; 
     border-radius: 4px;          
     color: #0d143b;             
-    font-family: 'B5Station', Arial, sans-serif !important;
+    font-family: Arial, sans-serif !important; /* Entzerrt den Button im Inlay */
     font-weight: bold;
     font-size: 0.95em;
     transition: all 0.3s ease;   
-    letter-spacing: 0.5px;         
+    letter-spacing: normal !important;         
+    text-transform: none !important;
 }
 
 mainNav fieldset button:hover {
@@ -109,10 +116,11 @@ mainNav fieldset button:hover {
 }
 
 mainNav fieldset legend {
-    font-family: 'B5Station', Arial, sans-serif !important;       
+    font-family: Arial, sans-serif !important;       
     font-weight: bold;              
     text-decoration: underline;     
-    letter-spacing: 1px;            
+    letter-spacing: normal !important;            
+    text-transform: none !important;
 }
 
 #eMail {
@@ -132,36 +140,14 @@ mainNav ul li {
     text-shadow: 0 0 4px rgba(96, 172, 243, 0.6);
 }
 
-/* --- LINKSKONSOLE TEXT-STYLING (KORRIGIERT) --- */
 mainNav ul li a {
-    /* Zwingt ALLE Links im Menü auf die funktionierende Live-Schriftart! */
-    font-family: 'SerpentineB5', Arial, sans-serif !important; 
-    
-    color: #ffffff !important;
     text-decoration: none;
-    font-size: 1.05em;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
+    color: hsl(0, 9%, 98%);
+    font-family: 'B5Station', Arial, sans-serif !important; /* Zwingt das Menü in die Stationsschrift */
+    font-size: 0.95em;
+    white-space: nowrap; 
 }
 
 mainNav ul li a:hover {
-    color: #ff9900 !important;
-    text-shadow: 0 0 5px rgba(255, 153, 0, 0.8);
-}
-
-/* --- REPARATUR-PHALANX: NAVIGATION & LOGIN KLAR TRENNEN --- */
-
-/* Zwingt ALLE Links der Navigation in die gewünschte SerpentineB5-Schriftart */
-mainNav ul li a, mainNav a, .main-nav a {
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-}
-
-/* Hält die reinen Login-Texte, Eingabefelder und Knöpfe in der lesbaren Systemschrift */
-mainNav fieldset label, 
-mainNav fieldset input, 
-mainNav fieldset button, 
-mainNav fieldset legend {
-    font-family: Arial, sans-serif !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
+    color: #ff9900; 
 }
