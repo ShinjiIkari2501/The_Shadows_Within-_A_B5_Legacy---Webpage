@@ -71,3 +71,11 @@ main p {
     padding: 20px;              
     text-align: center;
 }
+/* --- FOOTER-COPYRIGHT (Zwingt den Text in die B5-Stationsschrift) --- */
+footer, footer p, body footer {
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-size: 0.85em !important;
+    letter-spacing: 1px !important;
+    color: rgba(255, 255, 255, 0.5) !important; /* Dezentes Grau, damit es nicht blendet */
+    text-align: center !important;
+}
