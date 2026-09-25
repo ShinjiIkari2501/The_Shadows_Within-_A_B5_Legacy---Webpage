@@ -1,14 +1,11 @@
 <?php 
-
-
-// 1. Die Layout-Zentrale laden (Sie startet auch automatisch die Session)
-require_once 'Includes/layout.php'; 
-
-// Bindet die Login-Prüfung direkt an vorderster Front auf der Hauptseite ein
+// 1. Die Login-Prüfung an allererster Stelle laden, noch VOR jeglicher HTML-Ausgabe!
 require_once 'Login.php';
 
-// (Danach läuft dein normaler Code weiter...)
+// 2. Die Layout-Zentrale laden
 require_once 'Includes/layout.php'; 
+
+// 3. Den Zwischenspeicher für den HTML-Inhalt aktivieren
 ob_start(); 
 ?>
 
@@ -20,10 +17,9 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
     <!-- ==========================================================================
          STATUS A: COMMANDER INTERNES CORE-TERMINAL (EINGELOGGT)
          ========================================================================== -->
-        <!-- KORREKTUR: Text läuft in Serpentine, die 5 schaltet dank 'Logo5' auf B5Station um! -->
+    <!-- KORREKTUR: Text läuft in Serpentine, die 5 schaltet dank 'Logo5' auf B5Station um! -->
     <h2>The Shadows within: A B<span class="Logo5">5</span> Legacy</h2>
     <h3>Main Terminal / Sector <span class="Logo5">2264</span> Overview</h3>
-
     
     <p>
         🔒 Secure sub-space connection fully established with Tuzanor. 
@@ -59,9 +55,8 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
     <!-- ==========================================================================
          STATUS B: ANONYMER WILLKOMMENS-BILDSCHIRM (NICHT EINGELOGGT)
          ========================================================================== -->
-        <!-- KORREKTUR: Verpackt dein Symbol in der Klasse 'Logo5', damit die Schriftart es umwandelt! -->
+    <!-- KORREKTUR: Verpackt dein Symbol in der Klasse 'Logo5', damit die Schriftart es umwandelt! -->
     <h2>The Shadows within: A B<span class="Logo5">©</span> Legacy</h2>
-
     <h3>Main Terminal / Sector 2264 Overview</h3>
     
     <p>
@@ -79,7 +74,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
     <!-- Der sauber kalibrierte Registrierungs-Bereich für Rekruten -->
     <div style="margin-top: 35px; background-color: rgba(96, 172, 243, 0.05); border: 1px solid rgba(96, 172, 243, 0.2); padding: 20px; border-radius: 6px; text-align: center;">
         <h4 style="color: #ff9900; margin-top: 0; text-shadow: 0 0 4px rgba(255, 153, 0, 0.4); font-family: 'B5Station', Arial, sans-serif;">NEW RECRUIT? REQUEST SECURITY CLEARANCE</h4>
-        <p style="font-size: 0.9em; margin-bottom: 20px; font-family: Arial, sans-serif; color: hsl(0, 9%, 90%);">If you do not possess active credentials, you must register your entity in the Alliance database first.</p>
+        <p style="font-size: 0.9em; margin-bottom: 20px; font-family: Arial, sans-serif; color: hsl(0, 9%, 98%);">If you do not possess active credentials, you must register your entity in the Alliance database first.</p>
         
         <a href="Register.php" style="text-decoration: none; display: inline-block;">
             <button type="button" style="
