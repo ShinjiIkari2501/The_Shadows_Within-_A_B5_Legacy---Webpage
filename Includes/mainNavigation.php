@@ -18,7 +18,7 @@
             </div>
             
             <!-- Der Logout-Button schickt den User an eine logout.php, die wir gleich erstellen -->
-            <form action="logout.php" method="post" style="margin-top: 10px;">
+            <form action="Logout.php" method="post" style="margin-top: 10px;">
                 <button type="submit" name="logoutSubmit" class="formButton" style="background-color: rgba(255, 51, 51, 0.2); border: 1px solid #ff3333; color: #ff3333; text-shadow: 0 0 4px #ff3333;">
                     Logout
                 </button>
@@ -26,7 +26,7 @@
 
         <?php else: ?>
             <!-- STATUS 2: ANONYMER ZUGRIFF / FORMULAR ANZEIGEN -->
-            <form action="Index.php" method="post">
+            <form action="Login.php" method="post">
                 <legend>Login:</legend>
                 
                 <label for="username">Username:</label>
