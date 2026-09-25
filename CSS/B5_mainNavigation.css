@@ -149,12 +149,19 @@ mainNav ul li a:hover {
     text-shadow: 0 0 5px rgba(255, 153, 0, 0.8);
 }
 
-/* Globale Zuweisung für alle Navigationselemente und den Footer */
-mainNav, 
-mainNav ul li a, 
-mainNav fieldset legend, 
+/* --- REPARATUR-PHALANX: NAVIGATION & LOGIN KLAR TRENNEN --- */
+
+/* Zwingt ALLE Links der Navigation in die gewünschte SerpentineB5-Schriftart */
+mainNav ul li a, mainNav a, .main-nav a {
+    font-family: 'SerpentineB5', Arial, sans-serif !important;
+}
+
+/* Hält die reinen Login-Texte, Eingabefelder und Knöpfe in der lesbaren Systemschrift */
 mainNav fieldset label, 
-mainNav fieldset button,
-footer {
-    font-family: 'B5Station', Arial, sans-serif !important;
+mainNav fieldset input, 
+mainNav fieldset button, 
+mainNav fieldset legend {
+    font-family: Arial, sans-serif !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
 }
