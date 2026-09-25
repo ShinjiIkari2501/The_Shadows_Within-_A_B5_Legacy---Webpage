@@ -1,13 +1,9 @@
 <?php 
-// 1. Die Layout-Zentrale laden (Sie startet auch automatisch die Session)
-require_once 'Includes/layout.php'; 
-
-// 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
-
-<?php
-// Bindet die Login-Verarbeitung direkt auf der Startseite ein
+// 1. Bindet die Login-Verarbeitung direkt auf der Startseite ein
 require_once 'login.php';
-?>
+
+// 2. Die Layout-Zentrale laden (Sie startet auch automatisch die Session)
+require_once 'Includes/layout.php'; 
 
 // 3. Den Zwischenspeicher für den HTML-Inhalt aktivieren
 ob_start(); 
@@ -61,7 +57,6 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
     <h2>The Shadows within: A B5 Legacy</h2>
     <h3>Main Terminal / Sector 2264 Overview</h3>
     
-    <!-- RETTUNG: Der grundlegende Info-Text ist wieder online! -->
     <p>
         Welcome to the official communication array of the hybrid prototype starship <em>Liburnia</em>. 
         This tactical interface serves as the primary data hub for Interstellar Alliance operations 
@@ -79,22 +74,15 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
         <h4 style="color: #ff9900; margin-top: 0; text-shadow: 0 0 4px rgba(255, 153, 0, 0.4); font-family: 'B5Station', Arial, sans-serif;">NEW RECRUIT? REQUEST SECURITY CLEARANCE</h4>
         <p style="font-size: 0.9em; margin-bottom: 20px; font-family: Arial, sans-serif; color: hsl(0, 9%, 90%);">If you do not possess active credentials, you must register your entity in the Alliance database first.</p>
         
-        <!-- BUTTON: Weißer Text im Ruhezustand / Goldener Text beim Hovern -->
         <a href="Register.php" style="text-decoration: none; display: inline-block;">
             <button type="button" style="
                 display: block !important;
                 margin: 0 auto !important;
                 padding: 6px 20px !important;           
                 cursor: pointer !important; 
-                
-                /* FORM UND ECKEN: Kantiger Glas-Look */
                 border-radius: 4px !important;
                 border: 1px solid rgba(255, 153, 0, 0.4) !important; 
-                
-                /* FAHRPLAN NORMALZUSTAND: Mattes Konsolen-Grau */
                 background-color: rgba(60, 60, 60, 0.4) !important; 
-                
-                /* KORREKTUR SCHRIFT: Im Ruhezustand jetzt WEISS mit weißem Schatten */
                 color: #ffffff !important; 
                 font-family: 'B5Station', Arial, sans-serif !important;
                 font-size: 0.9em !important;
@@ -102,7 +90,6 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
                 text-transform: uppercase !important;   
                 letter-spacing: 1px !important;         
                 text-shadow: 0 0 4px rgba(255, 255, 255, 0.6) !important;
-                
                 transition: all 0.2s ease !important;    
             "
             onmouseover="this.style.backgroundColor='rgba(26, 47, 122, 0.6)'; this.style.color='#ff9900'; this.style.textShadow='0 0 4px rgba(255, 153, 0, 0.5)'; this.style.borderColor='#ff9900'; this.style.boxShadow='0 0 10px rgba(255, 153, 0, 0.8)';"
@@ -115,9 +102,9 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
 <?php endif; ?>
 
 <?php 
-// 3. Den Inhalt aus dem Zwischenspeicher holen
+// 4. Den Inhalt aus dem Zwischenspeicher holen
 $seitenInhalt = ob_get_clean(); 
 
-// 4. Das Layout mit individuellem Titel rendern
+// 5. Das Layout mit individuellem Titel rendern
 renderLayout("B5 Legacy - Main Terminal", $seitenInhalt); 
 ?>
