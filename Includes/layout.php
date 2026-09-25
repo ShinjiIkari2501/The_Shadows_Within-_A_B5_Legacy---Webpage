@@ -17,6 +17,24 @@ function renderLayout($seitenTitel, $inhaltHtml) {
     
     <!-- Pfad zur zentralen CSS für Farben und Schriften -->
     <link rel="stylesheet" href="CSS/Babcom_Style.css">
+
+        <!-- 🛰️ DYNAMISCHE SCHRIFTEN-INJEKTION (Direkt im Head verankert!) -->
+    <style>
+        @font-face {
+            font-family: 'B5Station';
+            src: url('Fonts/babylon5_station_bold.ttf') format('truetype');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'SerpentineB5';
+            src: url('Fonts/Serpentine_Medium.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+
     
         <style>
         /* UNZERSTÖRBARES DESKTOP-LAYOUT (SCROLL-ISOLIERT) */
