@@ -1,68 +1,49 @@
 /* ==========================================================================
-   THE SHADOWS WITHIN: A B5 LEGACY - RESPONSIVE TACTICAL GRID (FLEX-CENTER)
-   System-Status: Brücken-Layout stabilisiert. Unzerstörbare Zentrierung.
+   THE SHADOWS WITHIN: A B5 LEGACY - RESPONSIVE TACTICAL GRID (mediaquery.css)
+   System-Status: Kalibriert. Greift ab 48em (ca. 768px Desktop-Breite).
    ========================================================================== */
 
 @media (min-width: 48em) {
     body {
         display: grid !important;
-        /* Erste Spalte starr 240px für die Nav, zweite Spalte kriegt den Rest text */
-        grid-template-columns: 240px 1fr; 
-        /* Reihe 1: Header, Reihe 2: Der mittlere Sektor (Inhalt), Reihe 3: Footer */
-        grid-template-rows: auto 1fr auto; 
+        grid-template-columns: 12em 1fr; /* 12em feste Spalte links für Nav, Rest für Inhalt */
+        grid-template-rows: auto 1fr auto; /* Drei Reihen: Header, Inhalts-Ebene, Footer */
+        gap: 30px; /* Sicherheitsabstand zwischen den Grid-Elementen */
         
-        column-gap: 20px; 
-        row-gap: 0px;     
-        
-        margin: 0;
-        padding: 0;
-        width: 100vw;
         height: 100vh;            
         max-height: 100vh;        
-        overflow: hidden; /* Blockiert das Scrollen des gesamten Browserfensters */
+        overflow: hidden;         
     }
 
     header {
-        grid-column: 1 / -1 !important; /* Befreit den Header aus dem Spaltenzwang */
-        width: 100% !important;
-        display: block !important;
-        margin: 0 auto !important;
+        grid-column: span 2;      
     }
 
-    /* --- DIE EISERN ZENTRIERTE LINKSKONSOLE --- */
+    /* ERZWUNGENES SCHRIFTEN-UPGRADE RECHTSKLICK-SCHUTZ NAVIGATION */
+    mainNav, mainNav ul, mainNav ul li, mainNav ul li a {
+        font-family: 'B5Station', Arial, sans-serif !important;
+    }
+
     mainNav {
         grid-column: 1;           
         grid-row: 2;              
-        
-        /* GRÖSSE: Absolut starr eingefroren, exakt wie auf deinem Bild 2! */
-        width: 210px !important;               
-        height: 520px !important;   
-        box-sizing: border-box;
-        padding: 35px 12px;
-        
-        /* DIE UNZERSTÖRBARE WAFFE: Vertikal perfekt mittig einpendeln */
-        align-self: center; 
-        justify-self: center;
-        
-        margin: 0 !important; 
-        position: relative;
+        height: auto;             
+        overflow: visible;        
     }
 
-    /* --- DER AUTONOME INHALTSBEREICH (RECHTS) --- */
     main {
         grid-column: 2;           
         grid-row: 2;              
         width: 100%;              
         height: 100%;             
-        overflow-y: auto; /* NUR hier darf gescrollt werden! */        
+        overflow-y: auto;         
         scroll-behavior: smooth;  
-        
-        padding-left: 10px;
-        padding-right: 25px;
-        margin-top: 0px;
-        margin-bottom: 20px; 
-        padding-bottom: 80px; /* Sicherheitsabstand zum fixierten Footer */
-        box-sizing: border-box;
+        padding-right: 15px;      
+    }
+
+    /* ERZWUNGENES SCHRIFTEN-UPGRADE UNTERER RAND (Footer) */
+    footer, footer p, footer span, footer ul li a, body footer {
+        font-family: 'B5Station', Arial, sans-serif !important;
     }
 
     footer {
