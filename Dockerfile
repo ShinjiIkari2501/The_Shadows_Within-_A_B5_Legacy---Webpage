@@ -3,15 +3,12 @@ FROM php:8.2-apache
 # 1. Kopiert alle hochgeladenen Daten in den Container
 COPY . /var/www/html/
 
-# 2. VIRTUELLES SPIEGEL-RELAIS (Symlink-Phalanx):
-# Zieht die Dateien auf die Hauptebene heraus, lässt aber gleichzeitig eine 
-# virtuelle Verknüpfung im Unterordner bestehen. Das repariert alle CSS- und Schriftpfade sofort!
-RUN ACTUAL_DIR=$(dirname $(find /var/www/html/ -name "index.php" | head -n 1)) && \
-    if [ "$ACTUAL_DIR" != "/var/www/html" ]; then \
-        cp -r $ACTUAL_DIR/* /var/www/html/ && \
-        FOLDER_NAME=$(basename $ACTUAL_DIR) && \
-        rm -rf /var/www/html/$FOLDER_NAME && \
-        ln -s /var/www/html /var/www/html/$FOLDER_NAME; \
+# 2. DIREKT-ZÜNDUNG: Wenn der Unterordner existiert, kopiere den Inhalt heraus
+# und erstelle einen virtuellen Link (Symlink), damit BEIDE Pfade zeitgleich funktionieren!
+RUN if [ -d "/var/www/html/The_Shadows_Within-_A_B5_Legacy" ]; then \
+        cp -r /var/www/html/The_Shadows_Within-_A_B5_Legacy/* /var/www/html/ && \
+        rm -rf /var/www/html/The_Shadows_Within-_A_B5_Legacy && \
+        ln -s /var/www/html /var/www/html/The_Shadows_Within-_A_B5_Legacy; \
     fi
 
 # 3. Erlaubt dem Server den Zugriff auf die frisch sortierten Daten
