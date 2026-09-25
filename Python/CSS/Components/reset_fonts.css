@@ -1,0 +1,63 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL FONTS REGISTRY
+   System-Status: Kalibriert auf absoluten XAMPP-Datenstrom.
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+/* --- TACTICAL DISPLAY SCHRIFTARTEN (Wurzelrelative Server-Pfade) --- */
+@font-face {
+    font-family: 'B5Station';
+    src: url('/Project/B5_Project/Fonts/babylon5_station_bold.ttf') format('truetype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'SerpentineB5';
+    src: url('/Project/B5_Project/Fonts/serpentine_medium.otf') format('opentype'); 
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* --- PLASMASCHIRM-ÜBERSCHRIFTEN --- */
+body h1, main h2, h1, h2, h3 {
+    font-family: 'SerpentineB5', Arial, sans-serif;
+    letter-spacing: 1.2px;       
+    text-align: center;      
+    color: #ff9900;          
+    text-shadow: 0 0 8px rgba(255, 153, 0, 0.6), 1px 1px 2px rgba(0, 0, 0, 0.8); 
+    font-size: 1.6em; 
+    margin-bottom: 15px;
+    margin-top: 10px;
+}
+
+body h1 {
+    font-size: 2em; 
+}
+
+/* --- TERMINAL-TEXTFLUSS --- */
+main p {
+    font-family: 'SerpentineB5', Arial, sans-serif;
+    color: rgb(96, 172, 243);            
+    text-shadow: 0 0 4px rgba(96, 172, 243, 0.4), 1px 1px 1px rgba(0, 0, 0, 0.9); 
+    font-size: 0.95em;
+    line-height: 1.6;          
+    letter-spacing: 0.6px;       
+    padding: 15px 25px;              
+    text-align: center;
+}
+
+/* Zuweisung für die Linkskonsole und den Footer */
+mainNav, 
+mainNav ul li a, 
+mainNav fieldset legend, 
+mainNav fieldset label, 
+mainNav fieldset button,
+footer {
+    font-family: 'B5Station', Arial, sans-serif !important;
+}

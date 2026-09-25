@@ -1,0 +1,212 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - GEHÄUSE-RAHMEN & KERN-GRID
+   ========================================================================== */
+
+/* ==========================================================================
+   OBERER MONITOR-RAHMEN (Header)
+   Umschließt das zentrierte Stations-Banner perfekt
+   ========================================================================== */
+header {
+    display: block;
+    font-family: 'B5Station';
+    color: hsl(0, 9%, 98%);
+    /* Schickes blaues Glühen mit dunklem Kern für perfekte Lesbarkeit */
+    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+    
+    padding: 10px; 
+    margin-bottom: 0px; 
+    margin-left: 100px;
+    margin-right: 100px;
+    
+    /* Veredelter Glas-Monitor-Look */
+    background-color: rgba(13, 20, 59, 0.75); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(96, 172, 243, 0.2);
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Allgemeine Listen-Fallbacks im Header */
+ul {
+    li {
+        list-style-type: none;
+        margin-top: 10px;
+        a {
+            color: hsl(0, 9%, 98%);
+            text-shadow: 1px 1px 2px hsl(0, 1%, 70%);
+        }
+    }
+}
+
+/* --- BANNER-GRAFIK IM HEADER --- */
+header img {
+    display: block; 
+    box-shadow: 0px 0px 8px hsl(0, 1%, 70%); 
+    border-radius: 6px; /* Ecken minimal abgerundet, schmiegt sich edel in das Glas */
+    height: 240px; /* Feste Wunschhöhe für das Logo */
+    
+    /* Symmetrie-Garantie: Immer exakt 10px Luft zum Glasrand und perfekt zentriert */
+    max-width: calc(100% - 10px); 
+    margin: 5px auto; 
+}
+
+/* ==========================================================================
+   GLOBALES CORE-RASTER (Body)
+   Krisensicher optimiert für extreme Zoom-Stufen und Barrierefreiheit
+   ========================================================================== */
+body {
+    display: grid; 
+    grid-template-rows: auto auto 1fr auto; 
+    background-color: hsl(245, 93%, 5%); /* Tiefes Weltraum-Schwarzblau */
+    color: hsl(0, 9%, 98%); 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); 
+    margin: 0;
+    padding: 0px;
+    box-sizing: border-box; 
+    flex-direction: column;
+
+    /* Zoom-Lebenserhaltungssystem: Verhindert das Kollidieren der Boxen bei hohem Zoom */
+    height: auto; 
+    min-height: 100vh; /* Füllt immer mindestens den ganzen Bildschirm */
+    overflow: auto; /* Schaltet bei extremem Platzmangel das globale Seitenscrollen ein */
+}
+
+/* --- LOGO TYPOGRAFIE --- */
+h1 .LogoB {
+    font-family: 'SerpentineB5' !important;
+    font-weight: thin;
+    letter-spacing: 1px; 
+    display: inline-block; 
+}
+
+h1 .Logo5 {
+    font-family: 'B5Station' !important;
+    font-weight: bold;
+    letter-spacing: 1px; 
+    display: inline-block; 
+    transform: translateY(1px); /* Händische Feinjustierung der Ziffer 5 */
+}
+
+/* ==========================================================================
+   INHALTS-FENSTER (Main) & DATA-STREAM (Scrollbar)
+   Zusammengeführt & optimiert: Scrollt autonom auf allen künftigen Seiten
+   ========================================================================== */
+main {
+    flex: 1; 
+    margin-top: 5px; 
+    margin-bottom: 10px; 
+    padding: 20px; 
+    padding-right: 15px; /* Verhindert, dass der Inhalt an die Scrollbar quetscht */
+    
+    /* Taktischer Datenfluss: Schaltet das geschmeidige Smooth-Scrolling ein */
+    scroll-behavior: smooth; 
+    overflow-y: auto; /* Scrollleiste erscheint nur hier im Fenster, wenn der Text zu lang wird */
+    
+    /* Raster-Sicherung: Zwingt das Fenster, sich bei Zoom sauber im Grid anzupassen */
+    height: 100%; 
+    min-height: 400px; /* Garantiert dem Inhalt immer mindestens 400px Platz */
+    box-sizing: border-box;
+}
+
+/* --- BABCOM TERMINAL SCROLLBAR --- */
+
+/* Der Schacht, in dem der Schieber läuft */
+main::-webkit-scrollbar {
+    width: 8px; /* Elegant, schlank und unaufdringlich */
+}
+
+main::-webkit-scrollbar-track {
+    background: rgba(5, 8, 26, 0.6); /* Transparentes Dunkelblau als Führungsschiene */
+    border-radius: 4px;
+}
+
+/* Der Daten-Fader (Regler) */
+main::-webkit-scrollbar-thumb {
+    background: rgba(96, 172, 243, 0.4); /* Hellblauer Akzentton */
+    border: 1px solid rgba(96, 172, 243, 0.2);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+/* --- SCROLLBAR HOVER INTERACTION --- */
+
+/* Fader-Reaktion: Der Regler glüht bei Mausberührung in intensivem Gold-Orange auf */
+main::-webkit-scrollbar-thumb:hover {
+    background: #ff9900;  
+    box-shadow: 0 0 8px rgba(255, 153, 0, 0.8);
+}
+
+/* ==========================================================================
+   UNTERER KONSOLEN-RAHMEN (Footer)
+   Hauchdünn, bombenfest verankert und absolut symmetrisch
+   ========================================================================== */
+footer {
+    display: flex;                  
+    justify-content: space-between; /* Menüpunkte links, Copyright rechts */
+    align-items: center;            /* Vertikal perfekt ausgemittelt */
+    font-family: 'B5Station', Arial, sans-serif !important;       
+    letter-spacing: 1px;            
+    color: hsl(0, 9%, 98%);         
+    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8); 
+    
+    /* Perfekte Höhe für das Terminal-Band */
+    padding: 12px 20px;              
+    height: auto;                   
+    min-height: fit-content;        
+    
+    /* Der originale BabCom-Glaslook */
+    background-color: rgba(13, 20, 59, 0.75); 
+    backdrop-filter: blur(8px);               
+    -webkit-backdrop-filter: blur(8px);       
+    border-top: 1px solid rgba(96, 172, 243, 0.2); 
+    
+    /* REPARATUR FÜR DIE BÜNDIGKEIT: */
+    border-radius: 8px 8px 0 0; /* Nur noch oben abgerundet, unten komplett flach */
+    margin-top: auto;           /* Schiebt den Footer unnachgiebig nach unten */
+    margin-bottom: 0px;         /* Killt den Freiraum zum Bildschirmrand */
+    margin-left: 15px;          /* Bündig mit dem linken Rand der Navigation */
+    margin-right: 15px;         /* Bündig mit dem rechten Rand des Hauptfensters */
+    position: relative;
+    z-index: 10;
+}
+
+
+/* --- FOOTER SEITENMENÜ --- */
+footer ul {
+    list-style-type: none; 
+    padding: 0;            
+    margin: 5px;             
+    margin-bottom: -15px;  
+    text-align: left; /* Garantiert die linksbündige Ausrichtung der Reihe */
+}
+
+/* Menüpunkte nebeneinander */
+footer ul li {
+    display: inline-block; 
+    margin: 0 15px; /* Angenehmer Sicherheitsabstand zwischen den Links */
+}
+
+/* Footer Hyperlinks im Ruhezustand */
+footer ul li a {
+    text-decoration: none;
+    color: hsl(0, 9%, 98%);
+    font-family: 'B5Station'; 
+}
+
+/* Hover-Effekt: Wechselt fließend auf das Plasma-Gold-Orange */
+footer ul li a:hover {
+    color: #ff9900; 
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.6); 
+}
+
+footer p {
+    margin-bottom: 0;   
+    margin-top: 0;      
+    padding-bottom: 0;  
+    padding-top: 0;     
+    
+    /* DIESE ZEILE ERZWINGT DIE SYMMETRIE ZUR LINKSKONSOLE */
+    margin-right: 15px; /* Schiebt das Copyright exakt um den Wert deines Nav-Margins vom rechten Rand weg */
+}

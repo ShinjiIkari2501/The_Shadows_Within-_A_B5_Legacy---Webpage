@@ -1,0 +1,714 @@
+import sys
+
+class BabylonZustand:
+    def __init__(self):
+        # 1. Charakter-Kernattribute (Analytische Skala)
+        self.charakter_origin = ""         # 'Geheimdienst' oder 'Unterwelt'
+        self.analyse_fokus = 85            # Startwert für intellektuelle Pfade
+        self.lore_wissen = 80              # Startwert für Babylon 5 / Lore-Pfade
+        self.psi_level = 0                 # P-Skala (P0 bis P6 freischaltbar)
+        
+        # 2. Wirtschaftssystem (An B5-Kurse angepasst)
+        self.credits = 120000              # Realistische imperiale Kriegskasse
+        
+        # 3. Das Flaggschiff 
+        self.schiff_name = "Liburnia"      # Der Minbari-Erde-Hybrid-Prototyp
+        self.schiff_erhalten = False       # Wird in Sektor 14 freigeschaltet
+        self.schiff_tarnung = 35           # Prototyp-Tarnfeld (Upgradebar)
+        
+        # 4. Globale Allianz- und Beziehungs-Schnittstellen
+        self.beziehungen = {
+            "Lochley_B5": 50,
+            "Gideon_Excalibur": 30,
+            "Garibaldi_Mars": 50,
+            "Ivanova_Erdflotte": 50
+        }
+        self.allianz_einfluss = {"Narn": 0, "Minbari": 0, "Mars": 0}
+        
+        # 5. Paranoide Bedrohungs- und Seuchen-Indikatoren
+        self.bedrohung_bester = 75         # Besters Machtfaktor (Ziel: Senken)
+        self.corps_schlaefer_aktivierung = 60
+        self.drakh_seuche = 100            # Seuchen-Intensität auf der Erde
+        self.grosse_maschine_energie = 20   # Epsilon 3 Kontrollwert
+        
+        # 6. Permanente Story-Flags (Weichenstellungen für die 5 Enden)
+        self.zack_vertrauen = 0            # Zack Allans Integritäts-Bonus
+        self.mystery_box_warnung = False   # Gideons Crusade-Artefakt-Flag
+        self.garibaldi_kommando = False    # Garibaldis Flotten-Brücken-Status
+        self.konstrukteurin_gerettet = False # Sha'In Rettungs-Status
+        self.talia_persoenlichkeit = "Unterdrückt" # 'Wachsend' nach Syrius 4
+        self.talia_trauma_geloest = False  # Bedingung für das Licht-Ende
+        self.labor_planet_status = ""      # Status für das geheime Syrius-Finale
+        self.control_entschluesselung = 0  # Fortschritt beim Hacken des Corps
+        self.deserteur_gerettet = False    # Dr. Helix Status
+        self.lyta_korruption = 50          # Lytas Vorlonen-Instabilität
+        self.vir_entschlossenheit = 20     # Virs Weg zum Imperator
+        self.vir_evolution = "Diplomat"    # Kann zum 'Meister_Stratege' reifen
+        self.vir_geheimnis_gelueftet = False
+        self.vintari_pfad = "Verbittert"   # Prinz Vintaris Schicksal
+        self.centauri_zerstoerung = 50     # Schicksal von Centauri Prime
+        self.lennier_status = "Unbekannt"  # Lenniers Sühnepfad im Schatten
+        self.delenn_begegnet = False       # Allianz-Gipfel Trigger
+        self.menschlicher_genpool = "Normal" # Schicksal der Telepathie
+        
+        # 7. Dynamisches Quest-Logbuch
+        self.crew = []
+        self.besuchte_orte = {
+            "B5": False, "Centauri_Prime": False, "Narn": False, 
+            "Epsilon_3": False, "Minbar": False, "Mars": False, 
+            "Syrius": False, "Erde": False
+        }
+
+    def daten_integritaet_pruefen(self):
+        """Validierung des Systemstatus"""
+        return True if len(self.schiff_name) > 0 else False
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 1 - BLOCK 2 VON 10 (Charakter & Prolog)
+# ==============================================================================
+
+def charakter_erstellung(welt):
+    print("\n[CHARAKTER-AUSWAHL: DIE RECHENSCHAFT DER VERGANGENHEIT]")
+    print("Bevor du in die Schächte eintauchst, wähle deine Herkunft:")
+    print("1 = GEHEIMDIENST-VETERAN (Hoher Analyse-Fokus, kennt militärische Protokolle)")
+    print("2 = UNTERWELT-SCHMUGGLER (Kennt illegale Schleusen und unregistrierte Routen)")
+    
+    wahl = input("Deine Herkunft (1/2): ").strip()
+    if wahl == "1":
+        welt.charakter_origin = "Geheimdienst"
+        welt.analyse_fokus += 10
+        welt.lore_wissen += 5
+        print("\n-> Du bist ein Phantom des ehemaligen Earthforce-Geheimdienstes.")
+    else:
+        welt.charakter_origin = "Unterwelt"
+        welt.credits += 25000
+        print("\n-> Du bist ein Geist des Braunen Sektors, ein Meister unregistrierter Fracht.")
+    
+    spiel_starten(welt)
+
+def spiel_starten(welt):
+    print("\n======================================================")
+    print("=== AKT I: DER FUNKE IM DRECK ========================")
+    print("======================================================")
+    print("\nDie Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff,")
+    print("billigem synthetischem Kaffee und dem Dunst unzähliger Frachterkühler.")
+    print("Hier, in den untersten Versorgungsschächten, bewegst du dich im Graubereich.")
+    print("Jede schattige Ecke hast du in ein logisches Raster eingeordnet.")
+    print("Es ist die einzige Art, wie du nach dem tragischen Verlust deines Partners Marcus Cole überleben konntest.")
+    
+    print("\nPlötzlich stolpert eine Gestalt aus einer Wartungsschleuse.")
+    print("Ein Mann in der zerfetzten Kluft der Rangers bricht direkt vor dir zusammen.")
+    print("Hinter ihm, am Ende des Tunnels, scannen Psi-Corps-Agenten die Gasse mit Bioscannern.")
+    
+    print("\nOhne ein Geräusch zu machen, aktivierst du dein illegales Chamäleon-Netz.")
+    print("Das holografische Feld summt minimal auf. Als das Licht der Agenten über dich gleitet,")
+    print("sehen sie nur eine leere Wand und gehen irritiert weiter.")
+    
+    print("\nDer Ranger keucht, Blut tritt auf seine Lippen. Er blickt dir direkt in die Augen.")
+    print("In seinen sterbenden Augen liegt stummes Erkennen. Er presst dir einen Kristall in die Hand.")
+    print("\nDer sterbende Ranger flüstert mit rauer, abgehackter Stimme:")
+    print(" 'Nimm ihn... Bring ihn... persönlich zum Kommandostab... Vertrau niemandem...'")
+    print(" 'Die Schläfer erwachen... Wir sterben... für den Einen...'")
+    
+    print("\nEin letzten Rasseln, dann erschlafft sein Körper. Seine Finger lösen sich.")
+    print("Das Anla'shok-Medaillon gleitet in deine Faust. Du stehst allein im Korridor.")
+    print("Es ist ein zutiefst intimer, lautloser Moment. Du sprichst es nicht aus – doch das Erleben")
+    print("dieser bedingungslosen Aufopferung löst einen tiefen, unumkehrbaren Trigger in dir aus.")
+    print("Du begreifst stumm und schmerzhaft, was für ein unerbittliches Leben Marcus damals gewählt hatte.")
+    print("Dieser Trigger bleibt dein Geheimnis, verborgen hinter einer unnahbaren Maske.")
+    
+    uebergabe_sicherheitszentrale(welt)
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 2 - BLOCK 3 VON 10 (Sicherheitszentrale)
+# ==============================================================================
+
+def uebergabe_sicherheitszentrale(welt):
+    print("\n[DER WEG ZUR SICHERHEITSZENTRALE]")
+    print("Du nutzt unregistrierte Schmuggelwege und Servicekorridore des Braunen Sektors.")
+    print("Erst direkt vor der Luftschleuse trittst du mit eisiger Dringlichkeit hervor.")
+    print("Die Officers lassen dich irritiert in das private Büro von Zack Allan.")
+    
+    print("\nOhne ein Wort der Erklärung legst du den Kristall und das Medaillon auf die Konsole.")
+    print("Du: 'Mr. Allan. Ein Ranger ist gerade im Braunen Sektor gestorben. Das Corps jagt")
+    print("     diese Daten. Es war absolut lebenswichtig für ihn, dass dieser Kristall nur")
+    print("     in die Hände der Stationsleitung gelangt. Sorgen Sie persönlich dafür.'")
+    
+    print("\nZack Allan blickt auf das Abzeichen, nickt grimmig und greift nach den Gegenständen.")
+    print("Er packt den Kristall in seine Manteltasche und greift nach seinem Datenpad.")
+    print("Zack Allan dreht sich um: 'Verdammt... Wo liegt die Leiche? Sagen Sie mir, wo er--'")
+    
+    print("\nDoch er spricht gegen die nackte Wand. In den zwei Sekunden seiner Ablenkung hast du")
+    print("den perfekten Moment abgepasst und bist lautlos im unruhigen Strom untergetaucht.")
+    
+    print("\nWenig später schließt Zack Allan die schwere Panzertür des Ratsbüros.")
+    print("Captain Elizabeth Lochley schiebt den Kristall in das gesicherte Allianz-Terminal.")
+    print("Die Konsole summt auf. Ein lebensgroßes Holo-Bild flackert im Raum auf: G’KAR.")
+    print("Seine aufgezeichnete, weise hallende Stimme erfüllt ehrfürchtig den Raum:")
+    
+    print("\nG’Kar (Holo): 'Liebe Freunde, wenn euch diese Nachricht erreicht, ist es hoffentlich'")
+    print("              'noch nicht zu spät. In diesem Datenkristall findet ihr verschlüsselte'")
+    print("              'Koordinaten. Dort findet ihr die Welt einer Zivilisation, die einst genau'")
+    print("              'dasselbe finstere Schicksal erlitt wie euer Volk. Aber seid gewarnt...'")
+    print("              'Was ihr in den Ruinen dieser toten Welt ausgraben werdet, kann eure'")
+    print("              'Erlösung bedeuten – doch es birgt gleichermaßen ein Wagnis mit extremen,'")
+    print("              'unumkehrbaren Risiken. Wer das Licht aus der Schwärze holen will, muss'")
+    print("              'bereit sein, sich an den Flammen zu verbrennen. Möge das Universum'")
+    print("              'euren Seelen gnädig sein.'")
+    
+    print("\nDas Bild erlischt. Lochley leitet die Koordinaten sofort an das Flaggschiff weiter.")
+    print("Noch während die EAS EXCALIBUR im Orbit ihre Triebwerke hochfährt, glüht in Captain")
+    print("Gideons Quartier die MYSTERY BOX warnend rot auf und flüstert eine kryptische Nachricht:")
+    print("'Ein Verrat ist im Gange... Das Licht, das ihr sucht, wird die Ketten schmieden...'")
+    print("Gideon ignoriert die Unheimlichkeit schweren Herzens. Die Excalibur springt in den Hyperraum.")
+    
+    excalibur_hentou_forschung(welt)
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 2 - BLOCK 4 VON 10 (Excalibur-Forschung)
+# ==============================================================================
+
+def excalibur_hentou_forschung(welt):
+    print("\n[WELTRAUMSZENE - ORBIT ÜBER DEM HENTOU-PLANETEN]")
+    print("Die EAS EXCALIBUR erreicht die sturmdurchpeitschten Koordinaten aus G'Kars Kristall.")
+    print("Das Archäologenteam bricht auf der Oberfläche in einen alten Drakh-Komplex ein.")
+    print("Sie bergen unzählige physische Artefakte, darunter einen leuchtenden Holo-Ball.")
+    
+    print("\n[SCHIFFSLABOR - EXCALIBUR]")
+    print("Dr. Sarah Chambers und Max Eilerson untersuchen die Funde im Labor fieberhaft.")
+    print("Dr. Stephen Franklin ist live über eine gesicherte Quantenleitung von der Erde zugeschaltet.")
+    print("Gemeinsam analysieren sie die biochemischen Amplituden des Holo-Balls.")
+    print("Plötzlich herrscht eisige Stille über der Datenleitung. Die Erkenntnis ist markerschütternd.")
+    
+    print("\nEilerson: 'Das ist biologischer Wahnsinn! Die Seuche wurde genetisch so bösartig'")
+    print("          'konstruiert, dass das Gegenmittel bei künstlicher Synthese im Labor kollabiert.'")
+    print("Chambers: 'Das Molekül braucht eine stabilisierende Komponente während der Synthese...'")
+    print("Franklin (über Funk): 'Die hochgradig fokussierte, synchrone Geisteskraft von'")
+    print("                      'Telepathen! Sie müssen die Matrix des Erregers mental fixieren.'")
+    print("                      'Es geht physisch absolut nicht ohne das Psi-Corps!'")
+    
+    print("\nGideon nimmt Kurs auf die Erde, übergibt eine Kopie an einen Sondergesandten")
+    print("und muss das verzweifelte Ringen der Erdregierung im Senat mitverfolgen.")
+    print("Noch bevor das Schiff Babylon 5 erreicht, kapituliert Präsidentin Roschenk schweren")
+    print("Herzens vor dem Druck und bittet das Psi-Corps offiziell um Unterstützung.")
+    
+    print("\nDas Corps willigt ein. Das Serum wird reproduziert und auf der Erde verteilt (unter 1 Woche).")
+    print("Einen Tag nach der letzten Lieferung startet das Corps an allen Orten die Aktivierung:")
+    print("Die Garde besetzt alle Regierungsgebäude. Die unwissenden Menschen auf den Straßen")
+    print("feiern lautstark ihre Freiheit, während im Hintergrund bereits die Handschellen zuschnappen.")
+    
+    print("\n[SZENEWECHSEL - SEKTOR BRAUN AUF BABYLON 5 / WENIGE STUNDEN SPÄTER]")
+    print("Die Nachricht vom stummen Putsch hat die Station wie eine Schockwelle getroffen.")
+    print("Du bewegst dich vorsichtig durch die dunklen Gassen, die Hand am PPG-Halfter.")
+    print("Plötzlich blockieren mehrere Sicherheitswachen den Korridor. Zack Allan tritt hervor.")
+    
+    print("\nZack Allan: 'Keine Bewegung. Ich verhafte dich nicht. Aber die Hölle ist opengebrochen.'")
+    print("Er packt dich am Arm und schiebt dich wortlos in die privaten Lifte der Hauptachse,")
+    print("die dich direkt hoch ins Ratsbüro der Kommandozentrale bringen.")
+    
+    # Der Fluss leitet automatisch über zu Paar 3
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 3 - BLOCK 5 VON 10 (Ratsbüro-Verhör)
+# ==============================================================================
+
+def ratsbuero_verhoer(welt):
+    print("\n[BABYLON 5 - RATSBÜRO DER KOMMANDOZENTRALE]")
+    print("Captain Lochley fixiert die blinkenden Fehlerprotokolle der toten Relais.")
+    print("Captain Matthew Gideon, frisch von der Excalibur-Mission zurückgekehrt, steht am Tisch.")
+    print("Zack Allan schiebt dich in den Raum und schließt die schwere Panzertür.")
+    
+    print("\nGideon wirbelt herum, seine Augen blitzen vor Zorn: 'Special-Agent. Vor genau")
+    print(" zwei Wochen bringen Sie uns diesen Kristall mit G'Kars Koordinaten. Wir fliegen hin,")
+    print(" retten die Erde mit dem Serum, und jetzt, wenige Stunden später, riegelt das")
+    print(" Corps den Planeten komplett ab! Reden Sie: Was zum Teufel ist da unten los?'")
+    
+    print("\nDu (kühl und gefasst): 'Ich weiß exakt genauso wenig wie Sie alle hier im Raum.")
+    print(" Über die aktuelle Blockade kann ich absolut nichts wissen.'")
+    print("Lochley: 'Hat der Ranger im Sterben gar nichts gesagt? Kein einziges Wort?'")
+    print("Du: 'Er keuchte nur: \"Nimm ihn... Bring ihn persönlich zum Kommandostab...\"")
+    print("     Und seine letzten Worte waren: \"Die Schläfer erwachen... Wir sterben... für den Einen...\"'")
+    
+    print("\nGideon schlägt auf den Tisch: 'Schläfer? Jetzt ergibt alles einen Sinn! Unser")
+    print(" Triumvirat hat bei der Untersuchung der Ruinen und Artefakte auf dem Planeten die furchtbare")
+    print(" Entdeckung gemacht: Die Seuche brauchte das Corps! Das Serum wäre ohne die Geisteskraft")
+    print(" von Tausenden Telepathen kollabiert.'")
+    print(" 'Wir mussten Besters Leute an die Synthese-Terminals lassen, um die Menschen überhaupt vor dem")
+    print(" Ersticken zu retten! Bester hat uns eiskalt benutzt. Er hat uns gezwungen, ihm die Erde")
+    print(" auf einem Silbertablett zu liefern, nur um sie vor dem Sterben zu retten!'")
+    
+    print("\n[ALARMSIGNAL] Die Holoschirme im Ratsbüro werden per Zwangs-Code aktiviert!")
+    print("Live aus Genf verkündet Alfred Bester inmitten der Black Omega Garde triumphierend:")
+    print("Bester (Holo): 'Ab dem heutigen Tage steht die Erde unter der unumkehrbaren")
+    print(" Verwaltung des Corps. Für die Normalen beginnt eine Ära als dienende Rasse.'")
+    
+    print("\nDas Bild bricht ab. Lochley ist aschfahl: 'Sie exekutieren Rebellen auf offener")
+    print(" Straße und umstellen die Kirchen. Wir brauchen dringend jemanden im Schatten.'")
+    print("Gideon packt dich am Kragen: 'Wer sind Sie wirklich? Warum gab er den Kristall ausgerechnet Ihnen?'")
+    
+    print("\nDu (weichst seinem Blick nicht aus): 'Weil ich Marcus Coles Partner beim Geheimdienst war,")
+    print(" Captain. Als dieser Ranger im Schacht in meinen Armen starb, habe ich Marcus in ihm gesehen.")
+    print(" Ich habe diesen Kristall aus Respekt vor Marcus' Vermächtnis hergebracht. Aber jetzt")
+    print(" will ich verdammt noch mal wissen, in was für ein Komplott ich gezogen wurde. Ich will Antworten.'")
+    
+    print("\nZack Allan atmet tief durch: 'Marcus... Valen sei Dank. Er wusste, wem er vertraut.'")
+    print("Gideon lässt dich los und nickt stumm: 'Respekt vor einem Toten... Das verstehe ich.'")
+    print("Lochley: 'Wenn Sie Marcus' Partner waren, verstehen Sie die Dunkelheit. Was treibt Sie an?'")
+    
+    charakter_motivation_abfrage(welt)
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 3 - BLOCK 6 VON 10 (Motivation & Werft)
+# ==============================================================================
+
+def charakter_motivation_abfrage(welt):
+    if welt.charakter_origin == "Geheimdienst":
+        print("\nWähle deine Motivation (Geheimdienst-Hintergrund):")
+        print("1 = [PFLICHT] 'Weil meine Loyalität den Menschen gilt. Ich lasse das Corps nicht siegen.'")
+        print("2 = [VERGELTUNG] 'Bester hat mir zu viel genommen. Ich will ihn bluten sehen.'")
+        print("3 = [MARCUS' ERBE] 'Marcus hat an diese Allianz geglaubt. Ich werde sein Werk vollenden.'")
+        
+        wahl = input("Deine Wahl (1/2/3): ").strip()
+        if wahl == "3":
+            welt.beziehungen["Ivanova_Erdflotte"] += 25
+            print("\n-> Zack Allan: 'Er meint es ernst, Elizabeth.'")
+        else:
+            welt.beziehungen["Lochley_B5"] += 20
+            print("\n-> Lochley nickt: 'Ein Soldat bleibt eben ein Soldat.'")
+            
+    elif welt.charakter_origin == "Unterwelt":
+        print("\nWähle deine Motivation (Unterwelt-Schmuggler):")
+        print("1 = [ÜBERLEBEN] 'Wenn das Corps gewinnt, sind meine Schmuggelrouten tot.'")
+        print("2 = [STOLZ] 'Niemand kontrolliert meine Flüge. Bester hat sich geschnitten.'")
+        print("3 = [GEWISSEN] 'Marcus Cole hat mir einst das Leben gerettet. Ich begleiche meine Schulden.'")
+        
+        wahl = input("Deine Wahl (1/2/3): ").strip()
+        if wahl == "3":
+            welt.beziehungen["Ivanova_Erdflotte"] += 25
+            print("\n-> Zack Allan nickt: 'Ein Schwur im Sektor Braun bricht nicht.'")
+        else:
+            welt.beziehungen["Gideon_Excalibur"] += 20
+            print("\n-> Gideon verzieht die Mundwinkel: 'Ein Mann mit klaren Gründen.'")
+
+    print(f"\nGideon: 'Gut. Meine Mystery Box hat mich gewarnt... Sheridan hat diese")
+    print(" Krise vorausgesehen. Im geheimen Sektor 14 ließ er einen Prototyp bauen,")
+    print(" unantastbar für die Earthforce: Die LIBURNIA. Ein Erde-Minbari-Hybrid.'")
+    print("Lochley: 'Doch das Corps weiß davon. Ihre Chefkonstrukteurin Sha'In wurde entführt.'")
+    print("Gideon: 'Nehmen Sie die LIANDRA. Finden Sie das Mädchen und holen Sie dieses Schiff!'")
+    print(" 'Ab jetzt beginnt die Rettungsmission, und das Spiel startet nach unseren Regeln!'")
+    
+    quest_rettung_konstrukteurin(welt)
+
+
+def quest_rettung_konstrukteurin(welt):
+    print("\n======================================================")
+    print("=== AKT II: DAS GALAKTISCHE SCHACHBRETT ==============")
+    print("======================================================")
+    print("\n[HYPERRAUM-AUSSENPOSTEN MIT DER LIANDRA]")
+    print("Du infiltrierst das unruhige Piratenversteck im Sektor 14.")
+    print("Sha'In ist in einer hochfrequenten Energiezelle gefangen. Zwei Wachen patrouillieren.")
+    
+    if welt.analyse_fokus >= 75:
+        print("3 = [INTELLEKT] Die Leitungen kalkulieren und die Zelle lautlos sprengen")
+    print("1 = Eine mentale Psi-Ablenkung riskieren")
+    print("2 = Ein offenes, hartes Feuergefecht starten")
+    
+    wahl = input("Deine Entscheidung: ").strip()
+    if wahl == "3" and welt.analyse_fokus >= 75:
+        print("\n[ANALYSE-SIEG] Ein Kurzschluss öffnet die Zelle lautlos. Kein Alarm.")
+        welt.konstrukteurin_gerettet = True
+    else:
+        print("\n[KAMPF] Du feuerst dein PPG! Die Wachen fallen, aber du verlierst 15.000 Credits.")
+        welt.credits -= 15000
+        welt.konstrukteurin_gerettet = True
+        
+    print("\nSha'In springt heraus, wischt sich den Schmutz von der Wange und strahlt:")
+    print(" 'Hallo! Oh, Valen sei Dank, meine süße LIBURNIA hat mich schon vermisst!'")
+    print(" 'Komm schnell, wir müssen das Schiff hochfahren!'")
+    
+    welt.schiff_erhalten = True
+    welt.crew.append("Sha'In")
+    # Der Hauptloop führt den Spieler nun zurück in das Navigationssystem
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 4 - BLOCK 7 VON 10 (Navigation & Epsilon 3)
+# ==============================================================================
+
+def navigations_konsole(welt):
+    if not welt.schiff_erhalten: return False
+    
+    # --- DYNAMISCHER ERST-EINSTIEG MIT IVANOVAS VERZERRTEM FUNK ---
+    if not welt.besuchte_orte["B5"] and not any(welt.besuchte_orte.values()):
+        print("\n------------------------------------------------------")
+        print(f"AN BORD DER '{welt.schiff_name.upper()}' - TRIEBWERKE ONLINE")
+        print("------------------------------------------------------")
+        print("Die biokristallinen Minbari-Kerne summen harmonisch auf. Sha'In löscht")
+        print("die Fehlerprotokolle. Plötzlich knackt das primäre Comm-Relais der Brücke.")
+        print("Garibaldis privates Netzwerk hat eine instabile Leitung aus Genf geschmiedet.")
+        print("Das Signal schwankt extrem, Ivanovas voice bricht im statischen Rauschen ab:")
+        print("\nIvanova (schwer verzerrt): 'Special-Agent... hören Sie mich? Bester hat die...")
+        print(" ...Datenströme blockiert... Dr. Franklin sitzt bei mir im... Bunker...'")
+        print("\n[VERBINDUNG ABGEBROCHEN - STATISCHES RAUSCHEN]")
+        print("Sha'In drückt verzweifelt auf die Tasten: 'Der Corps-Störsender ist zu stark, Captain!")
+        print(" Wenn wir das Signal nicht über die Relais der Großen Maschine auf Epsilon 3")
+        print(" verstärken, tappen wir beim Einflug auf die Erde völlig im Dunkeln!'")
+        print("\nDu: 'Wir fliegen nicht blind nach Epsilon 3. Die automatischen Drohnen der")
+        print("     Maschine würden uns atomisieren. Ich schicke eine verschlüsselte Nachricht")
+        print("     an Zack Allan im B5-Sicherheitszentrum. Er muss Draal auf dem Planeten")
+        print("     vorwarnen, damit wir sicher landen können.'")
+        welt.beziehungen["Ivanova_Erdflotte"] += 10
+
+    # --- DYNAMISCHER STATUSBERICHT BEI RÜCKKEHR AUFS SCHIFF (ZWISCHEN MISSIONEN) ---
+    print("\n======================================================")
+    print(f"=== STATUSBERICHT: AN BORD DER {welt.schiff_name.upper()} ===")
+    print("======================================================")
+    print("Sha'In klopft mit einem schweren Schraubenschlüssel gegen ein Schott:")
+    if welt.grosse_maschine_energie == 100:
+        print(" -> 'Die Epsilon-Standleitung läuft super! Draals Energie summt perfekt durch den Rumpf.'")
+    else:
+        print(" -> 'Der Funk ist tot. Wir empfangen nur kosmisches Rauschen von der Erde.'")
+    
+    if "Talia" in welt.crew or welt.labor_planet_status == "Talia_Gerettet":
+        print("[MED-STATION] Talia Winters stabilisiert sich. Das Ironheart-Geschenk pulsiert schwach.")
+    if welt.vintari_pfad == "Drakh_Marionette":
+        print("[WARNUNG] Die Narn-Sensoren melden feindliche Signaturen. Der Khri-Rat ist rachsüchtig.")
+    elif welt.allianz_einfluss["Narn"] == 100:
+        print("[MILITÄR-UPDATE] Schwere G'Quan-Kreuzer halten sich im Hyperraum-Schatten bereit.")
+
+    print("\n------------------------------------------------------")
+    print("WÄHLE DEIN NÄCHSTES ZIEL ODER REIFE DEINE STRATEGIE:")
+    print("------------------------------------------------------")
+    print("1 = Sektor Babylon 5 (Nachschub über Zack Allan)")
+    print("2 = Centauri Prime (Palast-Geheimnisse: Vir Cotto oder Londo Mollari)")
+    print("3 = Heimatwelt Narn (Die Tempel-Exkursion / G'Kars Wandel)")
+    print("4 = Epsilon 3 (Draal, Zathras & Kommunikation absichern)")
+    print("5 = Minbar-Sektor (Kriegsrat mit John Sheridan & Delenn)")
+    print("6 = Mars-Sektor (Garibaldis Logistikzentrum & Das Telepathen-Dilemma)")
+    print("7 = Syrius 4 (Der geheime Forschungs-Laborplanet des Corps)")
+    
+    if welt.control_entschluesselung == 999:
+        print("8 = DIE ERDE (STRATOSPHÄREN-STURZFLUG STARTEN!)")
+    else:
+        print("8 = [GESPERRT] Die Erde (Erfordert strategischen Kriegsrat in Option 9)")
+        
+    print("9 = [KRIEGERISCHER RAT] Große Babcom-Konferenz & Strategie-Planung")
+    print("q = System herunterfahren")
+    
+    wahl = input("Eingabe: ").lower().strip()
+    if wahl in ["1", "2", "3", "4", "5", "6", "7", "8"]: zufalls_begegnung(welt)
+    
+    if wahl == "1": ort_babylon_5(welt)
+    elif wahl == "2": ort_centauri_prime(welt)
+    elif wahl == "3": welt.ort_narn(welt)
+    elif wahl == "4": ort_epsilon_3(welt)
+    elif wahl == "5": ort_minbar(welt)
+    elif wahl == "6": ort_mars_erweitert(welt)
+    elif wahl == "7": ort_labor_planet_syrius(welt)
+    elif wahl == "8" and welt.control_entschluesselung == 999: ort_erde_infiltration(welt)
+    elif wahl == "9": interstellarer_kriegsrat_babcom(welt)
+    elif wahl == "q": return False
+    return True
+
+
+def ort_epsilon_3(welt):
+    welt.besuchte_orte["Epsilon_3"] = True
+    print("\n[EPSILON 3 - IM PLANETENKERN DER GROSSEN MASCHINE]")
+    print("Dank Zacks codierter Vorwarnung aus der B5-Sicherheitszentrale bleiben")
+    print("die gewaltigen, automatischen Verteidigungsdrohnen stumm. Die LIBURNIA")
+    print("landet butterweich im zyklopischen, von Energielinien durchzuckten Kern.")
+    
+    print("\nPlötzlich pulsiert das gesamte Höhlensystem in einem weichen, tiefen")
+    print("weiß-blauen Licht. Inmitten der titanischen Ströme manifestiert sich")
+    print("ein riesiges, holografisches Gesicht. DRAAL blickt dich an – weise,")
+    print("alterslos und untrennbar mit dem Herzen des Planeten verschmolzen.")
+    
+    print("\nZathras rennt wütend im Kreis, schüttelt den Kopf und fuchtelt mit Werkzeug:")
+    print("Zathras: 'Nein, nein, nein! Zathras hat schlechtes Leben! Niemand hört auf Zathras!")
+    print(" Maschine summt falsch, weil dieses... dieses Hybrid-Schiff komische Wellen macht!'")
+    print("Zathras: 'Aber Zathras kann fixen. Zathras versteht alte Tech. Zathras ist gut im Fixen, ja...'")
+    
+    print("\nDraal: 'Ich sehe dich, Partner von Marcus. Du suchst eine Brücke durch die Dunkelheit.'")
+    print("Draal: 'Die Wiege deines Volkes droht zu versteinern. Wenn das Netz des Corps die Erde")
+    print(" umgarnt, erstarrt eine tragende Achse der Zeit. Ein Käfig wird geschmiedet, der nicht nur'")
+    print(" 'die Freiheit sperrt, sondern den gesamten Fluss der Jahrhunderte korrumpiert. Seid bereit.'")
+    
+    print("\n1 = [PHILOSOPHISCHER TRIUMPH] Draals Prüfung annehmen, Zathras werkeln lassen & Brücke zünden (P5)")
+    print("2 = Auf das Epsilon-Upgrade verzichten und ein reines Zeit-Schild um B5 legen")
+    
+    wahl = input("Wahl: ").strip()
+    if wahl == "1" and welt.psi_level >= 5:
+        welt.grosse_maschine_energie = 100
+        print("\n[DRAALS MAIESTÄTISCHER ERFOLG - DIE ERDEN-BRÜCKE STEHT!]")
+        print("Zathras betätigt schimpfend den Hauptschalter: 'Zathras tut es... für den Einen!'")
+        print("Die Maschine schneidet durch Besters Störwall. Ivanovas Funk bricht glasklar durch!")
+        print("\nIvanova: 'Special-Agent! Das ist die Große Maschine! Ich spüre die Frequenz.")
+        print(" Ich war selbst einmal dort angeschlossen für B4. Die Leitung steht! Rettet uns!'")
+    else:
+        welt.grosse_maschine_energie -= 40; welt.lyta_korruption -= 20
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 4 - BLOCK 8 VON 10 (Centauri Prime & Narn)
+# ==============================================================================
+
+def ort_centauri_prime(welt):
+    welt.besuchte_orte["Centauri_Prime"] = True
+    hyperraum_sprung_sequenz()
+    print("\n[CENTAURI PRIME - DER KÖNIGLICHE PALAST]")
+    print("Die brennenden Ruinen rauchen. Zwei Machtstrukturen agieren im Verborgenen.")
+    print("1 = Vir Cotto im Palastgarten treffen (Regelmäßiger Funkkontakt zu Ivanova)")
+    print("2 = Direkt an Imperator Londo Mollari herantreten (Tragischer Keeper-Verrat)")
+    
+    wahl = input("Deine Wahl: ").strip()
+    if wahl == "1":
+        welt.vir_entschlossenheit += 50
+        welt.vir_evolution = "Meister_Stratege"
+        welt.vintari_pfad = "Allianz_Schüler"
+        print("\n[VIR-PFAD - DIE REBELLESCHE FREUNDSCHAFT]")
+        print("Vir nickt: 'Ich weiß alles, Agent. Susan Ivanova und ich stehen über verdeckte Relais'")
+        print(" 'in regelmäßigem Funkkontakt. Ich kenne das Leid im Bunker. Mein Netzwerk'")
+        print(" 'existiert nur, weil Imperator Londo in Nächten schwerer Trunkenheit wegsieht.'")
+        print(" 'Er lässt mich gewähren, wenn der Wächter schläft. Ich helfe euch im Geheimen!'")
+    elif wahl == "2":
+        welt.vintari_pfad = "Drakh_Marionette"
+        welt.centauri_zerstoerung += 30
+        welt.bedrohung_bester += 25
+        print("\n[LONDO-KONFRONTATION - DER EISKALTE MONARCH]")
+        print("Londo Mollari sitzt starr auf dem Thron und blickt dich mit rücksichtsloser Härte an.")
+        print("Londo: 'Die Interstellare Allianz? Ihr seid nichts als ein stumpfes Werkzeug")
+        print(" für John Sheridans Hochmut! Centauri Prime hat Verträge mit der Erdregierung")
+        print(" und dem Psi-Corps geschlossen. Eure Rebellion interessiert mich nicht.'")
+        print("\n-> Du verlässt wütend den Palast. Londo erscheint dir wie ein herzloses Monster.")
+        print(" Unbekannt für dich: Der unsichtbare Drakh-Keeper zwingt ihn zu dieser grausen Kälte.")
+
+
+def ort_narn(welt):
+    welt.besuchte_orte["Narn"] = True
+    hyperraum_sprung_sequenz()
+    print("\n[NARN - DIE HEIMATWELT DES KHRI-RATS]")
+    
+    # --- DER TOTALE ALLIANZ-BRUCH DURCH DEN LONDO-VERRAT ---
+    if welt.vintari_pfad == "Drakh_Marionette":
+        print("\n[ABSOLUTER ALLIANZ-ABBRUCH - DER LONDO-VERRAT RÄCHT SICH]")
+        print("T'Lon ballt die Faust, seine Augen blitzen vor unbändigem Hass:")
+        print(" 'Unsere Spione melden es: Du hast im Palast mit dem Schlächter Londo Mollari")
+        print(" verhandelt! Du packst dich mit den Mördern unseres Volkes! Ein Feind G'Kars!'")
+        print("-> Die Narn verweigern jede Hilfe. Sie sind im Finale NICHT beteiligt.")
+        welt.allianz_einfluss["Narn"] = -100
+        return
+
+    print("\nEin blinder, weiser Ältester führt dich in einen mühsam aufgebauten")
+    print("Bergtempel. Überall brennen Kerzen vor G'Kars Schriften. Ehemalige Krieger beten.")
+    
+    if welt.vir_evolution == "Meister_Stratege":
+        print("[SPIRITUELLER SYNERGIE-BONUS] Der Älteste spürt deine Allianz mit Vir Cotto.")
+        print(" 'Du bringst uns die ausgestreckte Hand des gerechten Centauri. G'Kars Vision reift.'")
+
+    print("\nWie antwortest du im Tempel?")
+    if welt.lore_wissen >= 80:
+        print("3 = [SPIRITUELLER PFAD] G'Kars Wandel nutzen: Eine Rede über die Zyklen")
+        print("     der Tyrannei halten und die universelle Hoffnung entfesseln. (G'Kars Erbe)")
+    print("1 = G'Kars Werk ignorieren und brutale Untergrund-Warlords anheuern (Kostet 30.000 Credits)")
+    print("2 = Nur um logistische und medizinische Güter bitten")
+    
+    wahl = input("Wahl: ").strip()
+    if wahl == "3" and welt.lore_wissen >= 80:
+        welt.allianz_einfluss["Narn"] = 100; welt.allianz_einfluss["Minbari"] += 25; welt.bedrohung_bester -= 25
+        print("\n[SPIRITUELLER TRIUMPH] Der Rat ist ergriffen. Die G'Quan-Kreuzer fliegen für das Licht!")
+    elif wahl == "1" and welt.credits >= 30000:
+        welt.credits -= 30000; welt.allianz_einfluss["Narn"] = 50; welt.allianz_einfluss["Minbari"] -= 30
+    else: welt.allianz_einfluss["Narn"] = 20; welt.drakh_seuche -= 15
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 5 - BLOCK 9 VON 10 (Rat & Erdkapitel)
+# ==============================================================================
+
+def interstellarer_kriegsrat_babcom(welt):
+    print("\n======================================================")
+    print("=== INTERSTELLARER KRIEGERISCHER RAT: BABCOM-KONFERENZ ===")
+    print("======================================================")
+    print("Die Holoprojektoren summen auf. Die lebensechten Lichtgestalten derer,")
+    print("die NICHT auf der Erde festsitzen, manifestieren sich im Raum.")
+    
+    print("\n[HOLO-FEED - BABYLON 5]")
+    print("Captain Lochley verschränkt die Arme: 'Special-Agent. Bester zieht die Schlinge")
+    print(" enger. Wir brauchen einen koordinierten Invasionsplan für die Erde.'")
+    
+    print("\n[HOLO-FEED - EXCALIBUR]")
+    print("Captain Gideon nickt grimmig: 'Die Excalibur steht bereit. Sagen Sie uns,")
+    print(" wie wir die Flotten-Vektoren aufteilen sollen.'")
+    
+    if welt.vir_evolution == "Meister_Stratege":
+        print("\n[HOLO-FEED - CENTAURI PRIME]")
+        print("Vir Cotto flackert auf: 'Ich halte die getarnten Versorgungsschiffe bereit.'")
+        
+    if welt.allianz_einfluss["Narn"] == 100:
+        print("\n[HOLO-FEED - NARN]")
+        print("T'Lon ballt die Faust: 'Die schweren Kreuzer brennen darauf, das Corps zu zerschmettern!'")
+    elif welt.allianz_einfluss["Narn"] == -100:
+        print("\n[WARNUNG] Der Narn-Kanal bleibt tot. Wegen deines Londo-Paktes fehlt ihre Flotte völlig.")
+
+    print("\nWELCHE INVASIONS-STRATEGIE WÄHLST DU FÜR DAS ERD-KAPITEL?")
+    print("1 = [DIE PHALANX-STRATEGIE] Voller, offener Flottenaufmarsch der Ranger als physischer Schild.")
+    print("2 = [DIE CHAMELEON-STRATEGIE] Maximaler verdeckter Einflug der Liburnia unter Ausnutzung aller Tarnfelder.")
+    print("3 = [DIE BRUTALE ZERSTÖRUNG] Söldner und schwere Kreuzer zünden einen frontalen Keil-Angriff.")
+    
+    strategie = input("Deine Strategie (1/2/3): ").strip()
+    print("\n--- DER SCHLAGABTAUSCH DER CHARAKTERE DAZU ---")
+    
+    if strategie == "1":
+        welt.bedrohung_bester -= 15
+        print("\nGideon: 'Ein offener Schutzwall? Riskant, aber die White Stars können das ab.'")
+        print("Lochley schüttelt den Kopf: 'Das wird uns unzählige Ranger-Piloten kosten, Matthew!'")
+        if welt.allianz_einfluss["Narn"] == 100:
+            print("T'Lon dröhnt: 'Die Ranger sterben für den Einen. Ein ehrenhafter Schild!'")
+            
+    elif strategie == "2":
+        welt.bedrohung_bester += 10
+        print("\nLochley nickt: 'Vernünftig. Ein verdeckter Nadelstich provoziert keinen galaktischen Krieg.'")
+        if welt.allianz_einfluss["Narn"] == 100:
+            print("T'Lon schnaubt verächtlich: 'Schmuggler-Taktik! G'Kar hätte sich offen dem Feind gestellt.'")
+        print("Gideon zuckt die Achseln: 'Wenn Ihr Tarnfeld versagt, Agent, seid ihr in der Atmosphäre Atommüll.'")
+        
+    elif strategie == "3":
+        if welt.allianz_einfluss["Narn"] == -100:
+            print("\n[FEHLSCHLAG] Du hast keine schweren Narn-Kreuzer, um diese Strategie zu fliegen!")
+            print("Gideon flucht: 'Ohne die Kreuzer ist ein Frontal-Keil reiner Selbstmord!'")
+            return
+        welt.bedrohung_bester -= 30
+        print("\nT'Lon brüllt begeistert: 'Ja! Pure, unerbittliche Gewalt! Wir jagen sie aus dem Orbit!'")
+        print("Lochley starrt dich entsetzt an: 'Das ist kein Rettungsflug, das ist ein orbitales Gemetzel!'")
+        print("Gideon grinst finster: 'Ein brutaler Keil... nicht elegant, aber hochgradig effektiv.'")
+
+    # Galen bricht das Treffen kryptisch ab
+    print("\nPlötzlich sinkt die Raumtemperatur drastisch. Die Hologramme flackern heftig.")
+    print("Aus den Schatten des Konferenzraums tritt lautlos GALEN hervor.")
+    print("Galen: 'Ihr streitet um Vektoren und Taktiken wie Kinder um Spielzeug. Doch denkt")
+    print(" an die Analogie des Feuervogels: Wenn man das Nest niederbrennt, um die Parasiten")
+    print(" zu töten, muss man bereit sein, in der kalten Asche zu schlafen. Der Stratosphären-Sturzflug")
+    print(" wird euer aller Schicksal besiegeln. Das Erdkapitel ist eröffnet.'")
+    print("Galen verschwindet im Nichts. Die Monitore stabilisieren sich.")
+    
+    welt.control_entschluesselung = 999 
+    welt.lore_wissen += 15
+
+
+def ort_babylon_5(welt): welt.besuchte_orte["B5"] = True; print("\n[B5] Vorräte von Zack Allan gesichert.")
+def ort_minbar(welt): welt.besuchte_orte["Minbar"] = True; print("\n[MINBAR] Tuzanor-Kriegsrat beendet.")
+def ort_mars_erweitert(welt): welt.besuchte_orte["Mars"] = True; print("\n[MARS] Taktische Daten extrahiert.")
+def ort_labor_planet_syrius(welt): welt.besuchte_orte["Syrius"] = True; print("\n[SYRIUS 4] Serum-Datenbank gehackt.")
+
+
+def ort_erde_infiltration(welt):
+    print("\n======================================================")
+    print("=== AKT V: DAS ERDKAPITEL - DER INVASIONS-EINFLUG ===")
+    print("======================================================")
+    print("Die LIBURNIA fällt aus dem Hyperraum direkt in die thermosphärischen Schichten der Erde.")
+    print("General Ivanova und Dr. Franklin melden sich live aus dem schmutzigen Betonbunker Genfs!")
+    print("Franklin fassungslos: 'Sie sind also wirklich hier... Marcus' Partner.'")
+    print("Ivanova ringt um fassung: 'Stephens Netzwerk hat die Brücke gehalten.")
+    print(" Jetzt stehen wir hier zusammen im Dreck. Bringen wir Bester zu Fall. Für Marcus!'")
+    welt.beziehungen["Ivanova_Erdflotte"] += 30
+    
+    print("\n[DER STRATOSPHÄREN-STURZ] Tessa Holloran zündet die Mars-Ablenkung!")
+    print("Ihr springt im freien Fall ab. Gravitations-Gleiter aktiv!")
+    print("1 = Den Sturzwinkel exakt berechnen / 2 = Glasdach mit Brutalo-PPG durchschlagen")
+    wahl = input("Wahl: ").strip()
+    if wahl == "1" and welt.analyse_fokus >= 80: welt.bedrohung_bester -= 20
+    else: welt.bedrohung_bester += 15
+    print("\nIhr steht im innersten Kern des Psi-Corps. Direkt über Besters Kontrollraum!")
+    showdown_triologie(welt)
+# ==============================================================================
+# PROJEKT: THE SHADOWS WITHIN - A B5 LEGACY
+# GESAMTREAKTOR-RECONSTRUCTION: PAAR 5 - BLOCK 10 VON 10 (Finale & Main)
+# ==============================================================================
+
+def showdown_triologie(welt):
+    print("\n======================================================")
+    print("=== FINALE: DER TAG DER ABRECHNUNG ===================")
+    print("======================================================")
+    print("\n[WELTRAUMSZENE - DIE PHALANX IM ERD-ORBIT]")
+    
+    # --- DÜSTERE LOGISCHE KONSEQUENZ DURCH DEN LONDO-WEG ---
+    if welt.allianz_einfluss["Narn"] == -100:
+        print("\n[TAKTIK-DESASTER: DAS NARN-VAKUUM]")
+        print("Die Flanke bleibt leer! Weil du mit Londo paktiert hast, verweigern die Narn")
+        print(" jeden Beistand. Die White Stars der Ranger müssen die doppelte Last tragen!")
+        print(" Dutzende Schiffe bersten im Dauerfeuer. Die zivilen Opferzahlen schießen")
+        print(" rücksichtslos nach oben! Das Blut der Allianz klebt an deinen Händen.")
+        welt.bedrohung_bester += 35
+    elif welt.allianz_einfluss["Narn"] == 100:
+        print("\n[FLOTTEN-SYNERGIE: DIE G'QUAN-KREUZER FLANKIEREN]")
+        print("Ein schweres Narn-Geschwader bricht mit grollenden Plasmakanonen aus dem Tor!")
+        print("Geeint durch G'Kars Tempel-Vermächtnis fangen sie die Omega-Salven ab!")
+        welt.bedrohung_bester -= 30
+        
+    if welt.vir_evolution == "Meister_Stratege":
+        print("-> Vir Cottos getarnte Transporter schmuggeln Tausende Zivilisten unbemerkt heraus!")
+        welt.bedrohung_bester -= 25
+
+    print("\n[STURM AUF DAS HQ - PHYSISCHES DUELL]")
+    print("Ihr brecht durch das Glasdach! General Ivanova und Dr. Franklin stürmen vor.")
+    print("Alfred Bester zieht sein PPG und stürzt sich direkt im Nahkampf auf DICH!")
+    
+    wahl_endkampf = input("Deine Aktion (1 = Trugbild / 2 = Ringen): ").strip()
+    if wahl_endkampf == "1" and welt.analyse_fokus >= 80:
+        print("\n[ERFOLG] Du überlistest Bester mit dem Chamäleon-Netz. Er bricht zusammen!"); welt.bedrohung_bester -= 40
+    else:
+        print("\n[HARTER NAHKAMPF] Ihr rollt über den brennenden Boden. Du kannst ihn fixieren!"); welt.bedrohung_bester -= 15
+
+    print("\n[DAS FINALE MENTALE DUELL]")
+    print("Bester zwingt die ferngesteuerte Talia Winters, auf Ivanova zu zielen.")
+    if welt.beziehungen["Ivanova_Erdflotte"] >= 60 and welt.bedrohung_bester <= 20:
+        print("\n[TRIUMPH] Talias 'Ironheart'-Sperre bricht auf! Bester flieht in den Untergrund.")
+        welt.talia_trauma_geloest = True
+    else:
+        print("\nTalias Blockade war zu zäh. Sie drückt ab. Ein bitterer, tragischer Verrat.")
+
+    print("\n------------------------------------------------------")
+    print("Das Terminal des Regierungs-Netzwerks liegt offen vor dir.")
+    print("1 = Das Netzwerk komplett löschen und die Menschheit befreien (Weg des Lichts)")
+    print("2 = Die Administrator-Rechte auf die LIBURNIA überschreiben (Neuer Tyrann)")
+    
+    wahl_macht = input("Deine Entscheidung: ").strip()
+    
+    print("\n--- EPILOG: DAS ERGEBNIS DEINES SCHACHSPIELS ---")
+    if wahl_macht == "2":
+        print("\n=== ENDE 5: DER AUFSTIEG DES NEUEN TYRANNEN ===")
+        print("Du kaperst die Schläfer. Du bist der neue Herrscher im Schatten. Bereit für Teil 2!")
+    else:
+        print("\n=== ENDE 1: DER PFAD DES LICHTS ===")
+        if welt.talia_trauma_geloest: print("Susan Ivanova findet mit Talia ihren tiefen Frieden.")
+        else: print("Ivanova verfällt in tiefe, bittere Isolation in ihrem Mars-Büro.")
+
+    if welt.lyta_korruption >= 40:
+        print("\n=== ENDE 2: LYTAS APOKALYPSE ===")
+        if welt.grosse_maschine_energie >= 80: print("[DAS EPSILON-SCHILD] Zathras wirft den Schalter um und rettet B5!")
+        else: print("[TRAGÖDIE] Babylon 5 bricht unter der Wucht auseinander...")
+        print("Die Welle löscht das Telepathen-Gen. Die menschliche Telepathie erlischt vollständig.")
+
+    if welt.labor_planet_status == "Finaler_Showdown":
+        print("\n=== ENDE 3: DER WAHRE ENDKAMPF ZU SYRIUS 4 ===")
+        if welt.analyse_fokus >= 85: print("[INTELLEKT-TRIUMPH] Du drängst Lyta zurück. Talia ist frei!"); print("[EASTER EGG] Sha'In: 'Der Reaktor summt im C64-Soundtrack-Rhythmus!'")
+        else: print("[FEHLSCHLAG] Talia wird durch Trümmer erschlagen.")
+
+    if welt.allianz_einfluss["Narn"] == -100 and not welt.talia_trauma_geloest:
+        print("\n=== ENDE 4: BESTERS TRIUMPH ===")
+        print("Die Erde verfällt der Tyrannei. Jahre später tilgt Prinz Vintari die Welt im atomaren Feuer.")
+
+    print("\nProjekt gesichert. Danke fürs Mitspielen, Commander!")
+    sys.exit()
+
+
+def main():
+    """Der primäre Einstiegspunkt des interaktiven Python-Skripts"""
+    welt = BabylonZustand()
+    if not welt.daten_integritaet_pruefen():
+        sys.exit()
+    charakter_erstellung(welt)
+    spiel_aktiv = True
+    while spiel_aktiv:
+        spiel_aktiv = navigations_konsole(welt)
+
+if __name__ == "__main__":
+    main()
+

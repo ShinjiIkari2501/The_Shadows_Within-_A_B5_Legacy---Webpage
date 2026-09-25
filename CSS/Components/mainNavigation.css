@@ -1,0 +1,70 @@
+/* --- FORMULAR ELEMENTE (ORIGINAL MATCH) --- */
+mainNav fieldset label {
+    display: block;
+    margin-top: 10px;    /* Etwas mehr Luft nach oben für die Labels */
+    margin-bottom: 4px;  
+    font-family: 'B5Station', Arial, sans-serif; /* Zwingt die Labels in den B5-Look */
+    font-size: 0.9em;
+    text-align: left;
+    font-weight: bold;
+}
+
+mainNav fieldset input {
+    width: 100%; 
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(96, 172, 243, 0.4); /* Etwas kräftigere BabCom-Lichtkante */
+    border-radius: 4px;
+    color: hsl(0, 9%, 98%);
+    padding: 6px 8px;    /* Perfekter Innenabstand wie im Original */
+    font-size: 0.95em;
+    box-sizing: border-box;
+}
+
+/* System-Fokus: Feld leuchtet bei Klick in Gold-Orange auf */
+mainNav fieldset input:focus {
+    outline: none;                             
+    border-color: #ff9900;                     
+    box-shadow: 0 0 8px rgba(255, 153, 0, 0.5); 
+}
+
+mainNav fieldset form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* --- INTERAKTIVER LOGIN-BUTTON (EXAKT WIE AUF DEINEM BILD) --- */
+mainNav fieldset button {
+    display: block;      
+    padding: 6px 22px;   
+    cursor: pointer; 
+    
+    /* Perfekte Zentrierung und Abstand nach oben */
+    margin: 18px auto 5px auto; 
+    
+    /* Das auffällige Original-Design: Weißer/Sehr heller Button im Ruhezustand */
+    background-color: #e0e0e0; 
+    border: 1px solid #ffffff; 
+    border-radius: 4px;          
+    color: #0d143b;             /* Dunkelblaue Schrift auf hellem Grund */
+    font-family: 'B5Station', Arial, sans-serif;
+    font-weight: bold;
+    font-size: 0.95em;
+    transition: all 0.3s ease;   
+    letter-spacing: 0.5px;         
+}
+
+/* Button-Hover: Wechselt auf das imperiale B5-Gold */
+mainNav fieldset button:hover {
+    background-color: rgba(26, 47, 122, 0.6); /* Wird dunkelblau-transparent */
+    color: #ff9900;              /* Schrift wechselt auf B5-Gold */
+    border-color: #ff9900;       /* Rahmen leuchtet orange auf */
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.7); /* Intensiver Leuchteffekt */
+}
+
+mainNav fieldset legend {
+    font-family: 'B5Station', Arial, sans-serif;       
+    font-weight: bold;              
+    text-decoration: underline;     
+    letter-spacing: 1px;            
+}

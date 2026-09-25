@@ -1,0 +1,275 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - CORE-LAYOUT & INHALTS-MODULE
+   System-Status: Sektor 3 aktiv. Gehäuse und Masken kalibriert.
+   ========================================================================== */
+
+/* ==========================================================================
+   OBERER MONITOR-RAHMEN (Header) & GLOBAL-BODY
+   ========================================================================== */
+/* ==========================================================================
+   OBERER MONITOR-RAHMEN (Header) - AUTOMATISCH MITFLIESSEND
+   ========================================================================== */
+/* ==========================================================================
+   OBERER MONITOR-RAHMEN (Header) - ZOOM-RESISTENT
+   ========================================================================== */
+header {
+    display: block;
+    font-family: 'B5Station', Arial, sans-serif !important;
+    color: hsl(0, 9%, 98%);
+    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+    
+    /* UNZERSTÖRBAR BEI ZOOM: Der Kasten zieht sich NUR so weit wie das Bild */
+    display: table !important; 
+    width: auto !important;
+    margin: 10px auto 15px auto !important; /* Hält das Konstrukt IMMER perfekt zentriert */
+    
+    /* Absolut gleichmäßige Abstände an allen vier Kanten */
+    padding: 10px !important; 
+    
+    /* Originaler BabCom-Glaslook */
+    background-color: rgba(13, 20, 59, 0.75); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(96, 172, 243, 0.2);
+    border-radius: 8px; 
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* --- BANNER-GRAFIK IM HEADER --- */
+header img {
+    display: block; 
+    box-shadow: 0px 0px 8px hsl(0, 1%, 70%); 
+    border-radius: 6px; 
+    
+    /* Feste Abmessungen deines Original-Banners */
+    width: 1450px; 
+    max-width: 100%; /* Verhindert das Ausbrechen bei hohem Zoom */
+    height: 300px;
+    max-height: 300px;
+    margin: 0; 
+}
+
+body {
+    display: grid; 
+    grid-template-rows: auto auto 1fr auto; 
+    background-color: hsl(245, 93%, 5%); 
+    color: hsl(0, 9%, 98%); 
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); 
+    margin: 0;
+    min-height: 100vh; 
+    overflow: auto; 
+}
+
+h1 .LogoB {
+    font-family: 'SerpentineB5', Arial, sans-serif;
+    display: inline-block; 
+}
+
+h1 .Logo5 {
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold;
+    display: inline-block; 
+    transform: translateY(1px); 
+}
+
+/* ==========================================================================
+   INHALTS-FENSTER (Main) & SCROLLBAR - KALIBRIERT
+   ========================================================================== */
+main {
+    /* REPARATUR: flex: 1; gelöscht, da es das Grid-Layout blockiert hat! */
+    margin-top: 5px; 
+    margin-bottom: 0px; /* Bündig zum Footer */
+    padding: 20px; 
+    padding-right: 15px; 
+    scroll-behavior: smooth; 
+    overflow-y: auto; 
+    box-sizing: border-box;
+    height: 100%; /* Füllt die zugewiesene Grid-Zeile perfekt aus */
+}
+
+main::-webkit-scrollbar { width: 8px; }
+main::-webkit-scrollbar-track { background: rgba(5, 8, 26, 0.6); border-radius: 4px; }
+main::-webkit-scrollbar-thumb { background: rgba(96, 172, 243, 0.4); border-radius: 4px; }
+main::-webkit-scrollbar-thumb:hover { background: #ff9900; box-shadow: 0 0 8px rgba(255, 153, 0, 0.8); }
+
+/* ==========================================================================
+   UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT AM RAND FIXIERT
+   ========================================================================== */
+footer {
+    display: flex;                  
+    justify-content: space-between; 
+    align-items: center;            
+    font-family: 'B5Station', Arial, sans-serif !important;       
+    letter-spacing: 1px;            
+    color: hsl(0, 9%, 98%);         
+    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8); 
+    padding: 10px 20px;              
+    height: 45px;                   /* Feste, definierte Höhe */
+    box-sizing: border-box;
+
+    background-color: rgba(13, 20, 59, 0.75); 
+    backdrop-filter: blur(8px);               
+    -webkit-backdrop-filter: blur(8px);       
+    border-top: 1px solid rgba(96, 172, 243, 0.2); 
+    border-radius: 8px 8px 0 0; 
+
+    /* DIE BRECHSTANGE: Unabhängig vom Grid ganz unten fixieren */
+    position: fixed;           
+    bottom: 0;                  /* Direkt an der Unterkante anleimen */
+    left: 15px;                 /* Symmetrisch links ausgerichtet */
+    right: 15px;                /* Symmetrisch rechts ausgerichtet */
+    width: calc(100% - 30px);   /* Zwingt den Footer auf die perfekte Breite */
+    z-index: 9999;              /* Liegt immer über allen anderen Elementen */
+    margin: 0 !important;
+}
+
+footer ul { list-style-type: none; padding: 0; margin: 5px; text-align: left; }
+footer ul li { display: inline-block; margin: 0 15px; }
+footer ul li a { text-decoration: none; color: hsl(0, 9%, 98%); }
+footer ul li a:hover { color: #ff9900; text-shadow: 0 0 5px rgba(255, 153, 0, 0.6); }
+footer p { margin-right: 15px; }
+
+/* ==========================================================================
+   INHALTS-MODULE (Charaktere, Timeline, Kontakt)
+   ========================================================================== */
+.char-container { display: flex; flex-direction: column; gap: 20px; margin-top: 15px; }
+.char-card { display: flex; flex-wrap: wrap; gap: 15px; padding: 15px; background-color: rgba(5, 8, 26, 0.35); border: 1px solid rgba(96, 172, 243, 0.2); border-radius: 8px; text-align: left; }
+.char-image-placeholder { width: 120px; height: 120px; background-color: rgba(0, 0, 0, 0.5); border: 1px dashed rgba(96, 172, 243, 0.4); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.7em; color: rgba(96, 172, 243, 0.7); padding: 10px; text-align: center; flex-shrink: 0; }
+.char-info { flex: 1; min-width: 200px; }
+.char-info h4 { color: #ff9900; font-family: 'SerpentineB5', Arial, sans-serif; text-shadow: 0 0 5px rgba(255, 153, 0, 0.4); margin-bottom: 5px; }
+.char-meta { font-size: 0.9em; color: hsl(0, 9%, 98%) !important; margin-bottom: 8px; }
+
+.timeline-stream { display: flex; flex-direction: column; gap: 20px; margin-top: 20px; border-left: 2px solid rgba(96, 172, 243, 0.2); padding-left: 20px; text-align: left; }
+.timeline-badge { font-family: 'B5Station', Arial, sans-serif !important; color: #ff9900; font-size: 0.9em; font-weight: bold; margin-bottom: 5px; text-shadow: 0 0 5px rgba(255, 153, 0, 0.5); }
+.font-active { color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; }
+.timeline-content { background-color: rgba(5, 8, 26, 0.25); border: 1px solid rgba(96, 172, 243, 0.15); border-radius: 6px; padding: 12px 15px; }
+.box-active { background-color: rgba(26, 47, 122, 0.2) !important; border-color: rgba(96, 172, 243, 0.4) !important; }
+.timeline-content h4 { color: hsl(0, 9%, 98%); font-family: 'B5Station', Arial, sans-serif !important; margin-bottom: 6px; }
+.timeline-content p { color: rgb(96, 172, 243) !important; padding: 0 !important; text-align: left !important; font-size: 0.95em; }
+
+/* ==========================================================================
+   KONTAKTFORMULAR (Taktisches Crew-Interface) - SPEZIALMASKE
+   ========================================================================== */
+
+/* Umschließender Bereich: Sorgt dafür, dass sich die Box im Hauptfenster ausbreitet */
+#contact-section {
+    display: block;
+    width: 100%;
+    margin: 20px auto; 
+}
+
+/* Die äußere Gehäuse-Box des Formulars im B5-Glas-Look */
+.contact-fieldset {
+    font-family: 'B5Station', Arial, sans-serif !important;
+    color: hsl(0, 9%, 98%);
+    letter-spacing: 1px;
+    text-shadow: 0 0 4px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.7); 
+    padding: 20px;               
+    max-width: 650px; /* Schön breit und lesbar auf dem Monitor */            
+    text-align: center;
+    margin: 10px auto; 
+    
+    /* Transluzentes Konsolen-Blau mit leuchtender Lichtkante */
+    background-color: rgba(13, 20, 59, 0.6); 
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(96, 172, 243, 0.3); 
+    border-radius: 10px; 
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(26, 47, 122, 0.3);
+}
+
+/* Taktische Box-Überschrift */
+.contact-fieldset legend {
+    font-weight: bold;
+    text-decoration: underline;
+    letter-spacing: 1px;
+    padding: 0 10px;
+    color: #ff9900; /* B5-Gold */
+    text-shadow: 0 0 5px rgba(255, 153, 0, 0.5);
+}
+
+/* Hält die Eingabefelder stabil im Raster nebeneinander */
+.contact-fieldset .form-row {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px;                   
+    margin-bottom: 15px;          
+    padding: 0 5px;              
+}
+
+/* Spaltensteuerung: Teilt Name und E-Mail perfekt auf */
+.contact-fieldset .form-group {
+    flex: 1;
+    min-width: 240px; 
+    text-align: left;
+}
+
+/* Vollbild-Spalte für Betreff und Nachricht */
+.contact-fieldset .full-width {
+    flex: 0 0 100%;
+}
+
+/* Feld-Beschriftungen direkt über den Boxen */
+.contact-fieldset label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.95em;
+    letter-spacing: 1px;         
+}
+
+/* Die dunklen, gläsernen Eingabeboxen */
+.contact-fieldset input, 
+.contact-fieldset textarea {
+    width: 100%;                 
+    padding: 10px;           
+    box-sizing: border-box;      
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(96, 172, 243, 0.3);
+    border-radius: 5px;          
+    color: hsl(0, 9%, 98%);
+    font-family: Arial, sans-serif; /* Neutrale Schrift für die reine Texteingabe */
+    font-size: 0.95em;
+}
+
+/* Fokus-Zündung: Das aktive Feld glüht bei Klick golden auf */
+.contact-fieldset input:focus, 
+.contact-fieldset textarea:focus {
+    outline: none;
+    border-color: #ff9900;
+    box-shadow: 0 0 8px rgba(255, 153, 0, 0.5);
+}
+
+.contact-fieldset textarea {
+    resize: vertical; /* Schützt dein Grid vor seitlichem Verziehen */
+}
+
+/* --- TRANSMIT-BUTTON (Heller Original-Look) --- */
+.contact-fieldset button.formButton {
+    display: block;
+    margin: 10px auto 0 auto; 
+    padding: 8px 30px;           
+    cursor: pointer; 
+    
+    background-color: #e0e0e0; 
+    border: 1px solid #ffffff; 
+    border-radius: 5px;
+    color: #0d143b; /* Dunkle Schrift */
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold;
+    letter-spacing: 1px;         
+    transition: all 0.3s ease;    
+}
+
+/* Button-Hover: Schaltet auf Plasma-Gold um */
+.contact-fieldset button.formButton:hover {
+    background-color: rgba(26, 47, 122, 0.6); 
+    color: #ff9900;
+    border-color: #ff9900;
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.7);
+}
+
+/* Honeypot: Bleibt für Menschen unsichtbar gegen Spam */
+#zusatzinfo_kontakt {
+    display: none !important;
+}

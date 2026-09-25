@@ -1,0 +1,15 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL INTERFACE ROUTER
+   ========================================================================== */
+
+/* 1. Das responsive Desktop-Raster-Grid aktivieren */
+@import url('mediaquery.css');
+
+/* 2. Sektor 1: Fundament, Schrift-Lizenzen und Textfluss laden */
+@import url('B5_Base.css');
+
+/* 3. Sektor 2: Taktische Linkskonsole und originales Login-Design laden */
+@import url('B5_mainNavigation.css');
+
+/* 4. Sektor 3: Gehäuse-Monitore, autarke Scrollbar, Footer und Inhaltsmasken laden */
+@import url('B5_Layout_Modules.css');
