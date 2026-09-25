@@ -182,11 +182,16 @@ function renderLayout($seitenTitel, $seitenInhalt) {
 
             /* ➔ FINALE RECHTE KANTE: Positioniert das Copyright-Segment absolut bündig rechts */
             footer p {
-                margin: 0 !important;
-                margin-left: auto !important;
+                display: block !important;
+                float: right !important;
                 text-align: right !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 color: rgba(255, 255, 255, 0.6) !important;
+                width: auto !important;
+                flex-grow: 1 !important;
             }
+
         }
 
         /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
