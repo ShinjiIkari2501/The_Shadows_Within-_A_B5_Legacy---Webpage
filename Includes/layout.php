@@ -233,15 +233,27 @@ function renderLayout($seitenTitel, $seitenInhalt) {
     </main>
 
     <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer (LICHT-MATRIX REAKTIVIERT!) -->
-    <footer>
-        <bottomNav>
-            <ul>
-                <li><a href="Impressum.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important;">Impressum</a></li>
-                <li><a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important;">Contact</a></li>
-                <li><a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important;">Datasecurity</a></li>
-            </ul>
-        </bottomNav>
-        <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
+        <!-- 🛰️ UNZERSTÖRBARER KONSOLEN-FOOTER (TABELLEN-RELAIS FÜR PERFEKTE SYMMETRIE) -->
+    <footer style="display: block !important; height: 50px !important; padding: 10px 20px !important; box-sizing: border-box !important;">
+        <table style="width: 100% !important; height: 100% !important; border-collapse: collapse !important; margin: 0 !important; padding: 0 !important;">
+            <tr style="background: none !important; border: none !important;">
+                
+                <!-- LINKE SPALTE: Verankert deine Links bombenfest auf der linken Flanke -->
+                <td style="text-align: left !important; vertical-align: middle !important; padding: 0 !important; width: 30% !important; background: none !important; border: none !important;">
+                    <a href="Impressum.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; margin-right: 20px !important; display: inline-block !important;">Impressum</a>
+                    <a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; margin-right: 20px !important; display: inline-block !important;">Contact</a>
+                    <a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; display: inline-block !important;">Datasecurity</a>
+                </td>
+                
+                <!-- RECHTE SPALTE: Zwingt das Copyright rücksichtslos bündig an den rechten Rand -->
+                <td style="text-align: right !important; vertical-align: middle !important; padding: 0 !important; width: 70% !important; background: none !important; border: none !important;">
+                    <p style="margin: 0 !important; padding: 0 !important; color: rgba(255, 255, 255, 0.6) !important; display: inline-block !important; text-align: right !important;">
+                        &copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.
+                    </p>
+                </td>
+
+            </tr>
+        </table>
     </footer>
 </body>
 </html>
