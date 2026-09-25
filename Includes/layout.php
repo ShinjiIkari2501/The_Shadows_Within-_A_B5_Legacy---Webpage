@@ -16,7 +16,7 @@ function renderLayout($seitenTitel, $inhaltHtml) {
     <title><?php echo htmlspecialchars($seitenTitel); ?></title>
     
     <!-- Pfad zur zentralen CSS für Farben und Schriften -->
-    <link rel="stylesheet" href="CSS/Babcom_style.css">
+    <link rel="stylesheet" href="CSS/Babcom_Style.css">
     
         <style>
         /* UNZERSTÖRBARES DESKTOP-LAYOUT (SCROLL-ISOLIERT) */
