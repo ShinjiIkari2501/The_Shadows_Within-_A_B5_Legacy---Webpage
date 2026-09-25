@@ -1,4 +1,8 @@
-/* 🛰️ SCHRIFTEN-FUNDAMENT DIRECT INJECTION */
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - CORE BASE FOUNDATION
+   ========================================================================== */
+
+/* 🛰️ SCHRIFTEN-FUNDAMENT DIRECT INJECTION (Namen synchronisiert!) */
 @font-face {
     font-family: 'B5Station';
     src: url('../Fonts/babylon5_station_bold.ttf') format('truetype');
@@ -7,7 +11,7 @@
 }
 
 @font-face {
-    font-family: 'Serpentine';
+    font-family: 'SerpentineB5'; /* ➔ KORREKTUR: Heißt jetzt exakt wie deine Aufrufe unten! */
     src: url('../Fonts/Serpentine_Medium.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
