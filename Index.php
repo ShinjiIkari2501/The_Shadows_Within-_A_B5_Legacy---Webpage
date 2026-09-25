@@ -55,7 +55,9 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true):
     <!-- ==========================================================================
          STATUS B: ANONYMER WILLKOMMENS-BILDSCHIRM (NICHT EINGELOGGT)
          ========================================================================== -->
-    <h2>The Shadows within: A B&copy; Legacy</h2>
+        <!-- KORREKTUR: Verpackt dein Symbol in der Klasse 'Logo5', damit die Schriftart es umwandelt! -->
+    <h2>The Shadows within: A B<span class="Logo5">©</span> Legacy</h2>
+
     <h3>Main Terminal / Sector 2264 Overview</h3>
     
     <p>
