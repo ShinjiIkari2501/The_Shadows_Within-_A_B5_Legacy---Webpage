@@ -1,7 +1,8 @@
 /* ==========================================================================
    THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL INTERFACE ROUTER
    ========================================================================== */
-/* 🛰️ FONT 1: Babylon 5 Station Bold (Komplett kleingeschrieben!) */
+
+/* 🛰️ FONT-PHALANX: Absolut an vorderster Front injiziert */
 @font-face {
     font-family: 'B5Station';
     src: url('../Fonts/babylon5_station_bold.ttf') format('truetype');
@@ -9,34 +10,27 @@
     font-style: normal;
 }
 
-/* 🛰️ FONT 2: Serpentine Medium (Mit großem S und großem M!) */
 @font-face {
-    font-family: 'Serpentine';
+    font-family: 'SerpentineB5';
     src: url('../Fonts/Serpentine_Medium.otf') format('opentype');
     font-weight: normal;
     font-style: normal;
 }
 
-/* 1. Das responsive Desktop-Raster-Grid aktivieren */
+/* ==========================================================================
+   SERVER-COMPATIBLE IMPORTS (Müssen direkt nach den Fonts stehen)
+   ========================================================================== */
 @import url('mediaquery.css');
-
-/* 2. Sektor 1: Fundament, Schrift-Lizenzen und Textfluss laden */
 @import url('B5_Base.css');
-
-/* 3. Sektor 2: Taktische Linkskonsole und originales Login-Design laden */
 @import url('B5_mainNavigation.css');
-
-/* 4. Sektor 3: Gehäuse-Monitore, autarke Scrollbar, Footer und Inhaltsmasken laden */
 @import url('B5_Layout_Modules.css');
 
-/* 🛰️ AKTIVER SEKTOR: Highlighting für die Navigation */
-.main-nav a.active {
+/* ==========================================================================
+   UI-HIGHLIGHTING & FINE-TUNING
+   ========================================================================== */
+/* Highlighting für die Navigation */
+mainNav ul li a[style*="color"], .main-nav a.active {
     color: #ff9900 !important; /* Allianzen-Orange */
     text-shadow: 0 0 8px rgba(255, 153, 0, 0.7) !important; /* Sanfter Neon-Glow */
-    border-left: 3px solid #ff9900; /* Kleiner Taktik-Balken links am Menüpunkt */
-    padding-left: 8px; /* Schiebt den Text leicht nach rechts für den Balken */
-    font-weight: bold;
+    font-weight: bold !important;
 }
-
-
-
