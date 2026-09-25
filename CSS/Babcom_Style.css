@@ -22,3 +22,11 @@
     padding-left: 8px; /* Schiebt den Text leicht nach rechts für den Balken */
     font-weight: bold;
 }
+
+/* 🛰️ BEISPIEL: CSS-Schriftenpfad exakt an Linux anpassen */
+@font-face {
+    font-family: 'B5Station';
+    /* Achte penibel auf Groß-/Kleinschreibung bei Ordner, Name UND Endung! */
+    src: url('../Fonts/B5Station.ttf') format('truetype'); 
+}
+
