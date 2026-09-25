@@ -1,6 +1,21 @@
 /* ==========================================================================
    THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL INTERFACE ROUTER
    ========================================================================== */
+/* 🛰️ FONT 1: Babylon 5 Station Bold (Komplett kleingeschrieben!) */
+@font-face {
+    font-family: 'B5Station';
+    src: url('../Fonts/babylon5_station_bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+/* 🛰️ FONT 2: Serpentine Medium (Mit großem S und großem M!) */
+@font-face {
+    font-family: 'Serpentine';
+    src: url('../Fonts/Serpentine_Medium.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
 
 /* 1. Das responsive Desktop-Raster-Grid aktivieren */
 @import url('mediaquery.css');
@@ -23,10 +38,5 @@
     font-weight: bold;
 }
 
-/* 🛰️ BEISPIEL: CSS-Schriftenpfad exakt an Linux anpassen */
-@font-face {
-    font-family: 'B5Station';
-    /* Achte penibel auf Groß-/Kleinschreibung bei Ordner, Name UND Endung! */
-    src: url('../Fonts/B5Station.ttf') format('truetype'); 
-}
+
 
