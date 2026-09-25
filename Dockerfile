@@ -1,12 +1,16 @@
 FROM php:8.2-apache
 
-# 1. Kopiert alle hochgeladenen Daten in den Container
-COPY . /var/www/html/
+# 1. Kopiert alle hochgeladenen Daten in den temporären Ordner
+COPY . /tmp/project/
 
-# 2. DIREKT-ZÜNDUNG: Kopiert den Inhalt deines spezifischen Ordners direkt auf die oberste Ebene,
-# völlig ohne fehleranfällige Suchbefehle!
-RUN if [ -d "/var/www/html/The_Shadows_Within-_A_B5_Legacy" ]; then \
-        cp -r /var/www/html/The_Shadows_Within-_A_B5_Legacy/* /var/www/html/; \
+# 2. INTELLIGENTE PLATZHALTER-BRÜCKE: Schiebt den Inhalt des Unterordners
+# direkt in das aktive Hauptverzeichnis, völlig egal wie der Ordner heißt!
+RUN if [ -d /tmp/project/The_Shadows_Within* ]; then \
+        cp -r /tmp/project/The_Shadows_Within*/* /var/www/html/; \
+    elif [ -d /tmp/project/*/index.php ]; then \
+        cp -r /tmp/project/*/* /var/www/html/; \
+    else \
+        cp -r /tmp/project/* /var/www/html/; \
     fi
 
 # 3. Erlaubt dem Server den Zugriff auf die frisch sortierten Daten
