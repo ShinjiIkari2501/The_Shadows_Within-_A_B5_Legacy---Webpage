@@ -29,7 +29,7 @@ $current_page = strtolower(basename($_SERVER['SCRIPT_NAME']));
 
         <?php else: ?>
             <!-- STATUS 2: ANONYMER ZUGRIFF / FORMULAR ANZEIGEN -->
-            <form action="Login.php" method="post">
+            <form action="Index.php" method="post">
                 <legend>Login:</legend>
                 
                 <label for="username">Username:</label>
