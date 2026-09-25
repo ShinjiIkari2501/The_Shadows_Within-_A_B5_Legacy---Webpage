@@ -26,7 +26,7 @@
 
         <?php else: ?>
             <!-- STATUS 2: ANONYMER ZUGRIFF / FORMULAR ANZEIGEN -->
-            <form action="index.php" method="post">
+            <form action="Index.php" method="post">
                 <legend>Login:</legend>
                 
                 <label for="username">Username:</label>
