@@ -19,6 +19,7 @@ function renderLayout($seitenTitel, $inhaltHtml) {
     <link rel="stylesheet" href="CSS/Babcom_Style.css">
 
         <!-- 🛰️ DYNAMISCHE SCHRIFTEN-INJEKTION (Direkt im Head verankert!) -->
+        <!-- 🛰️ SYSTEM-WIDE FONTS & LOGO-SYMBOL INJECTION -->
     <style>
         @font-face {
             font-family: 'B5Station';
@@ -33,7 +34,21 @@ function renderLayout($seitenTitel, $inhaltHtml) {
             font-weight: normal;
             font-style: normal;
         }
+
+        /* NAVIGATION: Schaltet das linke Menü in JEDEM Zustand auf die breite B5Station um */
+        mainNav ul li a, mainNav a, .main-nav a, mainNav ul li a span {
+            font-family: 'B5Station', Arial, sans-serif !important;
+        }
+
+        /* SYMBOL-BRÜCKE: Zwingt deine Logo-Klassen auf die B5Station, 
+           damit sich das '©' und '%' in die echten Sci-Fi-Symbole verwandeln! */
+        .Logo5, .LogoB, h1 .Logo5, h1 .LogoB, h2 span.Logo5, h2 span.LogoB {
+            font-family: 'B5Station', Arial, sans-serif !important;
+            font-weight: bold !important;
+            display: inline-block !important;
+        }
     </style>
+
 
     
         <style>
