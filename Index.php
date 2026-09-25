@@ -1,6 +1,6 @@
 <?php 
 // 1. Bindet die Login-Verarbeitung direkt auf der Startseite ein
-require_once 'login.php';
+require_once 'Login.php';
 
 // 2. Die Layout-Zentrale laden (Sie startet auch automatisch die Session)
 require_once 'Includes/layout.php'; 
