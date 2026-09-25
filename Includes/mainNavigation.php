@@ -1,33 +1,59 @@
 <?php
 // Ermittelt vollautomatisch den Namen der aktuell geladenen Datei (z.B. index.php)
-$current_page = basename($_SERVER['SCRIPT_NAME']);
+$current_page = strtolower(basename($_SERVER['SCRIPT_NAME']));
 ?>
-<nav class="main-nav">
-    <ul>
-        <li>
-            <a href="index.php" class="<?php echo ($current_page == 'index.php') ? 'active' : ''; ?>">
-                🛰️ Main Terminal
-            </a>
-        </li>
-        <li>
-            <a href="Gameplay.php" class="<?php echo ($current_page == 'Gameplay.php') ? 'active' : ''; ?>">
-                🎮 Tactical Deck
-            </a>
-        </li>
-        <li>
-            <a href="Characters.php" class="<?php echo ($current_page == 'Characters.php') ? 'active' : ''; ?>">
-                👥 Crew Manifest
-            </a>
-        </li>
-        <li>
-            <a href="Story_Timeline.php" class="<?php echo ($current_page == 'Story_Timeline.php') ? 'active' : ''; ?>">
-                ⏳ Chronology
-            </a>
-        </li>
-        <li>
-            <a href="Contact.php" class="<?php echo ($current_page == 'Contact.php') ? 'active' : ''; ?>">
-                📡 Com-Array
-            </a>
-        </li>
-    </ul>
-</nav>
+<mainNav>
+    <fieldset>
+        <?php
+        // Prüfen, ob in der Session vermerkt ist, dass der User eingeloggt ist
+        if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true): 
+        ?>
+            <!-- STATUS 1: CREW-MITGLIED IST EINGELOGGT -->
+            <legend>System Status:</legend>
+            <div style="text-align: left; font-size: 0.9em; padding: 5px 0;">
+                <p style="color: #ff9900; text-shadow: 0 0 5px rgba(255, 153, 0, 0.6); font-weight: bold; margin: 0; padding: 0; text-align: left; font-family: 'B5Station', Arial, sans-serif;">
+                    🟢 UPLINK ACTIVE
+                </p>
+                <p style="margin: 10px 0 5px 0; padding: 0; text-align: left; font-family: 'B5Station', Arial, sans-serif; font-size: 0.85em; color: hsl(0, 9%, 98%);">
+                    Commander:<br>
+                    <strong style="color: #ff9900; text-shadow: 0 0 4px rgba(255, 153, 0, 0.4);"><?php echo htmlspecialchars($_SESSION['username']); ?></strong>
+                </p>
+            </div>
+            
+            <!-- Der Logout-Button schickt den User an eine logout.php -->
+            <form action="logout.php" method="post" style="margin-top: 10px;">
+                <button type="submit" name="logoutSubmit" class="formButton" style="background-color: rgba(255, 51, 51, 0.2); border: 1px solid #ff3333; color: #ff3333; text-shadow: 0 0 4px #ff3333;">
+                    Logout
+                </button>
+            </form>
+
+        <?php else: ?>
+            <!-- STATUS 2: ANONYMER ZUGRIFF / FORMULAR ANZEIGEN -->
+            <form action="Login.php" method="post">
+                <legend>Login:</legend>
+                
+                <label for="username">Username:</label>
+                <input type="text" name="username" id="username" placeholder="Username" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" name="password" id="password" placeholder="Password" required>
+                
+                <input type="text" id="eMail" name="eMail" tabindex="-1" autocomplete="off">
+                
+                <button type="submit" name="loginSubmit" class="formButton">Login</button>
+            </form>
+        <?php endif; ?>
+    </fieldset>
+    
+    <ul> 
+        <!-- DYNAMISCHES HIGHLIGHT: Prüft die aktuelle Seite und verpasst ihr ein Inline-Design, ohne das CSS zu verändern! -->
+        <li><a href="index.php" style="<?php echo ($current_page == 'index.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Main Terminal</a></li>
+        <li><a href="Project_Idea.php" style="<?php echo ($current_page == 'project_idea.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Project Idea</a></li>
+        <li><a href="Story_Timeline.php" style="<?php echo ($current_page == 'story_timeline.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Story & Timeline</a></li>
+        <li><a href="Characters.php" style="<?php echo ($current_page == 'characters.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Characters</a></li>
+        <li><a href="Gameplay.php" style="<?php echo ($current_page == 'gameplay.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Gameplay</a></li>
+        <li><a href="Pictures.php" style="<?php echo ($current_page == 'pictures.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Pictures</a></li>
+        <li><a href="Videos.php" style="<?php echo ($current_page == 'videos.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Videos</a></li>
+        <li><a href="Project_Future.php" style="<?php echo ($current_page == 'project_future.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Project Future</a></li>
+    </ul> 
+</mainNav>
