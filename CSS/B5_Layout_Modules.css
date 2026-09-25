@@ -3,7 +3,7 @@ fieldset {
     border: 1px solid rgba(96, 172, 243, 0.3) !important;
     padding: 15px !important;
     border-radius: 6px !important;
-    background-color: rgba(5, 7, 20, 0.4) !important;
+    background-color: rgba(5, 7, 20, 0.4) !important; /* Originaler Glas-Look */
 }
 
 legend {
