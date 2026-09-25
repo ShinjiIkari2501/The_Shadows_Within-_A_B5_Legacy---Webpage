@@ -93,11 +93,23 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(26, 47, 122, 0.2) !important;
             }
 
-            /* UNZERSTÖRBARER NAV-SCHRIFTEN-VEKTOR */
-            mainNav, mainNav ul, mainNav ul li, mainNav ul li a {
+            /* UNZERSTÖRBARER NAV-SCHRIFTEN-VEKTOR (SYNCHRONISIERT MIT MAIN PAGE!) */
+            mainNav ul li a, mainNav a, .main-nav a {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 letter-spacing: 0.5px !important;
+                color: #ffffff !important; /* Weiß für inaktive Links */
+                text-decoration: none !important;
+                font-weight: bold !important;
+                /* Gibt den inaktiven Links dasselbe subtile blaue Glühen im Ruhezustand */
+                text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
+                transition: all 0.2s ease !important;
+            }
+
+            /* Hover-Effekt für die restliche Navigation */
+            mainNav ul li a:hover {
+                color: #ff9900 !important;
+                text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
             }
 
             mainNav fieldset {
@@ -146,22 +158,35 @@ function renderLayout($seitenTitel, $seitenInhalt) {
 
             footer {
                 grid-column: span 2 !important;      
+                display: flex !important;                  
+                justify-content: space-between !important; /* Drückt das Menü nach links und den Text nach rechts! */
+                align-items: center !important;            
+                padding: 10px 20px !important;
+                box-sizing: border-box !important;
             }
 
             /* UNZERSTÖRBARER FOOTER-SCHRIFTEN-VEKTOR */
             footer, footer p, footer span, footer ul li a, body footer {
                 font-family: 'B5Station', Arial, sans-serif !important;
+                text-transform: uppercase !important;
+                font-weight: bold !important;
+                text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
             }
 
-            /* ➔ RECHTE KANTE: Zwingt das Copyright-Segment an den rechten Rand */
-            /* ➔ RECHTE KANTE: Zwingt das Copyright-Segment unmissverständlich an den rechten Rand */
-            footer p {
-                flex: 1 !important;
-                text-align: right !important;
-                margin-right: 25px !important;
+            footer ul {
+                margin: 0 !important;
                 padding: 0 !important;
+                display: flex !important;
+                gap: 15px !important;
             }
 
+            /* ➔ FINALE RECHTE KANTE: Positioniert das Copyright-Segment absolut bündig rechts */
+            footer p {
+                margin: 0 !important;
+                margin-left: auto !important;
+                text-align: right !important;
+                color: rgba(255, 255, 255, 0.6) !important;
+            }
         }
 
         /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
