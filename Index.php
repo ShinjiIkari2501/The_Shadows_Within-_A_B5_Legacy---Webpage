@@ -3,6 +3,13 @@
 require_once 'Includes/layout.php'; 
 
 // 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
+
+<?php
+// Bindet die Login-Verarbeitung direkt auf der Startseite ein
+require_once 'login.php';
+?>
+
+// 3. Den Zwischenspeicher für den HTML-Inhalt aktivieren
 ob_start(); 
 ?>
 
