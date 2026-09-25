@@ -3,13 +3,10 @@ FROM php:8.2-apache
 # 1. Kopiert alle hochgeladenen Daten in den Container
 COPY . /var/www/html/
 
-# 2. BEFREIUNGS-PHALANX: Sucht nach deiner index.php in dem Unterordner,
-# zieht absolut alle Dateien und Ordner auf die oberste Ebene heraus
-# und löscht den doppelten leeren Ordner!
-RUN ACTUAL_DIR=$(dirname $(find /var/www/html/ -name "index.php" | head -n 1)) && \
-    if [ "$ACTUAL_DIR" != "/var/www/html" ]; then \
-        cp -r $ACTUAL_DIR/* /var/www/html/ && \
-        rm -rf $ACTUAL_DIR; \
+# 2. DIREKT-ZÜNDUNG: Kopiert den Inhalt deines spezifischen Ordners direkt auf die oberste Ebene,
+# völlig ohne fehleranfällige Suchbefehle!
+RUN if [ -d "/var/www/html/The_Shadows_Within-_A_B5_Legacy" ]; then \
+        cp -r /var/www/html/The_Shadows_Within-_A_B5_Legacy/* /var/www/html/; \
     fi
 
 # 3. Erlaubt dem Server den Zugriff auf die frisch sortierten Daten
