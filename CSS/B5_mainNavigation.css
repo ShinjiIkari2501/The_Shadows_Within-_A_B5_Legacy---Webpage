@@ -1,14 +1,155 @@
-/* --- LINKSKONSOLE TEXT-STYLING --- */
+/* ==========================================================================
+   THE SHADOWS WITHIN: A B5 LEGACY - NAVIGATION & LOGIN SECTOR
+   System-Status: Sektor 2 aktiv. Linkskonsole originalgetreu kalibriert.
+   ========================================================================== */
+
+/* ==========================================================================
+   HAUPTNAVIGATION (Linkskonsole - B5Station Schriftart)
+   ========================================================================== */
+            /* HIER WIRD DIE NAVIGATION VISUELL PERFEKT GEFORMT */
+            mainNav {
+                grid-column: 1 !important;           
+                grid-row: 2 !important;              
+                width: 210px !important;               
+                height: 520px !important;   /* Starr eingefroren auf deine Wunschgröße */
+                box-sizing: border-box !important;
+                
+                /* KORREKTUR: Normaler Block-Modus, KEIN Flexbox mehr! */
+                display: block !important;
+                
+                /* EXAKTE ABSTÄNDE: Drückt den Inhalt von der Oberkante runter */
+                padding-top: 25px !important; 
+                padding-left: 12px !important;
+                padding-right: 12px !important;
+                padding-bottom: 25px !important;
+                
+                /* Horizontale und vertikale Zentrierung im globalen Grid */
+                justify-self: center !important;
+                align-self: center !important; 
+                
+                /* Sitzt absolut stabil zentriert */
+                margin: -25px auto 25px auto !important; 
+                position: relative !important;
+            }
+
+/* --- THE LOGIN INLAY (Fieldset) --- */
+mainNav fieldset {
+    margin-top: 0px !important;           
+    margin-left: 0px;            
+    margin-right: 0px;           
+    margin-bottom: 25px;         
+    padding: 12px;               
+    width: auto;                 
+    min-width: 0;                
+    color: hsl(0, 9%, 98%);
+    
+    background-color: rgba(5, 8, 26, 0.4); 
+    border: 1px solid rgba(96, 172, 243, 0.25); 
+    border-radius: 6px;
+    box-shadow: inset 0 0 10px rgba(26, 47, 122, 0.3);
+    text-shadow: 0 0 4px rgba(96, 172, 243, 0.6);
+}
+
+mainNav fieldset label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 4px;  
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-size: 0.9em;
+    text-align: left;
+    font-weight: bold;
+}
+
+mainNav fieldset input {
+    width: 100%; 
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(96, 172, 243, 0.4);
+    border-radius: 4px;
+    color: hsl(0, 9%, 98%);
+    padding: 6px;
+    font-size: 0.95em;
+    box-sizing: border-box;
+}
+
+mainNav fieldset input:focus {
+    outline: none;                             
+    border-color: #ff9900;                     
+    box-shadow: 0 0 8px rgba(255, 153, 0, 0.5); 
+}
+
+mainNav fieldset form {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* --- INTERAKTIVER LOGIN-BUTTON (Originaler Heller Look) --- */
+mainNav fieldset button {
+    display: block;      
+    padding: 6px 22px;   
+    cursor: pointer; 
+    margin: 15px auto 5px auto; 
+    
+    background-color: #e0e0e0; 
+    border: 1px solid #ffffff; 
+    border-radius: 4px;          
+    color: #0d143b;             
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold;
+    font-size: 0.95em;
+    transition: all 0.3s ease;   
+    letter-spacing: 0.5px;         
+}
+
+mainNav fieldset button:hover {
+    background-color: rgba(26, 47, 122, 0.6); 
+    color: #ff9900;              
+    border-color: #ff9900;       
+    box-shadow: 0 0 10px rgba(255, 153, 0, 0.7); 
+}
+
+mainNav fieldset legend {
+    font-family: 'B5Station', Arial, sans-serif !important;       
+    font-weight: bold;              
+    text-decoration: underline;     
+    letter-spacing: 1px;            
+}
+
+#eMail {
+    display: none !important;
+}
+
+/* --- LINKS-LISTE DER SEITENNAVIGATION --- */
+mainNav ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+mainNav ul li {
+    display: block; 
+    margin-top: 14px; 
+    text-shadow: 0 0 4px rgba(96, 172, 243, 0.6);
+}
+
 mainNav ul li a {
-    color: #ffffff !important;
     text-decoration: none;
-    font-family: 'SerpentineB5', Arial, sans-serif !important;
-    font-size: 1.05em;
-    letter-spacing: 1px;
-    transition: all 0.2s ease;
+    color: hsl(0, 9%, 98%);
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-size: 0.95em;
+    white-space: nowrap; 
 }
 
 mainNav ul li a:hover {
-    color: #ff9900 !important;
-    text-shadow: 0 0 5px rgba(255, 153, 0, 0.8);
+    color: #ff9900; 
+}
+
+/* Globale Zuweisung für alle Navigationselemente und den Footer */
+mainNav, 
+mainNav ul li a, 
+mainNav fieldset legend, 
+mainNav fieldset label, 
+mainNav fieldset button,
+footer {
+    font-family: 'B5Station', Arial, sans-serif !important;
 }
