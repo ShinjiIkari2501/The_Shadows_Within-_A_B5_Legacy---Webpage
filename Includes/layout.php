@@ -58,7 +58,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 margin-bottom: 25px !important; 
             }
 
-            /* DIE NAVIGATION WIRD HOCHGESCHOBEN UND EINGEFROREN */
+            /* DIE NAVIGATION BLEIBT FELSENFEST EINGEFROREN */
             mainNav {
                 grid-column: 1 !important;           
                 grid-row: 2 !important;              
@@ -80,7 +80,6 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 align-self: center !important; 
                 position: relative !important;
                 
-                /* KORREKTUR: Weiter nach oben geschoben, damit der Rahmen perfekt sitzt! */
                 margin: -55px auto 25px auto !important; 
 
                 background-color: rgba(13, 20, 59, 0.75) !important; 
@@ -91,7 +90,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(26, 47, 122, 0.2) !important;
             }
 
-            /* UNZERSTÖRBARER NAV-SCHRIFTEN-VEKTOR */
+            /* NAV-SCHRIFTEN-UPGRADE */
             mainNav ul li a, mainNav a, .main-nav a {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
@@ -152,13 +151,59 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-sizing: border-box !important;
             }
 
-            /* UNZERSTÖRBARER FOOTER-SCHRIFTEN-VEKTOR */
-            footer, footer p, footer span, footer a, body footer, footer .footer-links a {
+            /* ==========================================================================
+               UNTERER KONSOLEN-RAHMEN (Footer-Grid für deinen neuen Aufbau)
+               ========================================================================== */
+            footer {
+                grid-column: span 2 !important;      
+                display: flex !important;                  
+                flex-direction: row !important;
+                justify-content: space-between !important; 
+                align-items: center !important;            
+                padding: 0 20px !important;
+                height: 45px !important; 
+                box-sizing: border-box !important;
+                background-color: rgba(13, 20, 59, 0.75) !important;
+                border-top: 1px solid rgba(96, 172, 243, 0.2) !important;
+                border-radius: 8px !important;
+            }
+
+            /* SYSTEMWEITES SCHRIFTEN-UPGRADE FÜR DEN GANZEN FOOTER */
+            footer, footer p, footer span, footer a, body footer, bottomNav ul li a {
                 font-family: 'B5Station', Arial, sans-serif !important;
                 text-transform: uppercase !important;
                 font-weight: bold !important;
                 font-size: 0.95em !important;
                 text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
+            }
+
+            /* Kalibriert deine neue bottomNav-Struktur */
+            bottomNav ul {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 25px !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+                list-style-type: none !important;
+            }
+
+            bottomNav ul li a {
+                color: #ffffff !important;
+                text-decoration: none !important;
+                transition: all 0.2s ease !important;
+            }
+
+            bottomNav ul li a:hover {
+                color: #ff9900 !important;
+                text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
+            }
+
+            footer p {
+                margin: 0 !important;
+                padding: 0 !important;
+                text-align: right !important;
+                color: rgba(255, 255, 255, 0.6) !important;
+                flex-grow: 0 !important;
             }
         }
 
@@ -187,17 +232,17 @@ function renderLayout($seitenTitel, $seitenInhalt) {
         <?php echo $seitenInhalt; ?>
     </main>
 
-    <!-- Der unzerstörbare Konsolen-Footer (Vollständig getrennt und fehlerfrei!) -->
-    <!-- Der unzerstörbare Konsolen-Footer (Haargenau wie auf deinem Wunschbild!) -->
-    <footer style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; height: 45px !important; padding: 0 20px !important; box-sizing: border-box !important;">
-        <div class="footer-links" style="display: flex !important; flex-direction: row !important; gap: 25px !important; margin: 0 !important; padding: 0 !important;">
-            <a href="Impressum.php" style="color: #ffffff !important; text-decoration: none !important;">Impressum</a>
-            <a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important;">Contact</a>
-            <a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important;">Datasecurity</a>
-        </div>
-    <p style="margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; flex-grow: 0 !important;">&copy; 2026 MY WEBSITE. ALL RIGHTS RESERVED.</p>
-</footer>
-
+    <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer! -->
+    <footer>
+        <bottomNav>
+            <ul>
+                <li><a href="Impressum.php">Impressum</a></li>
+                <li><a href="Contact.php">Contact</a></li>
+                <li><a href="Datasecurity.php">Datasecurity</a></li>
+            </ul>
+        </bottomNav>
+        <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
+    </footer>
 </body>
 </html>
 <?php
