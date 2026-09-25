@@ -1,11 +1,26 @@
 <?php
-// HTTPS-SICHERHEITS-PHALANX: Zwingt den Server, Sessions sicher über HTTPS zu übertragen
-ini_set('session.cookie_secure', '1');
+// ==========================================================================
+// THE SHADOWS WITHIN: A B5 LEGACY - SECURE LOGIN INTERFACE
+// ==========================================================================
+
+// LIVE-PROXYSCHUTZ: Erkennt die HTTPS-Verschlüsselung von Render.com vollautomatisch
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+    $_SERVER['HTTPS'] = 'on';
+}
+
+// Zwingt den Server, Sessions stabil und sicher zu verarbeiten
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 
+// Falls die Verbindung sicher ist, aktivieren wir das Secure-Flag passend für den Browser
+if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+    ini_set('session.cookie_secure', '1');
+}
+
 // Startet die Session-Zentrale
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (isset($_POST['loginSubmit'])) {
     
@@ -17,7 +32,7 @@ if (isset($_POST['loginSubmit'])) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Die feste Crew-Datenbank
+    // Die feste, unzerstörbare Crew-Datenbank
     $crewDatenbank = [
         'Shinji2501' => 'Test1234',
         'Sheridan'   => 'Tuzanor2261',
@@ -37,26 +52,23 @@ if (isset($_POST['loginSubmit'])) {
         $loginErfolgreich = true;
     }
 
-    // ==========================================================================
-    // AUSWERTUNG DER CREDENTIALS: Schleifen-sichere relative Umleitung!
-    // ==========================================================================
+    // Auswertung der Sicherheits-Credentials
     if ($loginErfolgreich === true) {
         $_SESSION['eingeloggt'] = true;
         $_SESSION['username'] = $username;
         unset($_SESSION['login_error']); // Löscht alte Fehlermeldungen bei Erfolg
         
-        // KORREKTUR: './' bricht den Groß-/Kleinschreibungs-Krieg im Internet sofort!
+        // Führt den Browser sicher zurück auf das Hauptterminal
         header("Location: ./");
         exit();
     } else {
-        // SCHLEIFEN-BRECHER: Setzt ein Fehlersignal im Speicher, statt blind im Kreis zu routen!
+        // Setzt ein Fehlersignal im Speicher bei falschen Daten
         $_SESSION['login_error'] = "ACCESS DENIED: Invalid Security Credentials.";
         header("Location: ./");
         exit();
     }
 
 } else {
-    // Falls jemand die Datei ohne Formular aufruft, neutral zurück zur Hauptseite schieben
     header("Location: ./");
     exit();
 }
