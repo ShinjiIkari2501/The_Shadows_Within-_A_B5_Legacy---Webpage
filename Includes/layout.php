@@ -234,21 +234,21 @@ function renderLayout($seitenTitel, $seitenInhalt) {
 
     <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer (LICHT-MATRIX REAKTIVIERT!) -->
         <!-- 🛰️ UNZERSTÖRBARER KONSOLEN-FOOTER (TABELLEN-RELAIS FÜR PERFEKTE SYMMETRIE) -->
-    <footer style="display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; wrap: nowrap !important; height: 50px !important; padding: 0 20px !important; box-sizing: border-box !important; background-color: rgba(13, 20, 59, 0.75) !important; border-top: 1px solid rgba(96, 172, 243, 0.2) !important; border-radius: 8px !important; margin-bottom: 0px !important; margin-top: auto !important;">
+    <div class="custom-footer" style="display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; height: 45px !important; padding: 0 20px !important; margin: 20px 15px 0 15px !important; box-sizing: border-box !important; background-color: rgba(13, 20, 59, 0.75) !important; border: 1px solid rgba(96, 172, 243, 0.2) !important; border-radius: 8px !important; clear: both !important;">
         
-        <!-- LINKE FLANKE: Die Navigationslinks (DYNAMISCH NEBENEINANDER) -->
-        <div style="display: flex !important; flex-direction: row !important; gap: 20px !important; align-items: center !important; flex-shrink: 0 !important;">
+        <!-- LINKS: Die Navigationslinks (STRAHLEND WEISS & BÜNDIG) -->
+        <div style="display: flex !important; flex-direction: row !important; gap: 25px !important; align-items: center !important; flex-shrink: 0 !important;">
             <a href="Impressum.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Impressum</a>
             <a href="Contact.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Contact</a>
             <a href="Datasecurity.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Datasecurity</a>
         </div>
         
-        <!-- RECHTE FLANKE: Das Copyright (RUTSCHT AUTOMATISCH NACH RECHTS AUSSEN) -->
-        <p style="font-family: 'B5Station', Arial, sans-serif !important; margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; padding-left: 20px !important;">
-            &copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.
+        <!-- RECHTS: Das Copyright (EINGEBETTET IM SELBEN RAHMEN, RECHTSSEITIG) -->
+        <p style="font-family: 'B5Station', Arial, sans-serif !important; margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important; white-space: nowrap !important;">
+            &copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 &copy; Warner Bros.
         </p>
 
-    </footer>
+    </div>
 </body>
 </html>
 <?php
