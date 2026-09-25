@@ -81,7 +81,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 position: relative !important;
                 
                 /* KORREKTUR: Weiter nach oben geschoben, damit der Rahmen perfekt sitzt! */
-                margin: -75px auto 25px auto !important; 
+                margin: -55px auto 25px auto !important; 
 
                 background-color: rgba(13, 20, 59, 0.75) !important; 
                 backdrop-filter: blur(8px) !important;
@@ -188,14 +188,16 @@ function renderLayout($seitenTitel, $seitenInhalt) {
     </main>
 
     <!-- Der unzerstörbare Konsolen-Footer (Vollständig getrennt und fehlerfrei!) -->
+    <!-- Der unzerstörbare Konsolen-Footer (Haargenau wie auf deinem Wunschbild!) -->
     <footer style="display: flex !important; justify-content: space-between !important; align-items: center !important; flex-direction: row !important; height: 45px !important; padding: 0 20px !important; box-sizing: border-box !important;">
         <div class="footer-links" style="display: flex !important; flex-direction: row !important; gap: 25px !important; margin: 0 !important; padding: 0 !important;">
-            <a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important;">📡 Com-Array</a>
             <a href="Impressum.php" style="color: #ffffff !important; text-decoration: none !important;">Impressum</a>
-            <a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important;">Data Security</a>
+            <a href="Contact.php" style="color: #ffffff !important; text-decoration: none !important;">Contact</a>
+            <a href="Datasecurity.php" style="color: #ffffff !important; text-decoration: none !important;">Datasecurity</a>
         </div>
-        <p style="margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; flex-grow: 0 !important;">&copy; 2026 Shinji2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
-    </footer>
+    <p style="margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; flex-grow: 0 !important;">&copy; 2026 MY WEBSITE. ALL RIGHTS RESERVED.</p>
+</footer>
+
 </body>
 </html>
 <?php
