@@ -12,55 +12,51 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 }
 
 // ==========================================================================
-// INTERSTELLAR PYTHON PIPELINE ENGINE (Führt deine B5_Project.txt direkt aus)
+// NATIVE PYTHON INTERACTION ENGINE (Verarbeitet deinen echten Code)
 // ==========================================================================
-if (isset($_POST['execute_command']) && $isLoggedIn === 1) {
-    header('Content-Type: application/json');
-    $input = trim($_POST['execute_command']);
-    
-    // Initialisiert den Spielstand im Session-Speicher bei Neustart
-    if (!isset($_SESSION['b5_game_inputs']) || $input === "restart") {
-        $_SESSION['b5_game_inputs'] = [];
+$gameOutput = "";
+
+if ($isLoggedIn === 1) {
+    // Initialisiert die Eingabe-Historie bei Spielstart oder Reset
+    if (!isset($_SESSION['b5_history']) || (isset($_POST['game_input']) && trim(strtolower($_POST['game_input'])) === 'restart')) {
+        $_SESSION['b5_history'] = [];
     }
-    
-    // Fügt die neue Eingabe der Historie hinzu (außer beim ersten Laden)
-    if ($input !== "" && $input !== "start_game" && $input !== "restart") {
-        $_SESSION['b5_game_inputs'][] = $input;
+
+    // Fängt den neuen Befehl ab und fügt ihn der Historie hinzu
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['game_input'])) {
+        $currentInput = trim($_POST['game_input']);
+        if ($currentInput !== "" && strtolower($currentInput) !== 'restart') {
+            $_SESSION['b5_history'][] = $currentInput;
+        }
     }
-    
-    // Pfad zu deinem originalen Python-Skript im Repository
+
+    // Pfad zu deiner originalen Python-Datei
     $pythonScript = __DIR__ . '/Python/B5_Project.txt'; 
-    
-    // Bereitet den Shell-Befehl vor und leitet Fehler um
     $command = "python3 " . escapeshellarg($pythonScript) . " 2>&1";
-    
-    // Öffnet den bidirektionalen Prozess zum Python-Interpreter
+
     $descriptorspec = [
-        0 => ["pipe", "r"], // STDIN (Eingaben an Python übergeben)
-        1 => ["pipe", "w"], // STDOUT (Ausgaben von Python abfangen)
+        0 => ["pipe", "r"], // STDIN
+        1 => ["pipe", "w"], // STDOUT
         2 => ["pipe", "w"]  // STDERR
     ];
-    
+
     $process = proc_open($command, $descriptorspec, $pipes);
-    
+
     if (is_resource($process)) {
-        // Füttert Python nacheinander mit allen bisherigen Entscheidungen
-        foreach ($_SESSION['b5_game_inputs'] as $pastInput) {
+        // Füttert Python nacheinander mit all deinen getätigten Schritten
+        foreach ($_SESSION['b5_history'] as $pastInput) {
             fwrite($pipes, $pastInput . "\n");
         }
-        fclose($pipes); // Schließt den Eingabekanal, damit Python weiterrechnet
-        
-        // Holt die generierte Text-Ausgabe deines Skripts ab
-        $output = stream_get_contents($pipes);
+        fclose($pipes); // Schließt die Eingabe, damit Python den Text ausgibt
+
+        // Holt den originalen Print-Text aus deiner B5_Project.txt
+        $gameOutput = stream_get_contents($pipes);
         fclose($pipes);
         fclose($pipes);
         proc_close($process);
-        
-        echo json_encode(["status" => "success", "output" => $output]);
     } else {
-        echo json_encode(["status" => "error", "output" => "SYSTEM ERROR: Sub-space interpreter offline."]);
+        $gameOutput = "SYSTEM ERROR: Sub-space core execution failed.";
     }
-    exit();
 }
 ?>
 
@@ -86,16 +82,18 @@ if (isset($_POST['execute_command']) && $isLoggedIn === 1) {
             </div>
 
             <!-- Ausgabefenster des Spiels -->
-            <div id="terminal-output" style="height: 420px !important; overflow-y: auto !important; color: #60acf3 !important; font-size: 1.05em !important; line-height: 1.5 !important; text-align: left !important; padding-right: 10px !important; margin-bottom: 15px !important; white-space: pre-wrap !important;"></div>
-
-            <!-- Eingabezeile für den Spieler -->
-            <div style="display: flex !important; align-items: center !important; border-top: 1px solid rgba(255, 153, 0, 0.2) !important; padding-top: 10px !important;">
-                <span style="color: #ff9900 !important; font-weight: bold !important; margin-right: 10px !important;">cmd_vector></span>
-                <input type="text" id="terminal-input" style="flex: 1 !important; background: transparent !important; border: none !important; color: #fff !important; font-family: monospace !important; font-size: 1.1em !important; outline: none !important;" placeholder="Type a command and press Enter..." autofocus>
+            <div id="terminal-output" style="height: 420px !important; overflow-y: auto !important; color: #60acf3 !important; font-size: 1.05em !important; line-height: 1.5 !important; text-align: left !important; padding-right: 10px !important; margin-bottom: 15px !important; white-space: pre-wrap !important;">
+                <pre style="margin: 0; white-space: pre-wrap; font-family: monospace; color: #60acf3; font-size: 1.05em;"><?php echo htmlspecialchars($gameOutput); ?></pre>
             </div>
-        </div>
 
-        <!-- 2. DIE TAKTISCHE BEFEHLS-LEGENDE -->
+            <!-- Eingabezeile für den Spieler (Formular-gesteuert für 100% Serversicherheit) -->
+            <form method="post" action="" style="margin: 0; padding: 0;">
+                <div style="display: flex !important; align-items: center !important; border-top: 1px solid rgba(255, 153, 0, 0.2) !important; padding-top: 10px !important;">
+                    <span style="color: #ff9900 !important; font-weight: bold !important; margin-right: 10px !important;">cmd_vector></span>
+                    <input type="text" name="game_input" id="terminal-input" style="flex: 1 !important; background: transparent !important; border: none !important; color: #fff !important; font-family: monospace !important; font-size: 1.1em !important; outline: none !important;" placeholder="Type a command and press Enter..." autofocus autocomplete="off">
+                </div>
+            </form>
+        </div>        <!-- 2. DIE TAKTISCHE BEFEHLS-LEGENDE -->
         <div style="flex: 1 !important; min-width: 240px !important; max-width: 300px !important; background-color: rgba(13, 20, 59, 0.5) !important; border: 1px solid rgba(96, 172, 243, 0.3) !important; backdrop-filter: blur(5px) !important; -webkit-backdrop-filter: blur(5px) !important; border-radius: 6px !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important; padding: 15px !important; font-family: Arial, sans-serif !important; box-sizing: border-box !important; text-align: left !important; height: fit-content !important; align-self: flex-start !important;">
             <h4 style="color: #ff9900 !important; text-shadow: 0 0 5px rgba(255, 153, 0, 0.5) !important; margin-top: 0 !important; margin-bottom: 12px !important; font-family: 'B5Station', Arial, sans-serif !important; letter-spacing: 0.5px !important; border-bottom: 1px solid rgba(96, 172, 243, 0.2) !important; padding-bottom: 5px !important;">
                 🛰️ COMMAND MATRIX
@@ -105,82 +103,26 @@ if (isset($_POST['execute_command']) && $isLoggedIn === 1) {
             </p>
             <ul style="list-style-type: none !important; padding: 0 !important; margin: 0 !important; font-size: 0.9em !important; line-height: 1.7 !important;">
                 <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">1 / 2 / 3</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Pfade wählen / Entscheidungen treffen</span></li>
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">clear / cls</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Bildschirm leeren</span></li>
+                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">clear</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Leert den lokalen Verlauf</span></li>
                 <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">restart</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Setzt die Simulation komplett zurück</span></li>
             </ul>
         </div>
 
-    </div>    <!-- JAVASCRIPT: ECHTE PYTHON-BRÜCKE MIT PIPELINE-STREAMING -->
+    </div>
+
+    <!-- AUTO-SCROLL-RELAIS: Hält das Textfenster synchron mit deinem Seitenraster -->
     <script type="text/javascript">
-        const outputDiv = document.getElementById("terminal-output");
-        const inputField = document.getElementById("terminal-input");
-
-        function sendCommandToPython(commandText) {
-            const formData = new FormData();
-            formData.append('execute_command', commandText);
-
-            fetch(window.location.href, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.status === "success") {
-                    // Löscht das Fenster bei einem kompletten Neustart
-                    if (commandText === "restart") {
-                        outputDiv.innerHTML = "";
-                    }
-                    // Gibt den exakten, echten Print-Text deines Python-Skripts aus
-                    printToTerminal(data.output);
-                } else {
-                    printToTerminal("\n⚠ TRANSMISSION ERROR: " + data.output);
-                }
-            })
-            .catch(error => {
-                printToTerminal("\n⚠ UPLINK CRITICAL: Core communication lost.");
-            });
-        }
-
-        function printToTerminal(text) {
-            const pre = document.createElement("pre");
-            pre.style.margin = "0";
-            pre.style.whiteSpace = "pre-wrap";
-            pre.style.fontFamily = "monospace";
-            pre.style.color = "#60acf3";
-            pre.style.fontSize = "1.05em";
-            pre.textContent = text;
-            outputDiv.appendChild(pre);
-            
-            // 🛰️ AUTO-SCROLL-RELAIS: Schiebt das Sichtfenster perfekt mit, während die Inputzeile steht!
-            outputDiv.scrollTop = outputDiv.scrollHeight;
-        }
-
-        // Fängt den Enter-Tastendruck ab
-        inputField.addEventListener("keydown", function(event) {
-            if (event.keyCode === 13) {
-                const befehl = inputField.value.trim();
-                inputField.value = "";
-                
-                if (befehl === "") return;
-                
-                // Lokaler Bildschirm-Leerer
-                if (befehl.toLowerCase() === "clear" || befehl.toLowerCase() === "cls") {
-                    outputDiv.innerHTML = "";
-                    printToTerminal("[Display cache cleared]");
-                    return;
-                }
-
-                // Sendet den echten Befehl (1, 2, 3 etc.) direkt an das Python-Skript
-                sendCommandToPython(befehl);
-            }
-        });
-
-        // Startet dein originales Python-Skript direkt beim Laden der Seite
         window.onload = function() {
-            printToTerminal("🔄 INITIALIZING CORE INTERPRETER...");
-            setTimeout(function() {
-                sendCommandToPython("start_game");
-            }, 400);
+            const outputDiv = document.getElementById("terminal-output");
+            const inputField = document.getElementById("terminal-input");
+            
+            if (outputDiv) {
+                // Zwingt die Box nach dem Neuladen sofort zum neuesten Text ganz unten zu springen
+                outputDiv.scrollTop = outputDiv.scrollHeight;
+            }
+            if (inputField) {
+                inputField.focus();
+            }
         };
     </script>
 
@@ -194,7 +136,10 @@ if (isset($_POST['execute_command']) && $isLoggedIn === 1) {
 <?php endif; ?>
 
 <?php 
+// 4. Den Inhalt aus dem Zwischenspeicher holen
 $seitenInhalt = ob_get_clean(); 
+
+// 5. Das Layout mit dem taktischen Titel rendern
 renderLayout("B5 Legacy - Simulation Deck", $seitenInhalt); 
 ?>
 
