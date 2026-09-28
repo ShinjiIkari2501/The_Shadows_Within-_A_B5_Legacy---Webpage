@@ -12,7 +12,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 }
 
 // ==========================================================================
-// NATIVE PYTHON INTERACTION ENGINE (Verarbeitet deinen echten Code)
+// NATIVE PYTHON INTERACTION ENGINE (Verarbeitet deinen echten Code fehlerfrei)
 // ==========================================================================
 $gameOutput = "";
 
@@ -45,14 +45,14 @@ if ($isLoggedIn === 1) {
     if (is_resource($process)) {
         // Füttert Python nacheinander mit all deinen getätigten Schritten
         foreach ($_SESSION['b5_history'] as $pastInput) {
-            fwrite($pipes, $pastInput . "\n");
+            fwrite($pipes[0], $pastInput . "\n");
         }
-        fclose($pipes); // Schließt die Eingabe, damit Python den Text ausgibt
+        fclose($pipes[0]); // Schließt den Eingabekanal 0, damit Python anfängt zu arbeiten!
 
-        // Holt den originalen Print-Text aus deiner B5_Project.txt
-        $gameOutput = stream_get_contents($pipes);
-        fclose($pipes);
-        fclose($pipes);
+        // Holt den originalen Print-Text aus deiner B5_Project.txt aus Kanal 1
+        $gameOutput = stream_get_contents($pipes[1]);
+        fclose($pipes[1]); // Schließt Kanal 1 sauber einzeln
+        fclose($pipes[2]); // Schließt Kanal 2 sauber einzeln
         proc_close($process);
     } else {
         $gameOutput = "SYSTEM ERROR: Sub-space core execution failed.";
@@ -86,7 +86,7 @@ if ($isLoggedIn === 1) {
                 <pre style="margin: 0; white-space: pre-wrap; font-family: monospace; color: #60acf3; font-size: 1.05em;"><?php echo htmlspecialchars($gameOutput); ?></pre>
             </div>
 
-            <!-- Eingabezeile für den Spieler (Formular-gesteuert für 100% Serversicherheit) -->
+            <!-- Eingabezeile für den Spieler -->
             <form method="post" action="" style="margin: 0; padding: 0;">
                 <div style="display: flex !important; align-items: center !important; border-top: 1px solid rgba(255, 153, 0, 0.2) !important; padding-top: 10px !important;">
                     <span style="color: #ff9900 !important; font-weight: bold !important; margin-right: 10px !important;">cmd_vector></span>
@@ -117,7 +117,6 @@ if ($isLoggedIn === 1) {
             const inputField = document.getElementById("terminal-input");
             
             if (outputDiv) {
-                // Zwingt die Box nach dem Neuladen sofort zum neuesten Text ganz unten zu springen
                 outputDiv.scrollTop = outputDiv.scrollHeight;
             }
             if (inputField) {
