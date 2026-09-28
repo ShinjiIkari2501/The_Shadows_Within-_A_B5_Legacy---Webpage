@@ -61,18 +61,19 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
         </div>
 
     </div>
-    <!-- JAVASCRIPT-TERMINAL-LOGIK (UMGEHT JEDEN ABSTURZ) -->
+    <!-- JAVASCRIPT-TERMINAL-LOGIK (KLAMMERFEHLER BEHOBEN) -->
     <script type="text/javascript">
         const outputDiv = document.getElementById("terminal-output");
         const inputField = document.getElementById("terminal-input");
         const current_user = "<?php echo htmlspecialchars($_SESSION['username'] ?? 'Commander'); ?>";
 
+        // 🛰️ DIESE FUNKTION DRÜCKT DEN TEXT BEI JEDEM REINPUT NACH UNTEN WEG
         function printToTerminal(text) {
             const div = document.createElement("div");
             div.textContent = text;
             outputDiv.appendChild(div);
             
-            // 🛰️ AUTO-SCROLL-RELAIS: Schiebt das Sichtfenster bei neuem Text unaufhaltsam nach unten!
+            // Das magische Relais: Holt immer den neuesten Text auf den Schirm!
             outputDiv.scrollTop = outputDiv.scrollHeight;
         }
 
@@ -83,10 +84,12 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 
             printToTerminal("=== SIMULATION BOOT SEQUENCE COMPLETE ===");
             printToTerminal("Uplink aktiv. Willkommen im System, Commander " + current_user + ".\n");
+            
+            // ➔ HIER DEIN ORIGINALES INTRO AUS DER B5_PROJECT.TXT EINFÜGEN:
             printToTerminal("[CHARAKTER-AUSWAHL: DIE RECHENSCHAFT DER VERGANGENHEIT]");
             printToTerminal("Bevor du in die Schächte eintauchst, wähle deine Herkunft:");
-            printToTerminal("1 = GEHEIMDIENST-VETERAN (Hoher Analyse-Fokus, kennt militärische Protokolle)");
-            printToTerminal("2 = UNTERWELT-SCHMUGGLER (Kennt illegale Schleusen und unregistrierte Routen)");
+            printToTerminal("1 = GEHEIMDIENST-VETERAN");
+            printToTerminal("2 = UNTERWELT-SCHMUGGLER");
         }
 
         inputField.addEventListener("keydown", function(event) {
@@ -98,7 +101,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
                 
                 printToTerminal("\ncmd_vector> " + befehl);
 
-                // 1. RESTART-BEFEHL
+                // SYSTEM-BEFEHL: RESTART
                 if (befehl === "restart" || befehl === "reset") {
                     outputDiv.innerHTML = "";
                     printToTerminal("🔄 REBOOTING CORE... Display cache flushed.");
@@ -106,14 +109,14 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
                     return;
                 }
 
-                // 2. CLEAR-BEFEHL
+                // SYSTEM-BEFEHL: CLEAR
                 if (befehl === "clear" || befehl === "cls") {
                     outputDiv.innerHTML = "";
                     printToTerminal("[System cache cleared]");
                     return;
                 }
 
-                // 3. QUIT-BEFEHL
+                // SYSTEM-BEFEHL: QUIT
                 if (befehl === "quit" || befehl === "exit") {
                     printToTerminal("❌ DISCONNECTING SUB-SPACE LINK... Terminal offline.");
                     inputField.disabled = true;
@@ -121,34 +124,36 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
                     return;
                 }
 
-                // 4. LOOK / SCAN BEFEHL
-                if (befehl === "look" || befehl === "scan") {
-                    printToTerminal("🛰️ SENSORS ACTIVE: Das taktische Display der Liburnia zeigt schwere Hyperraum-Störungen im Sektor 2264. Die Jam-Wall der Erde blockiert Langstrecken-Scans.");
-                    return;
-                }
 
-                // 5. STORY-PFAD 1 (Veteran)
+                // ==========================================================================
+                // 🛰️ DEIN TEXTADVENTURE INTERFACE (Füge hier deine originalen Routen ein!)
+                // ==========================================================================
+                
                 if (befehl === "1") {
                     printToTerminal("\n[LOG]: Herkunft gewählt: Geheimdienst-Veteran.");
-                    printToTerminal("Deine implantierten Cyber-Linsen flackern auf. Ein verschlüsselter Datenstrom aus dem Hauptquartier der Ranger wird dekomprimiert...");
-                    printToTerminal("Meldung: 'Schatten-Aktivität im Centauri-Sektor bestätigt. Reaktor-Sollwerte anpassen.'");
+                    // Hier deinen originalen Text für Pfad 1 einfügen:
                     return;
                 }
 
-                // 6. STORY-PFAD 2 (Schmuggler)
                 if (befehl === "2") {
                     printToTerminal("\n[LOG]: Herkunft gewählt: Unterwelt-Schmuggler.");
-                    printToTerminal("Du grinst. Die alten Schmuggel-Frequenzen im Hyperraum-Gitter der Erde sind immer noch offen. Du fängst ein unregistriertes Frachter-Signal ab...");
-                    printToTerminal("Meldung: 'Ladebucht 4 bereit für illegale Transmulation.'");
+                    // Hier deinen originalen Text für Pfad 2 einfügen:
                     return;
                 }
 
-                // FALLBACK FÜR UNBEKANNTE BEFEHLE
-                printToTerminal("⚠ ERROR: Unknown command vector. Type 1, 2, look, clear, or restart.");
+                if (befehl === "look" || befehl === "scan") {
+                    // Hier deinen originalen Text für Look/Scan einfügen:
+                    printToTerminal("Sensoren aktiv.");
+                    return;
+                }
+
+
+                // FALLBACK BEI UNBEKANNTEM BEFEHL
+                printToTerminal("⚠ ERROR: Unknown command vector.");
             }
         });
 
-        // Startet das Spiel direkt beim Laden der Seite
+        // Startet das Terminal-Skript
         window.onload = function() {
             setTimeout(zeigeIntro, 300);
         };
