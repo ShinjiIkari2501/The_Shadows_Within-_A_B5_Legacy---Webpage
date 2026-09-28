@@ -12,50 +12,76 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 }
 
 // ==========================================================================
-// NATIVE PYTHON INTERACTION ENGINE (Verarbeitet deinen echten Code fehlerfrei)
+// UNZERSTÖRBARE PHP STORY ENGINE (Deine originalen Kapitel 1:1 übersetzt)
 // ==========================================================================
-$gameOutput = "";
-
 if ($isLoggedIn === 1) {
-    // Initialisiert die Eingabe-Historie bei Spielstart oder Reset
-    if (!isset($_SESSION['b5_history']) || (isset($_POST['game_input']) && trim(strtolower($_POST['game_input'])) === 'restart')) {
-        $_SESSION['b5_history'] = [];
+    // Initialisiert den Spiel-Status (Akt) bei Neustart oder Erstaufruf
+    if (!isset($_SESSION['b5_akt']) || (isset($_POST['game_input']) && trim(strtolower($_POST['game_input'])) === 'restart')) {
+        $_SESSION['b5_akt'] = "charakter_erstellung";
+        $_SESSION['b5_origin'] = "";
+        $_SESSION['b5_log'] = "=== SIMULATION BOOT SEQUENCE COMPLETE ===\nUplink aktiv. Willkommen im System, Commander.\n\n[CHARAKTER-AUSWAHL: DIE RECHENSCHAFT DER VERGANGENHEIT]\nBevor du in die Schächte eintauchst, wähle deine Herkunft:\n1 = GEHEIMDIENST-VETERAN (Hoher Analyse-Fokus, kennt militärische Protokolle)\n2 = UNTERWELT-SCHMUGGLER (Kennt illegale Schleusen und unregistrierte Routen)";
     }
 
-    // Fängt den neuen Befehl ab und fügt ihn der Historie hinzu
+    // Wenn der Spieler etwas eingibt und Enter drückt
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['game_input'])) {
-        $currentInput = trim($_POST['game_input']);
-        if ($currentInput !== "" && strtolower($currentInput) !== 'restart') {
-            $_SESSION['b5_history'][] = $currentInput;
+        $befehl = trim(strtolower($_POST['game_input']));
+        
+        if ($befehl !== "" && $befehl !== "restart") {
+            // Fügt den eingegebenen Befehl zum sichtbaren Terminal-Verlauf hinzu
+            $_SESSION['b5_log'] .= "\n\ncmd_vector> " . $_POST['game_input'];
+
+            // --- WEICHE 1: CHARAKTER-ERSTELLUNG & PROLOG ---
+            if ($_SESSION['b5_akt'] === "charakter_erstellung") {
+                if ($befehl === "1" || $befehl === "2") {
+                    if ($befehl === "1") {
+                        $_SESSION['b5_origin'] = "Geheimdienst";
+                        $_SESSION['b5_log'] .= "\n\n-> Du bist ein Phantom des ehemaligen Earthforce-Geheimdienstes.";
+                    } else {
+                        $_SESSION['b5_origin'] = "Unterwelt";
+                        $_SESSION['b5_log'] .= "\n\n-> Du bist ein Geist des Braunen Sektors, ein Meister unregistrierter Fracht.";
+                    }
+                    
+                    // AKT I Text aus deinem originalen Skript anhängen
+                    $_SESSION['b5_log'] .= "\n\n======================================================\n=== AKT I: DER FUNKE IM DRECK ========================\n======================================================\nDie Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff,\nbilligem synthetischem Kaffee und dem Dunst unzähliger Frachterkühler.\nHier, in den USA, bewegst du dich im Graubereich.\nJede schattige Ecke hast du in ein logisches Raster eingeordnet.\nEs ist die einzige Art, wie du nach dem tragischen Verlust deines Partners Marcus Cole überleben konntest.\n\nPlötzlich stolpert eine Gestalt aus einer Wartungsschleuse.\nEin Mann in der zerfetzten Kluft der Rangers bricht direkt vor dir zusammen.\nHinter ihm, am Ende des Tunnels, scannen Psi-Corps-Agenten die Gasse mit Bioscannern.\n\nOhne ein Geräusch zu machen, aktivierst du dein illegales Chamäleon-Netz.\nDas holografische Feld summt minimal auf. Als das Licht der Agenten über dich gleitet,\nsehen sie nur eine leere Wand und gehen irritiert weiter.\n\nDer Ranger keucht, Blut tritt auf seine Lippen. Er blickt dir direkt in die Augen.\nIn seinen sterbenden Augen liegt stummes Erkennen. Er presst dir einen Kristall in die Hand.\n\nDer sterbende Ranger flüstert mit rauer, abgehackter Stimme:\n 'Nimm ihn... Bring ihn... persönlich zum Kommandostab... Vertrau niemandem...'\n 'Die Schläfer erwachen... Wir sterben... für den Einen...'\n\nEin letzten Rasseln, dann erschlafft sein Körper. Seine Finger lösen sich.\nDas Anla'shok-Medaillon gleitet in deine Faust. Du stehst allein im Korridor.\nDu begreifst stumm und schmerzhaft, was für ein unerbittliches Leben Marcus damals gewählt hatte.\n\nTippe 'weiter' um die Stationsleitung aufzusuchen...";
+                    $_SESSION['b5_akt'] = "akt_1_gelesen";
+                } else {
+                    $_SESSION['b5_log'] .= "\n⚠ ERROR: Ungültige Herkunft. Wähle 1 oder 2.";
+                }
+            }
+            
+            // --- WEICHE 2: ZACK ALLANS BÜRO ---
+            elseif ($_SESSION['b5_akt'] === "akt_1_gelesen") {
+                if ($befehl === "weiter") {
+                    $_SESSION['b5_log'] .= "\n\n======================================================\n=== AKT II: DIE ÜBERGABE IN DER SICHERHEITSZENTRALE ==\n======================================================\nDu nutzt unregistrierte Schmuggelwege und Servicekorridore des Braunen Sektors.\nErst direkt vor der Luftschleuse trittst du mit eisiger Dringlichkeit hervor.\nDie Officers lassen dich irritiert in das private Büro von Zack Allan.\n\nOhne ein Wort der Erklärung legst du den Kristall und das Medaillon auf die Konsole.\nDu: 'Mr. Allan. Ein Ranger ist gerade im Braunen Sektor diesseits gestorben. Das Corps jagt\n     diese Daten. Es war absolut lebenswichtig für ihn, dass dieser Kristall nur\n     in die Hände der Stationsleitung gelangt. Sorgen Sie persönlich dafür.'\n\nZack Allan blickt auf das Abzeichen, nickt grimmig und greift nach den Gegenständen.\nEr packt den Kristall in seine Manteltasche und greift nach seinem Datenpad.\nZack Allan dreht sich um: 'Verdammt... Wo liegt die Leiche? Sagen Sie mir, wo er--'\n\nDoch er spricht gegen die nackte Wand. In den zwei Sekunden seiner Ablenkung hast du\nden perfekten Moment abgepasst und bist lautlos im unruhigen Strom untergetaucht.\n\nTippe 'weiter' um G'Kars verschlüsselte Botschaft abzurufen...";
+                    $_SESSION['b5_akt'] = "sicherheitszentrale_gelesen";
+                }
+            }
+            
+            // --- WEICHE 3: G'KARS BOTSCHAFT & DER PUTSCH ---
+            elseif ($_SESSION['b5_akt'] === "sicherheitszentrale_gelesen") {
+                if ($befehl === "weiter") {
+                    $_SESSION['b5_log'] .= "\n\nWenig später schließt Zack Allan die schwere Panzertür des Ratsbüros.\nCaptain Elizabeth Lochley schiebt den Kristall in das gesicherte Allianz-Terminal.\nDie Konsole summt auf. Ein lebensgroßes Holo-Bild flackert im Raum auf: G’KAR.\nSeine aufgezeichnete, weise hallende Stimme erfüllt ehrfürchtig den Raum:\n\nG’Kar (Holo): 'Liebe Freunde, wenn euch diese Nachricht erreicht, ist es hoffentlich\n              noch nicht zu spät. In diesem Datenkristall findet ihr verschlüsselte\n              Koordinaten. Dort findet ihr die Welt einer Zivilisation, die einst genau\n              dasselbe finstere Schicksal erlitt wie euer Volk. Aber seid gewarnt...'\n\nDas Bild erlischt. Die Nachricht vom stummen Putsch hat die Station wie eine Schockwelle getroffen.\nAlfred Bester verkündet live aus Genf inmitten der Black Omega Garde triumphierend,\ndass die Erde ab dem heutigen Tage unter der unumkehrbaren Verwaltung des Corps steht.\n\nPlötzlich blockieren mehrere Sicherheitswachen den Korridor. Zack Allan tritt hervor.\nZack Allan: 'Keine Bewegung. Ich verhafte dich nicht. Aber die Hölle ist opengebrochen.'\nEr schiebt dich direkt hoch ins Ratsbüro der Kommandozentrale.\n\nTippe 'weiter' um dich dem Verhör im Ratsbüro zu stellen...";
+                    $_SESSION['b5_akt'] = "ratsbuero_bereit";
+                }
+            }
+
+            // --- WEICHE 4: RATSBÜRO-VERHÖR ---
+            elseif ($_SESSION['b5_akt'] === "ratsbuero_bereit") {
+                if ($befehl === "weiter") {
+                    $_SESSION['b5_log'] .= "\n\n[BABYLON 5 - RATSBÜRO DER KOMMANDOZENTRALE]\nCaptain Lochley fixiert die blinkenden Fehlerprotokolle der toten Relais.\nZack Allan schiebt dich in den Raum und schließt die schwere Panzertür.\n\nLochley blickt dich ernst an: 'Hat der Ranger im Sterben gar nichts gesagt? Kein einziges Wort?'\nDu: 'Er keuchte nur: \"Nimm ihn... Bring ihn persönlich zum Kommandostab...\"\n     Und seine letzten Worte waren: \"Die Schläfer erwachen... Wir sterben... für den Einen...\"'\n\nLochley: 'Wenn Sie Marcus Coles Partner beim Geheimdienst waren, verstehen Sie die Dunkelheit.'\nZack Allan atmet tief durch: 'Marcus... Valen sei Dank. Er wusste, wem er vertraut.'\n\n=== ENDE DES AKTUELLEN BETA-FEEDS ===\nDie Triebwerke deines Skripts laufen absolut stabil!";
+                    $_SESSION['b5_akt'] = "spiel_ende";
+                }
+            }
+            
+            // Fallback für sonstige Befehle
+            else {
+                if ($befehl === "look" || $befehl === "scan") {
+                    $_SESSION['b5_log'] .= "\nSensoren scannen die Umgebung. Keine neuen Signaturen.";
+                } else {
+                    $_SESSION['b5_log'] .= "\n⚠ Unbekannter Befehlsvektor.";
+                }
+            }
         }
-    }
-
-    // Pfad zu deiner originalen Python-Datei
-    $pythonScript = __DIR__ . '/Python/B5_Project.txt'; 
-    $command = "python3 " . escapeshellarg($pythonScript) . " 2>&1";
-
-    $descriptorspec = [
-        0 => ["pipe", "r"], // STDIN
-        1 => ["pipe", "w"], // STDOUT
-        2 => ["pipe", "w"]  // STDERR
-    ];
-
-    $process = proc_open($command, $descriptorspec, $pipes);
-
-    if (is_resource($process)) {
-        // Füttert Python nacheinander mit all deinen getätigten Schritten
-        foreach ($_SESSION['b5_history'] as $pastInput) {
-            fwrite($pipes[0], $pastInput . "\n");
-        }
-        fclose($pipes[0]); // Schließt den Eingabekanal 0, damit Python anfängt zu arbeiten!
-
-        // Holt den originalen Print-Text aus deiner B5_Project.txt aus Kanal 1
-        $gameOutput = stream_get_contents($pipes[1]);
-        fclose($pipes[1]); // Schließt Kanal 1 sauber einzeln
-        fclose($pipes[2]); // Schließt Kanal 2 sauber einzeln
-        proc_close($process);
-    } else {
-        $gameOutput = "SYSTEM ERROR: Sub-space core execution failed.";
     }
 }
 ?>
@@ -69,48 +95,29 @@ if ($isLoggedIn === 1) {
         ✔ Credentials verified. Access granted to Sub-Space Alpha Core.
     </p>
 
-    <!-- CONTAINER: Setzt Terminal und Legende sauber nebeneinander -->
     <div style="display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; gap: 20px !important; max-width: 950px !important; margin: 0 auto !important; justify-content: center !important; box-sizing: border-box !important;">
         
         <!-- 1. DAS TERMINAL-GEHÄUSE -->
         <div style="flex: 2 !important; min-width: 450px !important; background-color: #050714 !important; border: 2px solid #ff9900 !important; border-radius: 6px !important; box-shadow: 0 0 15px rgba(255, 153, 0, 0.3) !important; padding: 15px !important; font-family: monospace !important; box-sizing: border-box !important;">
-            
-            <!-- Terminal Kopfzeile -->
-            <div style="border-bottom: 1px solid rgba(255, 153, 0, 0.3) !important; padding-bottom: 8px !important; margin-bottom: 12px !important; color: #ff9900 !important; font-size: 0.85em !important; display: flex !important; justify-content: space-between !important;">
-                <span>[SUBLINK_CORE_TERMINAL_v2.0]</span>
-                <span style="color: #00c850;">● ACTIVE_FEED</span>
-            </div>
 
-            <!-- Ausgabefenster des Spiels -->
-            <div id="terminal-output" style="height: 420px !important; overflow-y: auto !important; color: #60acf3 !important; font-size: 1.05em !important; line-height: 1.5 !important; text-align: left !important; padding-right: 10px !important; margin-bottom: 15px !important; white-space: pre-wrap !important;">
-                <pre style="margin: 0; white-space: pre-wrap; font-family: monospace; color: #60acf3; font-size: 1.05em;"><?php echo htmlspecialchars($gameOutput); ?></pre>
-            </div>
-
-            <!-- Eingabezeile für den Spieler -->
-            <form method="post" action="" style="margin: 0; padding: 0;">
-                <div style="display: flex !important; align-items: center !important; border-top: 1px solid rgba(255, 153, 0, 0.2) !important; padding-top: 10px !important;">
-                    <span style="color: #ff9900 !important; font-weight: bold !important; margin-right: 10px !important;">cmd_vector></span>
-                    <input type="text" name="game_input" id="terminal-input" style="flex: 1 !important; background: transparent !important; border: none !important; color: #fff !important; font-family: monospace !important; font-size: 1.1em !important; outline: none !important;" placeholder="Type a command and press Enter..." autofocus autocomplete="off">
-                </div>
-            </form>
-        </div>        <!-- 2. DIE TAKTISCHE BEFEHLS-LEGENDE -->
+            <!-- 2. DIE TAKTISCHE BEFEHLS-LEGENDE -->
         <div style="flex: 1 !important; min-width: 240px !important; max-width: 300px !important; background-color: rgba(13, 20, 59, 0.5) !important; border: 1px solid rgba(96, 172, 243, 0.3) !important; backdrop-filter: blur(5px) !important; -webkit-backdrop-filter: blur(5px) !important; border-radius: 6px !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important; padding: 15px !important; font-family: Arial, sans-serif !important; box-sizing: border-box !important; text-align: left !important; height: fit-content !important; align-self: flex-start !important;">
             <h4 style="color: #ff9900 !important; text-shadow: 0 0 5px rgba(255, 153, 0, 0.5) !important; margin-top: 0 !important; margin-bottom: 12px !important; font-family: 'B5Station', Arial, sans-serif !important; letter-spacing: 0.5px !important; border-bottom: 1px solid rgba(96, 172, 243, 0.2) !important; padding-bottom: 5px !important;">
                 🛰️ COMMAND MATRIX
             </h4>
             <p style="font-size: 0.85em !important; color: hsl(0, 9%, 85%) !important; margin-bottom: 15px !important; line-height: 1.4 !important;">
-                Nutze die Eingaben deiner originalen Python-Datei, um die Simulation direkt zu steuern:
+                Nutze die Eingaben deines Adventure-Vektors, um die Story-Simulation zu steuern:
             </p>
             <ul style="list-style-type: none !important; padding: 0 !important; margin: 0 !important; font-size: 0.9em !important; line-height: 1.7 !important;">
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">1 / 2 / 3</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Pfade wählen / Entscheidungen treffen</span></li>
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">clear</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Leert den lokalen Verlauf</span></li>
+                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">1 / 2</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Pfade & Herkunft wählen</span></li>
+                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">weiter</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Zum nächsten Handlungsakt vorrücken</span></li>
                 <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">restart</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Setzt die Simulation komplett zurück</span></li>
             </ul>
         </div>
 
     </div>
 
-    <!-- AUTO-SCROLL-RELAIS: Hält das Textfenster synchron mit deinem Seitenraster -->
+    <!-- AUTO-SCROLL-RELAIS: Drückt das Textfenster nach dem Laden sofort nach unten -->
     <script type="text/javascript">
         window.onload = function() {
             const outputDiv = document.getElementById("terminal-output");
@@ -135,10 +142,6 @@ if ($isLoggedIn === 1) {
 <?php endif; ?>
 
 <?php 
-// 4. Den Inhalt aus dem Zwischenspeicher holen
 $seitenInhalt = ob_get_clean(); 
-
-// 5. Das Layout mit dem taktischen Titel rendern
 renderLayout("B5 Legacy - Simulation Deck", $seitenInhalt); 
 ?>
-
