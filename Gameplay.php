@@ -10,6 +10,58 @@ $isLoggedIn = 0;
 if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
     $isLoggedIn = 1;
 }
+
+// ==========================================================================
+// INTERSTELLAR PYTHON PIPELINE ENGINE (Führt deine B5_Project.txt direkt aus)
+// ==========================================================================
+if (isset($_POST['execute_command']) && $isLoggedIn === 1) {
+    header('Content-Type: application/json');
+    $input = trim($_POST['execute_command']);
+    
+    // Initialisiert den Spielstand im Session-Speicher bei Neustart
+    if (!isset($_SESSION['b5_game_inputs']) || $input === "restart") {
+        $_SESSION['b5_game_inputs'] = [];
+    }
+    
+    // Fügt die neue Eingabe der Historie hinzu (außer beim ersten Laden)
+    if ($input !== "" && $input !== "start_game" && $input !== "restart") {
+        $_SESSION['b5_game_inputs'][] = $input;
+    }
+    
+    // Pfad zu deinem originalen Python-Skript im Repository
+    $pythonScript = __DIR__ . '/Python/B5_Project.txt'; 
+    
+    // Bereitet den Shell-Befehl vor und leitet Fehler um
+    $command = "python3 " . escapeshellarg($pythonScript) . " 2>&1";
+    
+    // Öffnet den bidirektionalen Prozess zum Python-Interpreter
+    $descriptorspec = [
+        0 => ["pipe", "r"], // STDIN (Eingaben an Python übergeben)
+        1 => ["pipe", "w"], // STDOUT (Ausgaben von Python abfangen)
+        2 => ["pipe", "w"]  // STDERR
+    ];
+    
+    $process = proc_open($command, $descriptorspec, $pipes);
+    
+    if (is_resource($process)) {
+        // Füttert Python nacheinander mit allen bisherigen Entscheidungen
+        foreach ($_SESSION['b5_game_inputs'] as $pastInput) {
+            fwrite($pipes, $pastInput . "\n");
+        }
+        fclose($pipes); // Schließt den Eingabekanal, damit Python weiterrechnet
+        
+        // Holt die generierte Text-Ausgabe deines Skripts ab
+        $output = stream_get_contents($pipes);
+        fclose($pipes);
+        fclose($pipes);
+        proc_close($process);
+        
+        echo json_encode(["status" => "success", "output" => $output]);
+    } else {
+        echo json_encode(["status" => "error", "output" => "SYSTEM ERROR: Sub-space interpreter offline."]);
+    }
+    exit();
+}
 ?>
 
 <h2>Tactical Simulation Deck</h2>
@@ -39,7 +91,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             <!-- Eingabezeile für den Spieler -->
             <div style="display: flex !important; align-items: center !important; border-top: 1px solid rgba(255, 153, 0, 0.2) !important; padding-top: 10px !important;">
                 <span style="color: #ff9900 !important; font-weight: bold !important; margin-right: 10px !important;">cmd_vector></span>
-                <input type="text" id="terminal-input" style="flex: 1 !important; background: transparent !important; border: none !important; color: #fff !important; font-family: monospace !important; font-size: 1.1em !important; outline: none !important;" placeholder="Type a command (e.g. 1, 2, look) and press Enter..." autofocus>
+                <input type="text" id="terminal-input" style="flex: 1 !important; background: transparent !important; border: none !important; color: #fff !important; font-family: monospace !important; font-size: 1.1em !important; outline: none !important;" placeholder="Type a command and press Enter..." autofocus>
             </div>
         </div>
 
@@ -49,114 +101,87 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
                 🛰️ COMMAND MATRIX
             </h4>
             <p style="font-size: 0.85em !important; color: hsl(0, 9%, 85%) !important; margin-bottom: 15px !important; line-height: 1.4 !important;">
-                Nutze die Eingaben deines Adventure-Vektors, um die Story-Simulation zu steuern:
+                Nutze die Eingaben deiner originalen Python-Datei, um die Simulation direkt zu steuern:
             </p>
             <ul style="list-style-type: none !important; padding: 0 !important; margin: 0 !important; font-size: 0.9em !important; line-height: 1.7 !important;">
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">1 / 2</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Herkunft & Pfade wählen</span></li>
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">look / scan</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Umgebung scannen</span></li>
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">clear</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Bildschirm leeren</span></li>
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">restart</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Setzt das Spiel komplett zurück</span></li>
-                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">quit / exit</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Beendet die Terminal-Sitzung</span></li>
+                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">1 / 2 / 3</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Pfade wählen / Entscheidungen treffen</span></li>
+                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">clear / cls</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Bildschirm leeren</span></li>
+                <li style="margin-bottom: 8px !important;"><strong style="color: #60acf3 !important; font-family: monospace !important;">restart</strong><br><span style="color: #aaa !important; font-size: 0.85em !important;">➔ Setzt die Simulation komplett zurück</span></li>
             </ul>
         </div>
 
-    </div>    <!-- JAVASCRIPT-TERMINAL-LOGIK (UMGEHT JEDEN ABSTURZ) -->
+    </div>    <!-- JAVASCRIPT: ECHTE PYTHON-BRÜCKE MIT PIPELINE-STREAMING -->
     <script type="text/javascript">
         const outputDiv = document.getElementById("terminal-output");
         const inputField = document.getElementById("terminal-input");
-        const current_user = "<?php echo htmlspecialchars($_SESSION['username'] ?? 'Commander'); ?>";
+
+        function sendCommandToPython(commandText) {
+            const formData = new FormData();
+            formData.append('execute_command', commandText);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    // Löscht das Fenster bei einem kompletten Neustart
+                    if (commandText === "restart") {
+                        outputDiv.innerHTML = "";
+                    }
+                    // Gibt den exakten, echten Print-Text deines Python-Skripts aus
+                    printToTerminal(data.output);
+                } else {
+                    printToTerminal("\n⚠ TRANSMISSION ERROR: " + data.output);
+                }
+            })
+            .catch(error => {
+                printToTerminal("\n⚠ UPLINK CRITICAL: Core communication lost.");
+            });
+        }
 
         function printToTerminal(text) {
-            const div = document.createElement("div");
-            div.textContent = text;
-            outputDiv.appendChild(div);
+            const pre = document.createElement("pre");
+            pre.style.margin = "0";
+            pre.style.whiteSpace = "pre-wrap";
+            pre.style.fontFamily = "monospace";
+            pre.style.color = "#60acf3";
+            pre.style.fontSize = "1.05em";
+            pre.textContent = text;
+            outputDiv.appendChild(pre);
+            
+            // 🛰️ AUTO-SCROLL-RELAIS: Schiebt das Sichtfenster perfekt mit, während die Inputzeile steht!
             outputDiv.scrollTop = outputDiv.scrollHeight;
         }
 
-        // Simulierter Spielverlauf basierend auf deiner B5_Project.txt
-        function zeigeIntro() {
-            // Textfeld wieder freischalten (falls vorher 'quit' eingegeben wurde)
-            inputField.disabled = false;
-            inputField.placeholder = "Type a command (e.g. 1, 2, look) and press Enter...";
-            inputField.focus();
-
-            printToTerminal("=== SIMULATION BOOT SEQUENCE COMPLETE ===");
-            printToTerminal("Uplink aktiv. Willkommen im System, Commander " + current_user + ".\n");
-            printToTerminal("[CHARAKTER-AUSWAHL: DIE RECHENSCHAFT DER VERGANGENHEIT]");
-            printToTerminal("Bevor du in die Schächte eintauchst, wähle deine Herkunft:");
-            printToTerminal("1 = GEHEIMDIENST-VETERAN (Hoher Analyse-Fokus, kennt militärische Protokolle)");
-            printToTerminal("2 = UNTERWELT-SCHMUGGLER (Kennt illegale Schleusen und unregistrierte Routen)");
-        }
-
+        // Fängt den Enter-Tastendruck ab
         inputField.addEventListener("keydown", function(event) {
             if (event.keyCode === 13) {
-                const befehl = inputField.value.trim().toLowerCase();
+                const befehl = inputField.value.trim();
                 inputField.value = "";
                 
-                printToTerminal("\n> " + befehl);
-
-                // ==========================================================================
-                // RESTART & QUIT FUNKTIONEN (Direkt abgefangen)
-                // ==========================================================================
-                if (befehl === "restart" || befehl === "reset") {
-                    outputDiv.innerHTML = "";
-                    printToTerminal("🔄 REBOOTING CORE... Display cache flushed.");
-                    setTimeout(zeigeIntro, 600);
-                    return;
-                }
+                if (befehl === "") return;
                 
-                if (befehl === "quit" || befehl === "exit") {
-                    printToTerminal("\n🛑 SHUTDOWN SEQUENCE INITIATED...");
-                    printToTerminal("💾 Progress data routed to Interstellar Alliance archives.");
-                    printToTerminal("Connection closed. Safe travels, Commander " + current_user + ". 🖖");
-                    
-                    // Sperrt das Eingabefeld unmissverständlich
-                    inputField.disabled = true;
-                    inputField.placeholder = "📟 TERMINAL OFFLINE. Type 'restart' to boot again.";
+                // Lokaler Bildschirm-Leerer
+                if (befehl.toLowerCase() === "clear" || befehl.toLowerCase() === "cls") {
+                    outputDiv.innerHTML = "";
+                    printToTerminal("[Display cache cleared]");
                     return;
                 }
 
-                // ==========================================================================
-                // DEINE BESTEHENDE SPIELLOGIK (KORRIGIERT MIT RETURN-STOPPERN)
-                // ==========================================================================
-                if (befehl === "1") {
-                    printToTerminal("\n-> Du bist ein Phantom des ehemaligen Earthforce-Geheimdienstes.");
-                    printToTerminal("\n=== AKT I: DER FUNKE IM DRECK ===");
-                    printToTerminal("Die Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff...");
-                    printToTerminal("Plötzlich stolpert eine Gestalt aus einer Wartungsschleuse.");
-                    printToTerminal("Ein Mann in der zerfetzten Kluft der Rangers bricht direkt vor dir zusammen!");
-                    printToTerminal("Er presst dir einen Kristall in die Hand: 'Nimm ihn... Bring ihn... persönlich zum Kommandostab...'");
-                    return; // ➔ Verhindert das Rutschen in den Else-Zweig!
-                } 
-                
-                if (befehl === "2") {
-                    printToTerminal("\n-> Du bist ein Geist des Braunen Sektors, ein Meister unregistrierter Fracht.");
-                    printToTerminal("\n=== AKT I: DER FUNKE IM DRECK ===");
-                    printToTerminal("Die Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff...");
-                    printToTerminal("Ein Ranger bricht vor dir zusammen und übergibt dir einen geheimen Kristall.");
-                    return; // ➔ Verhindert das Rutschen in den Else-Zweig!
-                } 
-                
-                if (befehl === "look" || befehl === "scan") {
-                    printToTerminal("Sensoren scannen den Braunen Sektor. Psi-Corps-Agenten patrouillieren in der Nähe.");
-                    return;
-                } 
-                
-                if (befehl === "clear") {
-                    outputDiv.innerHTML = "";
-                    printToTerminal("=== DISPLAY LOG CACHE CLEARED ===");
-                    return;
-                } 
-                
-                // Fallback für ungültige Befehle
-                printToTerminal("Unbekannter Vektor: '" + befehl + "'. Nutze '1', '2', 'look', 'restart' oder 'quit'.");
+                // Sendet den echten Befehl (1, 2, 3 etc.) direkt an das Python-Skript
+                sendCommandToPython(befehl);
             }
         });
 
-        // Sofortzündung beim Laden
+        // Startet dein originales Python-Skript direkt beim Laden der Seite
         window.onload = function() {
-            zeigeIntro();
-        }
+            printToTerminal("🔄 INITIALIZING CORE INTERPRETER...");
+            setTimeout(function() {
+                sendCommandToPython("start_game");
+            }, 400);
+        };
     </script>
 
 <?php else: ?>
