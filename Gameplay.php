@@ -61,7 +61,6 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
         </div>
 
     </div>
-
     <!-- JAVASCRIPT-TERMINAL-LOGIK (UMGEHT JEDEN ABSTURZ) -->
     <script type="text/javascript">
         const outputDiv = document.getElementById("terminal-output");
@@ -72,12 +71,12 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             const div = document.createElement("div");
             div.textContent = text;
             outputDiv.appendChild(div);
+            
+            // 🛰️ AUTO-SCROLL-RELAIS: Schiebt das Sichtfenster bei neuem Text unaufhaltsam nach unten!
             outputDiv.scrollTop = outputDiv.scrollHeight;
         }
 
-        // Simulierter Spielverlauf basierend auf deiner B5_Project.txt
         function zeigeIntro() {
-            // Textfeld wieder freischalten (falls vorher 'quit' eingegeben wurde)
             inputField.disabled = false;
             inputField.placeholder = "Type a command (e.g. 1, 2, look) and press Enter...";
             inputField.focus();
@@ -95,73 +94,77 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
                 const befehl = inputField.value.trim().toLowerCase();
                 inputField.value = "";
                 
-                printToTerminal("\n> " + befehl);
+                if (befehl === "") return;
+                
+                printToTerminal("\ncmd_vector> " + befehl);
 
-                // ==========================================================================
-                // NEU: RESTART & QUIT FUNKTIONEN (Direkt abgefangen)
-                // ==========================================================================
+                // 1. RESTART-BEFEHL
                 if (befehl === "restart" || befehl === "reset") {
                     outputDiv.innerHTML = "";
                     printToTerminal("🔄 REBOOTING CORE... Display cache flushed.");
-                    // Kleiner Zeitversatz für das Sci-Fi-Feeling
                     setTimeout(zeigeIntro, 600);
                     return;
                 }
-                
-                if (befehl === "quit" || befehl === "exit") {
-                    printToTerminal("\n🛑 SHUTDOWN SEQUENCE INITIATED...");
-                    printToTerminal("💾 Progress data routed to Interstellar Alliance archives.");
-                    printToTerminal("Connection closed. Safe travels, Commander " + current_user + ". 🖖");
-                    
-                    // Sperrt das Eingabefeld unmissverständlich
-                    inputField.disabled = true;
-                    inputField.placeholder = "📟 TERMINAL OFFLINE. Type 'restart' to boot again.";
+
+                // 2. CLEAR-BEFEHL
+                if (befehl === "clear" || befehl === "cls") {
+                    outputDiv.innerHTML = "";
+                    printToTerminal("[System cache cleared]");
                     return;
                 }
 
-                // ==========================================================================
-                // DEINE BESTEHENDE SPIELLOGIK
-                // ==========================================================================
-                if (befehl === "1") {
-                    printToTerminal("\n-> Du bist ein Phantom des ehemaligen Earthforce-Geheimdienstes.");
-                    printToTerminal("\n=== AKT I: DER FUNKE IM DRECK ===");
-                    printToTerminal("Die Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff...");
-                    printToTerminal("Plötzlich stolpert eine Gestalt aus einer Wartungsschleuse.");
-                    printToTerminal("Ein Mann in der zerfetzten Kluft der Rangers bricht direkt vor dir zusammen!");
-                    printToTerminal("Er presst dir einen Kristall in die Hand: 'Nimm ihn... Bring ihn... persönlich zum Kommandostab...'");
-                } else if (befehl === "2") {
-                    printToTerminal("\n-> Du bist ein Geist des Braunen Sektors, ein Meister unregistrierter Fracht.");
-                    printToTerminal("\n=== AKT I: DER FUNKE IM DRECK ===");
-                    printToTerminal("Die Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff...");
-                    printToTerminal("Ein Ranger bricht vor dir zusammen und übergibt dir einen geheimen Kristall.");
-                } else if (befehl === "look" || befehl === "scan") {
-                    printToTerminal("Sensoren scannen den Braunen Sektor. Psi-Corps-Agenten patrouillieren in der Nähe.");
-                } else if (befehl === "clear") {
-                    outputDiv.innerHTML = "";
-                    printToTerminal("=== DISPLAY LOG CACHE CLEARED ===");
-                } else {
-                    printToTerminal("Unbekannter Vektor: '" + befehl + "'. Nutze '1', '2', 'look', 'restart' oder 'quit'.");
+                // 3. QUIT-BEFEHL
+                if (befehl === "quit" || befehl === "exit") {
+                    printToTerminal("❌ DISCONNECTING SUB-SPACE LINK... Terminal offline.");
+                    inputField.disabled = true;
+                    inputField.placeholder = "Terminal offline. Type 'restart' to reboot.";
+                    return;
                 }
+
+                // 4. LOOK / SCAN BEFEHL
+                if (befehl === "look" || befehl === "scan") {
+                    printToTerminal("🛰️ SENSORS ACTIVE: Das taktische Display der Liburnia zeigt schwere Hyperraum-Störungen im Sektor 2264. Die Jam-Wall der Erde blockiert Langstrecken-Scans.");
+                    return;
+                }
+
+                // 5. STORY-PFAD 1 (Veteran)
+                if (befehl === "1") {
+                    printToTerminal("\n[LOG]: Herkunft gewählt: Geheimdienst-Veteran.");
+                    printToTerminal("Deine implantierten Cyber-Linsen flackern auf. Ein verschlüsselter Datenstrom aus dem Hauptquartier der Ranger wird dekomprimiert...");
+                    printToTerminal("Meldung: 'Schatten-Aktivität im Centauri-Sektor bestätigt. Reaktor-Sollwerte anpassen.'");
+                    return;
+                }
+
+                // 6. STORY-PFAD 2 (Schmuggler)
+                if (befehl === "2") {
+                    printToTerminal("\n[LOG]: Herkunft gewählt: Unterwelt-Schmuggler.");
+                    printToTerminal("Du grinst. Die alten Schmuggel-Frequenzen im Hyperraum-Gitter der Erde sind immer noch offen. Du fängst ein unregistriertes Frachter-Signal ab...");
+                    printToTerminal("Meldung: 'Ladebucht 4 bereit für illegale Transmulation.'");
+                    return;
+                }
+
+                // FALLBACK FÜR UNBEKANNTE BEFEHLE
+                printToTerminal("⚠ ERROR: Unknown command vector. Type 1, 2, look, clear, or restart.");
             }
         });
 
-        // Sofortzündung beim Laden
+        // Startet das Spiel direkt beim Laden der Seite
         window.onload = function() {
-            zeigeIntro();
-        }
-
+            setTimeout(zeigeIntro, 300);
+        };
     </script>
 
 <?php else: ?>
-    <div style="background-color: rgba(255, 51, 51, 0.1) !important; border: 1px solid #ff3333 !important; padding: 20px !important; border-radius: 6px !important; text-align: center !important; margin: 30px auto !important; max-width: 600px !important;">
-        <h4 style="color: #ff3333 !important; text-shadow: 0 0 5px #ff3333 !important; margin-bottom: 10px !important; font-family: 'B5Station', Arial, sans-serif !important;">
-            🔒 RESTRICTED SECTOR: EARLY-CONCEPT-ALPHA-TEST CLOSED
-        </h4>
-        <p style="font-size: 0.95em !important;">The test simulation deck is currently running under a private alpha phalanx. Please log in.</p>
-    </div>
+    <p style="color: #ff3333; text-shadow: 0 0 4px rgba(255, 51, 51, 0.4); text-align: center;">
+        ⛔ ACCESS DENIED: Active crew credentials required to access the Simulation Deck. Please login via the left console.
+    </p>
 <?php endif; ?>
 
 <?php 
+// 4. Den Inhalt aus dem Zwischenspeicher holen
 $seitenInhalt = ob_get_clean(); 
-renderLayout("B5 Legacy - Simulation Deck", $seitenInhalt); 
+
+// 5. Das Layout mit individuellem Titel rendern
+renderLayout("B5 Legacy - Tactical Deck", $seitenInhalt); 
 ?>
+
