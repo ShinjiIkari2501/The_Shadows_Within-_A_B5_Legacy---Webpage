@@ -42,7 +42,7 @@ if ($isLoggedIn === 1) {
                     }
                     
                     // AKT I Text aus deinem originalen Skript anhängen
-                    $_SESSION['b5_log'] .= "\n\n======================================================\n=== AKT I: DER FUNKE IM DRECK ========================\n======================================================\nDie Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff,\nbilligem synthetischem Kaffee und dem Dunst unzähliger Frachterkühler.\nHier, in den USA, bewegst du dich im Graubereich.\nJede schattige Ecke hast du in ein logisches Raster eingeordnet.\nEs ist die einzige Art, wie du nach dem tragischen Verlust deines Partners Marcus Cole überleben konntest.\n\nPlötzlich stolpert eine Gestalt aus einer Wartungsschleuse.\nEin Mann in der zerfetzten Kluft der Rangers bricht direkt vor dir zusammen.\nHinter ihm, am Ende des Tunnels, scannen Psi-Corps-Agenten die Gasse mit Bioscannern.\n\nOhne ein Geräusch zu machen, aktivierst du dein illegales Chamäleon-Netz.\nDas holografische Feld summt minimal auf. Als das Licht der Agenten über dich gleitet,\nsehen sie nur eine leere Wand und gehen irritiert weiter.\n\nDer Ranger keucht, Blut tritt auf seine Lippen. Er blickt dir direkt in die Augen.\nIn seinen sterbenden Augen liegt stummes Erkennen. Er presst dir einen Kristall in die Hand.\n\nDer sterbende Ranger flüstert mit rauer, abgehackter Stimme:\n 'Nimm ihn... Bring ihn... persönlich zum Kommandostab... Vertrau niemandem...'\n 'Die Schläfer erwachen... Wir sterben... für den Einen...'\n\nEin letzten Rasseln, dann erschlafft sein Körper. Seine Finger lösen sich.\nDas Anla'shok-Medaillon gleitet in deine Faust. Du stehst allein im Korridor.\nDu begreifst stumm und schmerzhaft, was für ein unerbittliches Leben Marcus damals gewählt hatte.\n\nTippe 'weiter' um die Stationsleitung aufzusuchen...";
+                    $_SESSION['b5_log'] .= "\n\n======================================================\n=== AKT I: DER FUNKE IM DRECK ========================\n======================================================\nDie Luft im Braunen Sektor von Babylon 5 schmeckt nach recyceltem Sauerstoff,\nbilligem synthetischem Kaffee und dem Dunst unzähliger Frachterkühler.\nHier, in den untersten Versorgungsschächten, bewegst du dich im Graubereich.\nJede schattige Ecke hast du in ein logisches Raster eingeordnet.\nEs ist die einzige Art, wie du nach dem tragischen Verlust deines Partners Marcus Cole überleben konntest.\n\nPlötzlich stolpert eine Gestalt aus einer Wartungsschleuse.\nEin Mann in der zerfetzten Kluft der Rangers bricht direkt vor dir zusammen.\nHinter ihm, am Ende des Tunnels, scannen Psi-Corps-Agenten die Gasse mit Bioscannern.\n\nOhne ein Geräusch zu machen, aktivierst du dein illegales Chamäleon-Netz.\nDas holografische Feld summt minimal auf. Als das Licht der Agenten über dich gleitet,\nsehen sie nur eine leere Wand und gehen irritiert weiter.\n\nDer Ranger keucht, Blut tritt auf seine Lippen. Er blickt dir direkt in die Augen.\nIn seinen sterbenden Augen liegt stummes Erkennen. Er presst dir einen Kristall in die Hand.\n\nDer sterbende Ranger flüstert mit rauer, abgehackter Stimme:\n 'Nimm ihn... Bring ihn... persönlich zum Kommandostab... Vertrau niemandem...'\n 'Die Schläfer erwachen... Wir sterben... für den Einen...'\n\nEin letzten Rasseln, dann erschlafft sein Körper. Seine Finger lösen sich.\nDas Anla'shok-Medaillon gleitet in deine Faust. Du stehst allein im Korridor.\nDu begreifst stumm und schmerzhaft, was für ein unerbittliches Leben Marcus damals gewählt hatte.\n\nTippe 'weiter' um die Stationsleitung aufzusuchen...";
                     $_SESSION['b5_akt'] = "akt_1_gelesen";
                 } else {
                     $_SESSION['b5_log'] .= "\n⚠ ERROR: Ungültige Herkunft. Wähle 1 oder 2.";
@@ -52,7 +52,7 @@ if ($isLoggedIn === 1) {
             // --- WEICHE 2: ZACK ALLANS BÜRO ---
             elseif ($_SESSION['b5_akt'] === "akt_1_gelesen") {
                 if ($befehl === "weiter") {
-                    $_SESSION['b5_log'] .= "\n\n======================================================\n=== AKT II: DIE ÜBERGABE IN DER SICHERHEITSZENTRALE ==\n======================================================\nDu nutzt unregistrierte Schmuggelwege und Servicekorridore des Braunen Sektors.\nErst direkt vor der Luftschleuse trittst du mit eisiger Dringlichkeit hervor.\nDie Officers lassen dich irritiert in das private Büro von Zack Allan.\n\nOhne ein Wort der Erklärung legst du den Kristall und das Medaillon auf die Konsole.\nDu: 'Mr. Allan. Ein Ranger ist gerade im Braunen Sektor diesseits gestorben. Das Corps jagt\n     diese Daten. Es war absolut lebenswichtig für ihn, dass dieser Kristall nur\n     in die Hände der Stationsleitung gelangt. Sorgen Sie persönlich dafür.'\n\nZack Allan blickt auf das Abzeichen, nickt grimmig und greift nach den Gegenständen.\nEr packt den Kristall in seine Manteltasche und greift nach seinem Datenpad.\nZack Allan dreht sich um: 'Verdammt... Wo liegt die Leiche? Sagen Sie mir, wo er--'\n\nDoch er spricht gegen die nackte Wand. In den zwei Sekunden seiner Ablenkung hast du\nden perfekten Moment abgepasst und bist lautlos im unruhigen Strom untergetaucht.\n\nTippe 'weiter' um G'Kars verschlüsselte Botschaft abzurufen...";
+                    $_SESSION['b5_log'] .= "\n\n======================================================\n=== AKT II: DIE ÜBERGABE IN DER SICHERHEITSZENTRALE ==\n======================================================\nDu nutzt unregistrierte Schmuggelwege und Servicekorridore des Braunen Sektors.\nErst direkt vor der Luftschleuse trittst du mit eisiger Dringlichkeit hervor.\nDie Officers lassen dich irritiert in das private Büro von Zack Allan.\n\nOhne ein Wort der Erklärung legst du den Kristall und das Medaillon auf die Konsole.\nDu: 'Mr. Allan. Ein Ranger ist gerade im Braunen Sektor gestorben. Das Corps jagt\n     diese Daten. Es war absolut lebenswichtig für ihn, dass dieser Kristall nur\n     in die Hände der Stationsleitung gelangt. Sorgen Sie persönlich dafür.'\n\nZack Allan blickt auf das Abzeichen, nickt grimmig und greift nach den Gegenständen.\nEr packt den Kristall in seine Manteltasche und greift nach seinem Datenpad.\nZack Allan dreht sich um: 'Verdammt... Wo liegt die Leiche? Sagen Sie mir, wo er--'\n\nDoch er spricht gegen die nackte Wand. In den zwei Sekunden seiner Ablenkung hast du\nden perfekten Moment abgepasst und bist lautlos im unruhigen Strom untergetaucht.\n\nTippe 'weiter' um G'Kars verschlüsselte Botschaft abzurufen...";
                     $_SESSION['b5_akt'] = "sicherheitszentrale_gelesen";
                 }
             }
@@ -85,7 +85,6 @@ if ($isLoggedIn === 1) {
     }
 }
 ?>
-
 <h2>Tactical Simulation Deck</h2>
 <h3>Early-Concept-Alpha / Operation: Test</h3>
 
@@ -95,12 +94,29 @@ if ($isLoggedIn === 1) {
         ✔ Credentials verified. Access granted to Sub-Space Alpha Core.
     </p>
 
+    <!-- GRID-STABILISIERUNG: Verankert beide Boxen wieder unantastbar nebeneinander -->
     <div style="display: flex !important; flex-direction: row !important; flex-wrap: wrap !important; gap: 20px !important; max-width: 950px !important; margin: 0 auto !important; justify-content: center !important; box-sizing: border-box !important;">
         
-        <!-- 1. DAS TERMINAL-GEHÄUSE -->
+        <!-- 1. DAS TERMINAL-GEHÄUSE (RECHTS) -->
         <div style="flex: 2 !important; min-width: 450px !important; background-color: #050714 !important; border: 2px solid #ff9900 !important; border-radius: 6px !important; box-shadow: 0 0 15px rgba(255, 153, 0, 0.3) !important; padding: 15px !important; font-family: monospace !important; box-sizing: border-box !important;">
+            <div style="border-bottom: 1px solid rgba(255, 153, 0, 0.3) !important; padding-bottom: 8px !important; margin-bottom: 12px !important; color: #ff9900 !important; font-size: 0.85em !important; display: flex !important; justify-content: space-between !important;">
+                <span>[SUBLINK_CORE_TERMINAL_v2.0]</span>
+                <span style="color: #00c850;">● ACTIVE_FEED</span>
+            </div>
 
-            <!-- 2. DIE TAKTISCHE BEFEHLS-LEGENDE -->
+            <div id="terminal-output" style="height: 420px !important; overflow-y: auto !important; color: #60acf3 !important; font-size: 1.05em !important; line-height: 1.5 !important; text-align: left !important; padding-right: 10px !important; margin-bottom: 15px !important; white-space: pre-wrap !important;">
+                <pre style="margin: 0; white-space: pre-wrap; font-family: monospace; color: #60acf3; font-size: 1.05em;"><?php echo htmlspecialchars($_SESSION['b5_log']); ?></pre>
+            </div>
+
+            <form method="post" action="" style="margin: 0; padding: 0;">
+                <div style="display: flex !important; align-items: center !important; border-top: 1px solid rgba(255, 153, 0, 0.2) !important; padding-top: 10px !important;">
+                    <span style="color: #ff9900 !important; font-weight: bold !important; margin-right: 10px !important;">cmd_vector></span>
+                    <input type="text" name="game_input" id="terminal-input" style="flex: 1 !important; background: transparent !important; border: none !important; color: #fff !important; font-family: monospace !important; font-size: 1.1em !important; outline: none !important;" placeholder="Type a command and press Enter..." autofocus autocomplete="off">
+                </div>
+            </form>
+        </div>
+
+        <!-- 2. DIE TAKTISCHE BEFEHLS-LEGENDE (LINKS) -->
         <div style="flex: 1 !important; min-width: 240px !important; max-width: 300px !important; background-color: rgba(13, 20, 59, 0.5) !important; border: 1px solid rgba(96, 172, 243, 0.3) !important; backdrop-filter: blur(5px) !important; -webkit-backdrop-filter: blur(5px) !important; border-radius: 6px !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important; padding: 15px !important; font-family: Arial, sans-serif !important; box-sizing: border-box !important; text-align: left !important; height: fit-content !important; align-self: flex-start !important;">
             <h4 style="color: #ff9900 !important; text-shadow: 0 0 5px rgba(255, 153, 0, 0.5) !important; margin-top: 0 !important; margin-bottom: 12px !important; font-family: 'B5Station', Arial, sans-serif !important; letter-spacing: 0.5px !important; border-bottom: 1px solid rgba(96, 172, 243, 0.2) !important; padding-bottom: 5px !important;">
                 🛰️ COMMAND MATRIX
@@ -117,7 +133,7 @@ if ($isLoggedIn === 1) {
 
     </div>
 
-    <!-- AUTO-SCROLL-RELAIS: Drückt das Textfenster nach dem Laden sofort nach unten -->
+    <!-- AUTO-SCROLL-RELAIS: Hält die Scrollbar nach dem Absenden unaufhaltsam unten -->
     <script type="text/javascript">
         window.onload = function() {
             const outputDiv = document.getElementById("terminal-output");
@@ -142,6 +158,7 @@ if ($isLoggedIn === 1) {
 <?php endif; ?>
 
 <?php 
+// Inhalt extrahieren und an layout.php übergeben
 $seitenInhalt = ob_get_clean(); 
 renderLayout("B5 Legacy - Simulation Deck", $seitenInhalt); 
 ?>
