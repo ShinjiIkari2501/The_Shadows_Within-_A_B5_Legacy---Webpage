@@ -145,11 +145,16 @@ mainNav ul li a:hover {
 }
 
 /* Globale Zuweisung für alle Navigationselemente und den Footer */
-mainNav, 
-mainNav ul li a, 
-mainNav fieldset legend, 
-mainNav fieldset label, 
+/* Globale Zuweisung für alle Navigationselemente und den Footer */
+mainNav,
+mainNav ul li,
+mainNav ul li a,
+mainNav fieldset legend,
+mainNav fieldset label,
 mainNav fieldset button,
-footer {
+footer,
+footer ul li a {
     font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
 }

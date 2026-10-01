@@ -15,13 +15,19 @@
 @import url('B5_Layout_Modules.css');
 
 /* 🛰️ AKTIVER SEKTOR: Highlighting für die Navigation */
-/* Erzwingt die dicke, serifenlose Sci-Fi-Schrift für Navigation und Footer */
-#mainNavigation, 
-.nav-link, 
-footer, 
+/* 🛰️ AKTIVER SEKTOR: Highlighting für die Navigation & Footer */
+/* Erzwingt die echte, fette Babylon-5-Stationsschriftart auf Render.com */
+mainNav,
+mainNav ul li a,
+mainNav fieldset legend,
+mainNav fieldset label,
+mainNav fieldset button,
+footer,
+footer ul li a,
 #system-status {
-    font-family: 'Crillee', 'Eras Bold', 'Impact', sans-serif !important;
-    font-weight: 900 !important; /* Macht die Schrift maximal dick */
-    text-transform: uppercase;   /* B5-typische Großbuchstaben */
-    letter-spacing: 1px;         /* Taktischer Zeichenabstand */
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold !important;        /* Zwingt das System auf maximale Dicke */
+    text-transform: uppercase !important; /* Zwingt alle Menüs in B5-Großbuchstaben */
+    letter-spacing: 1px !important;      /* Taktischer Zeichenabstand */
 }
+
