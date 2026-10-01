@@ -26,9 +26,9 @@
     font-style: normal;
 }
 
-/* --- PLASMASCHIRM-ÜBERSCHRIFTEN (Jetzt einheitlich in B5Station!) --- */
-body h1, main h2, h1, h2, h3, main h3 {
-    font-family: 'SerpentineB5', Arial, sans-serif !important; 
+/* --- PLASMASCHIRM-ÜBERSCHRIFTEN (SerpentineB5) --- */
+body h1, main h2, h1, h2, h3 {
+    font-family: 'SerpentineB5', Arial, sans-serif;
     letter-spacing: 1.5px;       
     text-align: center;      
     color: #ff9900;          
@@ -70,20 +70,4 @@ main p {
     letter-spacing: 0.9px;       
     padding: 20px;              
     text-align: center;
-}
-
-/* --- FOOTER-COPYRIGHT SYSTEM ALIGNMENT --- */
-footer, footer p, body footer, footer span, footer ul li a {
-    font-family: 'B5Station', Arial, sans-serif !important; 
-    font-size: 0.85em !important;
-    letter-spacing: 1.2px !important;            
-    color: rgba(255, 255, 255, 0.5) !important; 
-    text-align: center !important;
-}
-
-/* REPARATUR-RELAIS FÜR DAS LINKS-MENÜ (Macht das Login-Feld sofort wieder perfekt lesbar!) */
-mainNav fieldset, mainNav label, mainNav legend, mainNav input, mainNav button {
-    font-family: Arial, sans-serif !important;
-    text-transform: none !important;
-    letter-spacing: normal !important;
 }

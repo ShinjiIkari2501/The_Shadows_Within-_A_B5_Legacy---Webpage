@@ -45,16 +45,16 @@ if (isset($_POST['loginSubmit'])) {
         $_SESSION['flash_message'] = "🔒 UPLINK ESTABLISHED: Security Clearance Granted. Terminal Sync Complete.";
         
         // Zwingt den Browser, den Cache zu leeren und leitet sicher weiter
-        header("Location: index.php");
+        header("Location: Index.php");
         exit();
     } else {
         $_SESSION['flash_message_error'] = "⚠️ ACCESS DENIED: Invalid Security Credentials or Unknown Sector Entity.";
-        header("Location: index.php");
+        header("Location: Index.php");
         exit();
     }
 
 } else {
-    header("Location: index.php");
+    header("Location: Index.php");
     exit();
 }
 ?>

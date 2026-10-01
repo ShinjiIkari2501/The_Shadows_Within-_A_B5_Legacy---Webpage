@@ -20,8 +20,7 @@ if (isset($_POST['registerSubmit'])) {
     $existierendeCrew = [
         'Shinji2501' => 'Test1234',
         'Sheridan'   => 'Tuzanor2261',
-        'Lochley'    => 'Babcom5',
-        'Test1234'   => 'Test1234'
+        'Lochley'    => 'Babcom5'
     ];
 
     // 1. UNSCHLÄGBARE SICHERHEITS-PRÜFUNG: Existiert der Username bereits?

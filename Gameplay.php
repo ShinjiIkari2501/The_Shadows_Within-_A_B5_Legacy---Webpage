@@ -1,6 +1,6 @@
 <?php
 // 1. Die Layout-Zentrale laden (Startet auch die Session)
-require_once 'Includes/Layout.php';
+require_once 'Includes/layout.php';
 
 // 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
 ob_start();

@@ -96,40 +96,31 @@ main::-webkit-scrollbar-thumb:hover { background: #ff9900; box-shadow: 0 0 8px r
 /* ==========================================================================
    UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT AM RAND FIXIERT
    ========================================================================== */
-/* ==========================================================================
-   UNTERER KONSOLEN-RAHMEN (Footer) - UNZERSTÖRBAR IN SERPENTINEB5
-   ========================================================================== */
-/* ==========================================================================
-   UNTERER KONSOLEN-RAHMEN (Footer) - ABSOLUT IM NARRATIVEN LOOK
-   ========================================================================== */
-footer, footer p, footer ul li a, footer span {
-    display: flex !important;                  
-    justify-content: space-between !important; 
-    align-items: center !important;            
-    
-    /* ERZWUNGEN: Lädt hier einheitlich deine gewünschte SerpentineB5-Schriftart! */
+footer {
+    display: flex;                  
+    justify-content: space-between; 
+    align-items: center;            
     font-family: 'B5Station', Arial, sans-serif !important;       
-    letter-spacing: 1.2px !important;            
-    color: rgba(255, 255, 255, 0.5) !important; 
-    font-size: 0.8em !important;
-    text-shadow: 0 0 5px rgba(255, 153, 0, 0.3), 1px 1px 2px rgba(0, 0, 0, 0.8) !important; 
-    
-    padding: 10px 20px !important;              
-    height: 45px !important;                   
-    box-sizing: border-box !important;
+    letter-spacing: 1px;            
+    color: hsl(0, 9%, 98%);         
+    text-shadow: 0 0 5px rgba(96, 172, 243, 0.5), 1px 1px 2px rgba(0, 0, 0, 0.8); 
+    padding: 10px 20px;              
+    height: 45px;                   /* Feste, definierte Höhe */
+    box-sizing: border-box;
 
-    background-color: rgba(13, 20, 59, 0.75) !important; 
-    backdrop-filter: blur(8px) !important;               
-    -webkit-backdrop-filter: blur(8px) !important;       
-    border-top: 1px solid rgba(96, 172, 243, 0.2) !important; 
-    border-radius: 8px 8px 0 0 !important; 
+    background-color: rgba(13, 20, 59, 0.75); 
+    backdrop-filter: blur(8px);               
+    -webkit-backdrop-filter: blur(8px);       
+    border-top: 1px solid rgba(96, 172, 243, 0.2); 
+    border-radius: 8px 8px 0 0; 
 
-    position: fixed !important;           
-    bottom: 0 !important;                  
-    left: 15px !important;                 
-    right: 15px !important;                
-    width: calc(100% - 30px) !important;   
-    z-index: 9999 !important;              
+    /* DIE BRECHSTANGE: Unabhängig vom Grid ganz unten fixieren */
+    position: fixed;           
+    bottom: 0;                  /* Direkt an der Unterkante anleimen */
+    left: 15px;                 /* Symmetrisch links ausgerichtet */
+    right: 15px;                /* Symmetrisch rechts ausgerichtet */
+    width: calc(100% - 30px);   /* Zwingt den Footer auf die perfekte Breite */
+    z-index: 9999;              /* Liegt immer über allen anderen Elementen */
     margin: 0 !important;
 }
 
@@ -282,15 +273,3 @@ footer p { margin-right: 15px; }
 #zusatzinfo_kontakt {
     display: none !important;
 }
-
-/* ==========================================================================
-   FOOTER-UPGRADE: SYSTEMWEITE B5STATION-ZÜNDUNG
-   ========================================================================== */
-footer, 
-footer p, 
-footer span, 
-footer ul li a, 
-body footer {
-    font-family: 'B5Station', Arial, sans-serif !important;
-}
-
