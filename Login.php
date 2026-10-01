@@ -1,22 +1,11 @@
 <?php
-// ==========================================================================
-// THE SHADOWS WITHIN: A B5 LEGACY - SECURE LOGIN INTERFACE
-// ==========================================================================
-
-// REAKTOR-RETTUNG: Zwingt PHP, Sessions im beschreibbaren temporären Ordner von Render zu speichern!
-if (!is_dir('/tmp/php_sessions')) {
-    mkdir('/tmp/php_sessions', 0777, true);
-}
-ini_set('session.save_path', '/tmp/php_sessions');
-
-// Zwingt den Server, Sessions stabil und ohne Proxy-Verluste zu verarbeiten
+// HTTPS-SICHERHEITS-PHALANX: Zwingt den Server, Sessions sicher über das Internet zu übertragen
+ini_set('session.cookie_secure', '1');
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 
-// Startet die Session-Zentrale blitzsauber
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Startet die Session-Zentrale
+session_start();
 
 if (isset($_POST['loginSubmit'])) {
     
@@ -28,7 +17,7 @@ if (isset($_POST['loginSubmit'])) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Die feste, unzerstörbare Crew-Datenbank
+    // Die feste Crew-Datenbank
     $crewDatenbank = [
         'Shinji2501' => 'Test1234',
         'Sheridan'   => 'Tuzanor2261',
@@ -52,20 +41,20 @@ if (isset($_POST['loginSubmit'])) {
     if ($loginErfolgreich === true) {
         $_SESSION['eingeloggt'] = true;
         $_SESSION['username'] = $username;
-        unset($_SESSION['login_error']); // Löscht alte Fehlermeldungen bei Erfolg
         
-        // Führt den Browser sicher zurück auf das Hauptterminal
-        header("Location: ./");
+        $_SESSION['flash_message'] = "🔒 UPLINK ESTABLISHED: Security Clearance Granted. Terminal Sync Complete.";
+        
+        // Zwingt den Browser, den Cache zu leeren und leitet sicher weiter
+        header("Location: index.php");
         exit();
     } else {
-        // Setzt ein Fehlersignal im Speicher bei falschen Daten
-        $_SESSION['login_error'] = "ACCESS DENIED: Invalid Security Credentials.";
-        header("Location: ./");
+        $_SESSION['flash_message_error'] = "⚠️ ACCESS DENIED: Invalid Security Credentials or Unknown Sector Entity.";
+        header("Location: index.php");
         exit();
     }
 
 } else {
-    header("Location: ./");
+    header("Location: index.php");
     exit();
 }
 ?>
