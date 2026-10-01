@@ -1,25 +1,12 @@
 <?php
-// ==========================================================================
-// THE SHADOWS WITHIN: A B5 LEGACY - CENTRAL LAYOUT ENGINE
-// Verarbeitet die Inhalts-Injektionen und steuert das Haupt-Grid
-// ==========================================================================
+// Ganz oben die Session starten, damit das Login-System weiß, wer eingeloggt ist
+session_start();
 
-// REAKTOR-RETTUNG: Synchronisiert den Speicherpfad mit der Login.php!
-if (!is_dir('/tmp/php_sessions')) {
-    mkdir('/tmp/php_sessions', 0777, true);
-}
-ini_set('session.save_path', '/tmp/php_sessions');
-
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Startet deine originale Layout-Funktion
-function renderLayout($seitenTitel, $seitenInhalt) {
+// Diese Funktion wird von den einzelnen Seiten aufgerufen, um das Layout zu rendern
+function renderLayout($seitenTitel, $inhaltHtml) {
 ?>
 <!DOCTYPE html> 
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta name="description" content="The Shadows within: A B5 Legacy">
@@ -30,29 +17,13 @@ function renderLayout($seitenTitel, $seitenInhalt) {
     
     <!-- Pfad zur zentralen CSS für Farben und Schriften -->
     <link rel="stylesheet" href="CSS/Babcom_Style.css">
-
-    <!-- 🛰️ SYSTEM-WIDE FONTS DEFINITION -->
-    <style>
-        @font-face {
-            font-family: 'B5Station';
-            src: url('Fonts/babylon5_station_bold.ttf') format('truetype');
-            font-weight: bold;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'SerpentineB5';
-            src: url('Fonts/Serpentine_Medium.otf') format('opentype');
-            font-weight: normal;
-            font-style: normal;
-        }
-    </style>
     
-    <style>
+        <style>
         /* UNZERSTÖRBARES DESKTOP-LAYOUT (SCROLL-ISOLIERT) */
         @media (min-width: 48em) {
             body {
                 display: grid !important;
+                /* Links 240px für die Nav, rechts der Rest für den Inhalt */
                 grid-template-columns: 240px 1fr !important; 
                 grid-template-rows: auto 1fr auto !important; 
                 column-gap: 20px !important; 
@@ -60,9 +31,11 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 margin: 0 !important;
                 padding: 0 !important;
                 width: 100vw !important;
+                
+                /* FIXIERUNG AUF MONITORHÖHE: Verhindert das Mitwandern */
                 height: 100vh !important;      
                 max-height: 100vh !important;  
-                overflow: hidden !important; 
+                overflow: hidden !important; /* Blockiert das Scrollen des Gesamtframerate-Fensters */
             }
 
             header {
@@ -71,29 +44,35 @@ function renderLayout($seitenTitel, $seitenInhalt) {
             }
 
             /* DIE NAVIGATION BLEIBT FELSENFEST EINGEFROREN */
+            /* DIE ERBEUTETE LINKSKONSOLE (Vollständiger Glas-Look reaktiviert!) */
             mainNav {
                 grid-column: 1 !important;           
                 grid-row: 2 !important;              
                 width: 210px !important;               
-                height: 520px !important;   
+                height: 520px !important;   /* Feste, eingefrorene Wunschgröße */
                 box-sizing: border-box !important;
                 
+                /* DIE WAFFE FÜR PERFEKTE INNEN-SYMMETRIE: */
                 display: flex !important;
                 flex-direction: column !important;
-                align-items: center !important;         
-                justify-content: flex-start !important; 
+                align-items: center !important;         /* Zentriert alles absolut exakt von links nach rechts */
+                justify-content: flex-start !important; /* Startet sauber oben und verteilt nach unten */
                 
+                /* EXAKTE INNENABSTÄNDE (Oben und unten perfekt ausbalanciert) */
                 padding-top: 25px !important; 
                 padding-bottom: 25px !important;
                 padding-left: 12px !important;
                 padding-right: 12px !important;
                 
+                /* Horizontale und vertikale Zentrierung im globalen Grid */
                 justify-self: center !important;
                 align-self: center !important; 
                 position: relative !important;
                 
+                /* Der optische Höhenschubs für die perfekte Achse */
                 margin: -55px auto 25px auto !important; 
 
+                /* Der originale Babylon-5 Glasrahmen & Lichtkante */
                 background-color: rgba(13, 20, 59, 0.75) !important; 
                 backdrop-filter: blur(8px) !important;
                 -webkit-backdrop-filter: blur(8px) !important;
@@ -102,23 +81,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(26, 47, 122, 0.2) !important;
             }
 
-            /* NAV-SCHRIFTEN-UPGRADE */
-            mainNav ul li a, mainNav a, .main-nav a {
-                font-family: 'B5Station', Arial, sans-serif !important;
-                text-transform: uppercase !important;
-                letter-spacing: 0.5px !important;
-                color: #ffffff !important; 
-                text-decoration: none !important;
-                font-weight: bold !important;
-                text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
-                transition: all 0.2s ease !important;
-            }
-
-            mainNav ul li a:hover {
-                color: #ff9900 !important;
-                text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
-            }
-
+            /* Sorgt dafür, dass das Login-Inlay die Breite perfekt ausnutzt und zentriert bleibt */
             mainNav fieldset {
                 width: 100% !important;
                 box-sizing: border-box !important;
@@ -126,6 +89,7 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 margin-bottom: 20px !important;
             }
 
+            /* Zentriert die Liste und die Links haargenau von links nach rechts */
             mainNav ul {
                 width: 100% !important;
                 text-align: center !important;
@@ -151,79 +115,23 @@ function renderLayout($seitenTitel, $seitenInhalt) {
                 grid-column: 2 !important;           
                 grid-row: 2 !important;              
                 width: 100% !important;              
+                
+                /* DIE RETTUNG: Das Fenster füllt die Reihe und kriegt seine eigene Scrollbar */
                 height: 100% !important;
-                overflow-y: auto !important; 
+                overflow-y: auto !important; /* Aktiviert die autonome Scrollbar NUR rechts */
                 scroll-behavior: smooth !important;  
                 
                 padding-left: 10px !important;
                 padding-right: 25px !important;
                 margin-top: 0px !important;
                 margin-bottom: 25px !important; 
-                padding-bottom: 60px !important; 
+                padding-bottom: 60px !important; /* Platzhalter, damit der fixierte Footer nix verdeckt */
                 box-sizing: border-box !important;
             }
 
-            /* ==========================================================================
-               UNTERER KONSOLEN-RAHMEN (Footer-Grid für deinen neuen Aufbau)
-               ========================================================================== */
             footer {
                 grid-column: span 2 !important;      
-                display: flex !important;                  
-                flex-direction: row !important;
-                justify-content: space-between !important; 
-                align-items: center !important;            
-                padding: 0 20px !important;
-                height: 45px !important; 
-                box-sizing: border-box !important;
-                background-color: rgba(13, 20, 59, 0.75) !important;
-                border-top: 1px solid rgba(96, 172, 243, 0.2) !important;
-                border-radius: 8px !important;
             }
-
-            /* SYSTEMWEITES SCHRIFTEN-UPGRADE FÜR DEN GANZEN FOOTER */
-            footer, footer p, footer span, footer a, body footer, bottomNav ul li a {
-                font-family: 'B5Station', Arial, sans-serif !important;
-                text-transform: uppercase !important;
-                font-weight: bold !important;
-                font-size: 0.95em !important;
-                text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;
-            }
-
-            /* Kalibriert deine neue bottomNav-Struktur */
-            bottomNav ul {
-                display: flex !important;
-                flex-direction: row !important;
-                gap: 25px !important; 
-                margin: 0 !important;
-                padding: 0 !important;
-                list-style-type: none !important;
-            }
-
-            bottomNav ul li a {
-                color: #ffffff !important;
-                text-decoration: none !important;
-                transition: all 0.2s ease !important;
-            }
-
-            bottomNav ul li a:hover {
-                color: #ff9900 !important;
-                text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important;
-            }
-
-            footer p {
-                margin: 0 !important;
-                padding: 0 !important;
-                text-align: right !important;
-                color: rgba(255, 255, 255, 0.6) !important;
-                flex-grow: 0 !important;
-            }
-        }
-
-        /* GLOBALE WEICHE FÜR DIE SYMBOL-UMWANDLUNG */
-        .Logo5, .LogoB, h1 .Logo5, h1 .LogoB, h2 span.Logo5, h2 span.LogoB {
-            font-family: 'B5Station', Arial, sans-serif !important;
-            font-weight: bold !important;
-            display: inline-block !important;
         }
     </style>
 </head>
@@ -241,29 +149,52 @@ function renderLayout($seitenTitel, $seitenInhalt) {
 
     <!-- Hauptfenster für den Inhalt -->
     <main>
-        <?php echo $seitenInhalt; ?>
+        <!-- ==========================================================================
+             DYNAMISCHES TERMINAL-FLASH-MESSAGE-SYSTEM (INTEGRIERT)
+             ========================================================================== -->
+        
+        <!-- 1. PRÜFUNG AUF ROTEN ALARM (Fehlerfall via isset) -->
+        <?php if (isset($_SESSION['flash_message_error'])): ?>
+            <div style="background-color: rgba(255, 51, 51, 0.2) !important; border: 1px solid #ff3333 !important; color: #ff3333 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 5px #ff3333 !important; letter-spacing: 0.5px !important;">
+                <?php echo $_SESSION['flash_message_error']; ?>
+            </div>
+            <?php 
+            // Automatische Vernichtung: Setzt die Variable für die Zukunft auf null
+            unset($_SESSION['flash_message_error']); 
+            ?>
+        <?php endif; ?>
+
+        <!-- 2. BESTÄTIGUNG: Login war erfolgreich (KORREKTUR: Jetzt in lesbarem B5-Gold!) -->
+        <?php if (isset($_SESSION['flash_message'])): ?>
+            <div style="background-color: rgba(0, 200, 80, 0.15) !important; border: 1px solid #00c850 !important; color: #ff9900 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 6px rgba(255, 153, 0, 0.6) !important; letter-spacing: 0.5px !important;">
+                <?php echo $_SESSION['flash_message']; ?>
+            </div>
+            <?php 
+            // Einmal zeigen, danach sofort aus dem Speicher löschen
+            unset($_SESSION['flash_message']); 
+            ?>
+        <?php endif; ?>
+
+
+        <!-- Hier injiziert PHP den exklusiven Inhalt der jeweiligen Seite hinein -->
+        <?php echo $inhaltHtml; ?>
     </main>
 
-    <!-- Der bündige, von dir vorgeschlagene Wunsch-Footer (LICHT-MATRIX REAKTIVIERT!) -->
-        <!-- 🛰️ UNZERSTÖRBARER KONSOLEN-FOOTER (TABELLEN-RELAIS FÜR PERFEKTE SYMMETRIE) -->
-        <!-- 🛰️ CUSTOM-KONSOLEN-RAHMEN (KORREKTUR: Jetzt auf volle Breite expandiert und rechtsbündig!) -->
-    <div class="custom-footer" style="display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important; height: 45px !important; padding: 0 20px !important; margin: 20px 15px 0 15px !important; box-sizing: border-box !important; background-color: rgba(13, 20, 59, 0.75) !important; border: 1px solid rgba(96, 172, 243, 0.2) !important; border-radius: 8px !important; clear: both !important; grid-column: span 2 !important; position: fixed !important; bottom: 10px !important; left: 0 !important; right: 0 !important; width: calc(100% - 30px) !important; z-index: 9999 !important;">
-        
-        <!-- LINKS: Die Navigationslinks (DYNAMISCH LINKS GEBUNDEN) -->
-        <div style="display: flex !important; flex-direction: row !important; gap: 25px !important; align-items: center !important; flex-shrink: 0 !important;">
-            <a href="Impressum.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Impressum</a>
-            <a href="Contact.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Contact</a>
-            <a href="Datasecurity.php" style="font-family: 'B5Station', Arial, sans-serif !important; color: #ffffff !important; text-decoration: none !important; font-weight: bold !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important;">Datasecurity</a>
-        </div>
-        
-        <!-- RECHTS: Das Copyright (BOMBENFEST AN DIE RECHTE AUSSENKANTE GEDRÜCKT) -->
-        <p style="font-family: 'B5Station', Arial, sans-serif !important; margin: 0 !important; padding: 0 !important; text-align: right !important; color: rgba(255, 255, 255, 0.6) !important; font-size: 0.95em !important; text-transform: uppercase !important; text-shadow: 0 0 6px rgba(96, 172, 243, 0.5) !important; white-space: nowrap !important; flex-grow: 1 !important; margin-left: 20px !important;">
-            &copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 &copy; Warner Bros.
-        </p>
+    <!-- Der bündige Footer in deiner Includes/layout.php -->
+    <footer>
+        <bottomNav>
+            <ul>
+                <!-- KORREKTUR: Zeigt jetzt exakt auf deine neue Impressum.php -->
+                <li><a href="Impressum.php">Impressum</a></li>
+                <li><a href="Contact.php">Contact</a></li>
+                <li><a href="Datasecurity.php">Datasecurity</a></li>
+            </ul>
+        </bottomNav>
+        <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
+    </footer>
 
-    </div>
 </body>
 </html>
 <?php
-}
+} // <-- Diese wichtige Klammer beendet die PHP-Funktion sauber!
 ?>
