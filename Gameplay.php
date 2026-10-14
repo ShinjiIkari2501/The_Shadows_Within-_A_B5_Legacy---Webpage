@@ -13,40 +13,39 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 ?>
 
 <h2>Tactical Simulation Deck</h2>
-<h3>Early-Concept-Alpha / Operation: Test</h3>
+<h3>Early-Concept-Alpha / Operation: Core Nexus</h3>
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- Das iFrame bettet dein echtes Java-Textadventure fehlerfrei ein -->
-    <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
+    <!-- Wir laden den offiziellen CheerpJ Java-Web-Emulator direkt via CDN -->
+    <script src="https://leaningtech.com"></script>
 
-        <!-- WICHTIG: Die src zieht den Live-Stream mit automatischem Fokus-Befehl -->
-        <iframe id="gameTerminal" 
-                src="https://the-shadows-within-a-b5-legacy-java.onrender.com"
-                style="width: 100%; height: 500px; border: none; background: #010203;"
-                scrolling="yes"
-                loading="lazy"
-                allow="fullscreen"
-                title="Sublink Core Terminal">
-        </iframe>
-
+    <!-- Der Terminal-Container im astreinen Sci-Fi-Look -->
+    <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #000; max-width: 850px; margin: 15px auto; padding: 15px;">
+        <div id="cheerpj-terminal" style="width: 100%; height: 500px; color: #00ffcc; font-family: 'Courier New', monospace; background-color: #000;">
+            [SYSTEM]: Synchronizing sub-space frequencies... Initializing Java 21 Core...
+        </div>
     </div>
 
-    <!-- JAVASCRIPT: Zwingt den Browser dazu, deine Tastatureingaben direkt an das Terminal zu senden -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const iframe = document.getElementById('gameTerminal');
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Initialisiert die Java-Engine lokal im Browser des Spielers
+            await cheerpjInit();
             
-            iframe.addEventListener('load', () => {
-                setTimeout(() => {
-                    iframe.contentWindow.focus();
-                }, 200);
-            });
+            const container = document.getElementById('cheerpj-terminal');
+            container.innerHTML = ""; // Löscht den Ladetext
             
-            // Sobald der Spieler irgendwo auf das Terminal klickt, wird die Tastatur aktiv
-            window.addEventListener('click', () => {
-                iframe.contentWindow.focus();
-            });
+            // 2. WICHTIG: Wir erzeugen eine echte TEXT-KONSOLE statt eines Grafik-Displays!
+            // Das öffnet die Tastatur-Schnittstelle im Browser nativ.
+            cheerpjCreateConsole(800, 500, container);
+            
+            // 3. Dynamische URL-Generierung: Holt die JAR relativ zum aktuellen Verzeichnis,
+            // um jede Pfad-Verschiebung auf dem Server auszuhebeln
+            const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const jarUrl = window.location.origin + currentPath + "/B5_Project.jar";
+            
+            // 4. Startet deine originale JAR-Datei direkt im reinen Konsolenmodus!
+            await cheerpjRunJar(jarUrl);
         });
     </script>
 
