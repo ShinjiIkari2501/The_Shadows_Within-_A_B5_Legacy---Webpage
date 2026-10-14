@@ -35,12 +35,13 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             const container = document.getElementById('cheerpj-terminal');
             container.innerHTML = ""; // Löscht den Ladetext
             
-            // 2. KORREKTUR: Wir erzeugen eine echte TEXT-KONSOLE statt eines Grafik-Displays!
-            // Das öffnet die Tastatur-Schnittstelle im Browser nativ.
+            // 2. Erzeugt eine native Text-Konsole, die direkt auf Tastendrucke lauscht
             cheerpjCreateConsole(800, 500, container);
             
-            // 3. Absoluter Pfad-Befehl, damit die JAR garantiert geladen wird
-            const jarUrl = window.location.origin + "/B5_Project.jar";
+            // 3. KORREKTUR: Wir nutzen einen rein relativen Pfad basierend auf dem aktuellen Skript-Verzeichnis,
+            // um die Root-Directory-Verschiebung auf Render zu umgehen!
+            const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
+            const jarUrl = window.location.origin + currentPath + "/B5_Project.jar";
             
             // 4. Startet deine originale JAR-Datei direkt im Konsolenmodus
             await cheerpjRunJar(jarUrl);
