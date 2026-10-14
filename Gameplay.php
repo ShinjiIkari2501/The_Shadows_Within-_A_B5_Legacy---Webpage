@@ -18,87 +18,74 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 <?php 
 if ($isLoggedIn === 1): 
     
-    // Initialisiert das Logbuch falls noch leer
+    // Initialisiert das Logbuch und die Historie falls komplett neu
     if (!isset($_SESSION['game_log'])) {
         $_SESSION['game_log'] = "[SYSTEM]: Establishing persistent sub-space matrix...\n";
+    }
+    if (!isset($_SESSION['input_history'])) {
+        $_SESSION['input_history'] = [];
     }
 
     $jarPath = __DIR__ . '/B5_Project.jar';
 
     // Wenn der Spieler eine Eingabe abschickt
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_input'])) {
-        $input = trim($_POST['player_input']) . "\n";
-        $_SESSION['game_log'] .= "\n> " . htmlspecialchars(trim($input)) . "\n";
+        // Füge die neue Eingabe der dauerhaften Historie hinzu
+        $_SESSION['input_history'][] = trim($_POST['player_input']);
+    }
 
-        if (file_exists($jarPath)) {
-            $descriptorspec = [
-                0 => ["pipe", "r"], // stdin
-                1 => ["pipe", "w"], // stdout
-                2 => ["pipe", "w"]  // stderr
-            ];
+    // --- SYNCHRONISIERTER PROZESS-START ---
+    if (file_exists($jarPath)) {
+        $descriptorspec = [
+            0 => ["pipe", "r"], // stdin
+            1 => ["pipe", "w"], // stdout
+            2 => ["pipe", "w"]  // stderr
+        ];
 
-            // Wir starten den Prozess und füttern ihn mit der GESAMTEN bisherigen Historie des Spielers!
-            // Da PHP bei jedem Seitenaufruf neu lädt, simulieren wir den Zustand, indem wir alle
-            // bisherigen Entscheidungen nacheinander in Javas Scanner jagen.
-            if (!isset($_SESSION['input_history'])) {
-                $_SESSION['input_history'] = [];
-            }
-            $_SESSION['input_history'][] = trim($_POST['player_input']);
+        // Starte das Java-Spiel frisch
+        $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
 
-            $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
+        if (is_resource($process)) {
+            // Blockieren kurzzeitig aktivieren für stabiles Schreiben
+            stream_set_blocking($pipes[0], 1);
+            stream_set_blocking($pipes[1], 1);
 
-            if (is_resource($process)) {
-                // Deaktiviert das Blockieren beim Lesen, damit PHP nicht einfriert
-                stream_set_blocking($pipes[1], 0);
-
-                // 1. Alle bisherigen Entscheidungen nacheinander einspielen, um Java auf den aktuellen Stand zu bringen
-                foreach ($_SESSION['input_history'] as $pastInput) {
+            // Jage alle bisherigen Entscheidungen nacheinander in Javas Scanner
+            foreach ($_SESSION['input_history'] as $pastInput) {
+                // Prüft ob die Pipe noch offen ist, um Broken Pipes zu verhindern
+                if (is_resource($process)) {
                     fwrite($pipes[0], $pastInput . "\n");
                     fflush($pipes[0]);
-                    usleep(50000); // 50ms Puffer, damit der Java-Scanner Zeit zum Verarbeiten hat
+                    usleep(10000); // 10ms Puffer
                 }
-
-                fclose($pipes[0]); // Schließt den Input, damit Java weiß, dass die Eingabe fertig ist
-
-                // 2. Die gesamte Antwort bis zu diesem Punkt auslesen
-                $output = "";
-                // Wir geben Java ein kurzes Zeitfenster, um alle Szenen-Texte zu generieren
-                usleep(200000); 
-                while ($frame = fgets($pipes[1])) {
-                    $output .= $frame;
-                }
-
-                fclose($pipes[1]);
-                fclose($pipes[2]);
-                proc_close($process);
-
-                // KORREKTUR: Wir überschreiben das Logbuch mit der sauberen, vollständigen Chronologie aus Java!
-                $_SESSION['game_log'] = "[SYSTEM]: Persistent tactical link active.\n\n" . htmlspecialchars($output);
             }
-        } else {
-            $_SESSION['game_log'] .= "[ERROR]: B5_Project.jar not found!\n";
+
+            // Wir schicken einen finalen leeren Enter-Schlag hinterher, falls Java im Prolog wartet
+            fwrite($pipes[0], "\n");
+            fflush($pipes[0]);
+
+            // Schließt den Input-Kanal, damit Java fertig liest und den gesamten Text ausgibt
+            fclose($pipes[0]);
+
+            // Liest die komplette, generierte Textantwort aus Javas System.out
+            $output = stream_get_contents($pipes[1]);
+            
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            proc_close($process);
+
+            // Aktualisiere das grüne Textfenster mit der echten Story-Chronologie
+            $_SESSION['game_log'] = "[SYSTEM]: Tactical Link Stable.\n\n" . htmlspecialchars($output);
         }
     } else {
-        // Erstmaliges Laden: Wir triggern das Spiel einmal nackt ohne Input, um das Hauptmenü anzuzeigen
-        if (file_exists($jarPath) && count($_SESSION['input_history'] ?? []) === 0) {
-            $descriptorspec = [0 => ["pipe", "r"], 1 => ["pipe", "w"], 2 => ["pipe", "w"]];
-            $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
-            if (is_resource($process)) {
-                fclose($pipes[0]);
-                usleep(100000);
-                $_SESSION['game_log'] = "[SYSTEM]: Core initialized.\n\n" . htmlspecialchars(stream_get_contents($pipes[1]));
-                fclose($pipes[1]);
-                fclose($pipes[2]);
-                proc_close($process);
-            }
-        }
+        $_SESSION['game_log'] = "[ERROR]: B5_Project.jar not found in directory: " . htmlspecialchars($jarPath);
     }
 ?>
 
     <!-- Das reinrassige Retro-Text-Terminal -->
     <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); background: #010203; max-width: 850px; margin: 15px auto; padding: 20px;">
         
-        <!-- Das Textfenster scrollt jetzt automatisch immer nach ganz unten zum neuesten Text -->
+        <!-- Das Textfenster scrollt immer automatisch mit -->
         <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;"><?php echo $_SESSION['game_log']; ?></pre>
 
         <!-- Die interaktive Input-Leiste -->
@@ -107,10 +94,9 @@ if ($isLoggedIn === 1):
             <input type="text" 
                    name="player_input" 
                    style="flex-grow: 1; background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; font-family: 'Courier New', monospace; font-size: 16px; border-radius: 4px;" 
-                   placeholder="Type option (e.g. 1, 2) and press Enter..." 
+                   placeholder="Type option (e.g. 1, 2) or press Enter to continue..." 
                    autocomplete="off"
-                   id="terminal-input"
-                   required>
+                   id="terminal-input">
             <button type="submit" style="background: transparent; border: 1px solid #00ffcc; color: #00ffcc; padding: 0 20px; font-family: 'Courier New', monospace; font-size: 14px; cursor: pointer; border-radius: 4px;">Transmit</button>
         </form>
 
@@ -119,7 +105,6 @@ if ($isLoggedIn === 1):
         </div>
     </div>
 
-    <!-- Minimale JS-Komfortunterstützung: Zwingt den Fokus ins Feld und scrollt nach unten -->
     <script>
         document.getElementById('terminal-input').focus();
         const screen = document.getElementById('terminal-screen');
@@ -131,7 +116,7 @@ if ($isLoggedIn === 1):
     if (isset($_GET['reset_game'])) {
         unset($_SESSION['game_log']);
         unset($_SESSION['input_history']);
-        header("Location: gameplay.php");
+        header("Location: Gameplay.php");
         exit;
     }
 endif;
