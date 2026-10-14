@@ -18,71 +18,57 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 <?php 
 if ($isLoggedIn === 1): 
     
-    // Initialisiert das Logbuch und die Historie falls komplett neu
-    if (!isset($_SESSION['game_log'])) {
-        $_SESSION['game_log'] = "[SYSTEM]: Establishing persistent sub-space matrix...\n";
-    }
+    // Initialisiert die dauerhafte Historie falls komplett neu
     if (!isset($_SESSION['input_history'])) {
         $_SESSION['input_history'] = [];
     }
 
     $jarPath = __DIR__ . '/B5_Project.jar';
 
-    // Wenn der Spieler eine Eingabe abschickt
+    // Wenn der Spieler eine neue Entscheidung abschickt
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_input'])) {
         $_SESSION['input_history'][] = trim($_POST['player_input']);
     }
 
-    // --- SYNCHRONISIERTER PROZESS-START ---
+    // --- EXECUTION ENGINE: Startet Java frisch und simuliert den Zustand ---
+    $output = "";
     if (file_exists($jarPath)) {
         $descriptorspec = [
-            0 => ["pipe", "r"], // stdin
-            1 => ["pipe", "w"], // stdout
+            0 => ["pipe", "r"], // stdin (Schreiben an Java)
+            1 => ["pipe", "w"], // stdout (Lesen aus Java)
             2 => ["pipe", "w"]  // stderr
         ];
 
-        // Starte das Java-Spiel frisch
         $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
 
         if (is_resource($process)) {
-            // Blockieren aktivieren für stabiles Schreiben
-            stream_set_blocking($pipes[0], 1);
-            stream_set_blocking($pipes[1], 1);
-
-            // Jage alle bisherigen Entscheidungen nacheinander in Javas Scanner
+            // KORREKTUR: Wir schreiben direkt in den Eingangskanal $pipes[0]
             foreach ($_SESSION['input_history'] as $pastInput) {
-                // Das @-Zeichen unterdrückt Broken-Pipe-Warnungen, falls Java den Input-Strom vorzeitig schließt
                 @fwrite($pipes[0], $pastInput . "\n");
-                @fflush($pipes[0]);
             }
-
-            // Letzter optionaler Zeilenumbruch, um blockierte Scanner aufzufangen
+            
+            // Ein abschließender Zeilenumbruch triggert wartende Scanner
             @fwrite($pipes[0], "\n");
             @fflush($pipes[0]);
+            fclose($pipes[0]); // Signalisiert Java: Eingabe beendet. Bitte verarbeiten!
 
-            // Schließt den Input-Kanal, damit Java das Ende der Eingaben erkennt
-            fclose($pipes[0]);
-
-            // Liest die komplette, generierte Textantwort aus Javas System.out
+            // KORREKTUR: Wir lesen die Story direkt aus dem Ausgangskanal $pipes[1]
             $output = stream_get_contents($pipes[1]);
             
             fclose($pipes[1]);
             fclose($pipes[2]);
             proc_close($process);
-
-            // Aktualisiere das grüne Textfenster mit der echten Story-Chronologie
-            $_SESSION['game_log'] = "[SYSTEM]: Tactical Link Stable.\n\n" . htmlspecialchars($output);
         }
     } else {
-        $_SESSION['game_log'] = "[ERROR]: B5_Project.jar not found in directory: " . htmlspecialchars($jarPath);
+        $output = "[ERROR]: B5_Project.jar wurde im Verzeichnis nicht gefunden!\nPfad: " . $jarPath;
     }
 ?>
 
     <!-- Das reinrassige Retro-Text-Terminal -->
     <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); background: #010203; max-width: 850px; margin: 15px auto; padding: 20px;">
         
-        <!-- Das Textfenster scrollt immer automatisch mit -->
-        <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;"><?php echo $_SESSION['game_log']; ?></pre>
+        <!-- Gibt die aktuelle Story aus Java aus -->
+        <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;"><?php echo htmlspecialchars($output); ?></pre>
 
         <!-- Die interaktive Input-Leiste -->
         <form method="POST" style="display: flex; gap: 10px;">
@@ -110,7 +96,6 @@ if ($isLoggedIn === 1):
 <?php
     // Logik für den Reset-Befehl
     if (isset($_GET['reset_game'])) {
-        unset($_SESSION['game_log']);
         unset($_SESSION['input_history']);
         header("Location: Gameplay.php");
         exit;
