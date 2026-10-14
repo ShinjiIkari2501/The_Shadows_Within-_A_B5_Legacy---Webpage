@@ -30,7 +30,6 @@ if ($isLoggedIn === 1):
 
     // Wenn der Spieler eine Eingabe abschickt
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_input'])) {
-        // Füge die neue Eingabe der dauerhaften Historie hinzu
         $_SESSION['input_history'][] = trim($_POST['player_input']);
     }
 
@@ -46,25 +45,22 @@ if ($isLoggedIn === 1):
         $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
 
         if (is_resource($process)) {
-            // Blockieren kurzzeitig aktivieren für stabiles Schreiben
+            // Blockieren aktivieren für stabiles Schreiben
             stream_set_blocking($pipes[0], 1);
             stream_set_blocking($pipes[1], 1);
 
             // Jage alle bisherigen Entscheidungen nacheinander in Javas Scanner
             foreach ($_SESSION['input_history'] as $pastInput) {
-                // Prüft ob die Pipe noch offen ist, um Broken Pipes zu verhindern
-                if (is_resource($process)) {
-                    fwrite($pipes[0], $pastInput . "\n");
-                    fflush($pipes[0]);
-                    usleep(10000); // 10ms Puffer
-                }
+                // Das @-Zeichen unterdrückt Broken-Pipe-Warnungen, falls Java den Input-Strom vorzeitig schließt
+                @fwrite($pipes[0], $pastInput . "\n");
+                @fflush($pipes[0]);
             }
 
-            // Wir schicken einen finalen leeren Enter-Schlag hinterher, falls Java im Prolog wartet
-            fwrite($pipes[0], "\n");
-            fflush($pipes[0]);
+            // Letzter optionaler Zeilenumbruch, um blockierte Scanner aufzufangen
+            @fwrite($pipes[0], "\n");
+            @fflush($pipes[0]);
 
-            // Schließt den Input-Kanal, damit Java fertig liest und den gesamten Text ausgibt
+            // Schließt den Input-Kanal, damit Java das Ende der Eingaben erkennt
             fclose($pipes[0]);
 
             // Liest die komplette, generierte Textantwort aus Javas System.out
