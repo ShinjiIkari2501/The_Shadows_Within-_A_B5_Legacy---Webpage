@@ -10,55 +10,37 @@ $isLoggedIn = 0;
 if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
     $isLoggedIn = 1;
 }
-
-// =========================================================================
-// PROXY TUNNEL SETUP: Spiegelt den Java-Server direkt auf deine Domain!
-// =========================================================================
-if ($isLoggedIn === 1 && isset($_GET['proxy_stream'])) {
-    $targetUrl = "https://the-shadows-within-a-b5-legacy-java.onrender.com";
-    // Holt die Terminal-Daten im Hintergrund vom Java-Server ab
-    $context = stream_context_create(['http' => ['header' => "User-Agent: PHP-Proxy\r\n"]]);
-    echo file_get_contents($targetUrl, false, $context);
-    exit; // Beendet das Skript, um nur den reinen Terminal-Stream auszugeben
-}
-// =========================================================================
 ?>
 
 <h2>Tactical Simulation Deck</h2>
-<h3>Early-Concept-Alpha / Operation: Test</h3>
+<h3>Early-Concept-Alpha / Operation: Core Matrix</h3>
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- Das iFrame lädt das Terminal jetzt direkt von deiner EIGENEN Domain! -->
-    <!-- Dadurch fällt die Cross-Origin-Sperre des Browsers sofort in sich zusammen -->
-    <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
+    <!-- Wir laden die CheerpJ-Laufzeitumgebung direkt via CDN -->
+    <script src="https://leaningtech.com"></script>
 
-        <!-- WICHTIG: Die src zeigt auf deine eigene Datei mit dem Proxy-Parameter! -->
-        <iframe id="gameTerminal" 
-                src="?proxy_stream=1"
-                style="width: 100%; height: 500px; border: none; background: #010203;"
-                scrolling="yes"
-                loading="lazy"
-                allow="fullscreen"
-                title="Sublink Core Terminal">
-        </iframe>
-
+    <!-- Der Terminal-Container im typischen Sci-Fi-Look -->
+    <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #000; max-width: 850px; margin: 15px auto; padding: 15px;">
+        <div id="cheerpj-terminal" style="width: 100%; height: 500px; color: #00ffcc; font-family: 'Courier New', monospace; background-color: #000;">
+            [SYSTEM]: Synchronizing sub-space frequencies... Initializing Java 21 Core...
+        </div>
     </div>
 
-    <!-- JAVASCRIPT: Wirft deinen Cursor bei jedem Klick direkt in das iFrame-Terminal -->
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const iframe = document.getElementById('gameTerminal');
+        window.addEventListener('DOMContentLoaded', async () => {
+            // 1. Initialisiert die Java-Engine im Browser
+            await cheerpjInit();
             
-            iframe.addEventListener('load', () => {
-                setTimeout(() => {
-                    iframe.contentWindow.focus();
-                }, 200);
-            });
+            const container = document.getElementById('cheerpj-terminal');
+            container.innerHTML = ""; // Löscht den Ladetext
             
-            window.addEventListener('click', () => {
-                iframe.contentWindow.focus();
-            });
+            // 2. Erzeugt eine native Text-Konsole, die direkt auf Tastendrucke lauscht
+            cheerpjCreateConsole(800, 500, container);
+            
+            // 3. KORREKTUR: CheerpJ benötigt zwingend das virtuelle /app/-Präfix vor der JAR,
+            // damit die Runtime die Datei im lokalen Webverzeichnis findet!
+            await cheerpjRunJar("/app/B5_Project.jar");
         });
     </script>
 
