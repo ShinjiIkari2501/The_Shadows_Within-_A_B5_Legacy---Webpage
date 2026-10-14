@@ -28,7 +28,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 
         <!-- DER MASSIVE, LEUCHTENDE ABSCHUSS-BUTTON -->
         <!-- target="_blank" zwingt den Browser, das Terminal in einem neuen, freien Tab zu öffnen! -->
-        <a href="https://onrender.com" 
+        <a href="https://the-shadows-within-a-b5-legacy-java.onrender.com" 
            target="_blank" 
            style="display: inline-block; background: transparent; border: 2px solid #00ffcc; color: #00ffcc; padding: 15px 30px; font-family: 'Courier New', monospace; font-size: 16px; font-weight: bold; text-decoration: none; border-radius: 4px; box-shadow: 0 0 15px rgba(0, 255, 204, 0.2); transition: all 0.3s; cursor: pointer;"
            onmouseover="this.style.background='#00ffcc'; this.style.color='#0d0d13'; this.style.boxShadow='0 0 25px #00ffcc';"
