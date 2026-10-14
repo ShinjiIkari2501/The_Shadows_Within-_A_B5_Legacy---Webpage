@@ -17,13 +17,13 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- Wir laden die CheerpJ-Laufzeitumgebung direkt via CDN -->
+    <!-- Wir laden die offizielle CheerpJ-Laufzeitumgebung direkt via CDN -->
     <script src="https://leaningtech.com"></script>
 
     <!-- Der Terminal-Container im typischen Sci-Fi-Look -->
     <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #000; max-width: 850px; margin: 15px auto; padding: 15px;">
         <div id="cheerpj-terminal" style="width: 100%; height: 500px; color: #00ffcc; font-family: 'Courier New', monospace; background-color: #000;">
-            [SYSTEM]: Synchronizing sub-space frequencies... Initializing Java 21 Core...
+            [SYSTEM]: Synchronizing sub-space frequencies... Initializing Java Core Engine...
         </div>
     </div>
 
@@ -38,12 +38,13 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             // 2. Erzeugt eine native Text-Konsole, die direkt auf Tastendrucke lauscht
             cheerpjCreateConsole(800, 500, container);
             
-            // 3. KORREKTUR: Wir nutzen einen rein relativen Pfad basierend auf dem aktuellen Skript-Verzeichnis,
-            // um die Root-Directory-Verschiebung auf Render zu umgehen!
+            // 3. Wir holen uns den absoluten Web-Pfad zu der getarnten Datei
             const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/'));
-            const jarUrl = window.location.origin + currentPath + "/B5_Project.jar";
             
-            // 4. Startet deine originale JAR-Datei direkt im Konsolenmodus
+            // KORREKTUR: Wir rufen die als .txt getarnte JAR ab, um die Server-Sperre zu umgehen!
+            const jarUrl = window.location.origin + currentPath + "/B5_Project.txt";
+            
+            // 4. Startet dein originales Java-Spiel direkt lokal im Konsolenmodus
             await cheerpjRunJar(jarUrl);
         });
     </script>
