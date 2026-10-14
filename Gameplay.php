@@ -21,7 +21,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
     <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
 
         <!-- Ersetze die URL mit der echten Web-URL deines Python-Dienstes auf Render -->
-        <iframe src="https://the-shadows-within-a-b5-legacy-3s55.onrender.com"
+        <iframe src="https://the-shadows-within-a-b5-legacy-java.onrender.com"
                 style="width: 100%; height: 500px; border: none; background: #010203;"
                 scrolling="yes"
                 loading="lazy"
