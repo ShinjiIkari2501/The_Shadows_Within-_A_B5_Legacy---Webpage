@@ -15,7 +15,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 // PROXY TUNNEL SETUP: Spiegelt den Java-Server direkt auf deine Domain!
 // =========================================================================
 if ($isLoggedIn === 1 && isset($_GET['proxy_stream'])) {
-    $targetUrl = "https://onrender.com";
+    $targetUrl = "https://the-shadows-within-a-b5-legacy-java.onrender.com";
     // Holt die Terminal-Daten im Hintergrund vom Java-Server ab
     $context = stream_context_create(['http' => ['header' => "User-Agent: PHP-Proxy\r\n"]]);
     echo file_get_contents($targetUrl, false, $context);
