@@ -38,9 +38,9 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             container.innerHTML = ""; // Löscht den Ladetext
             
             // Startet deine originale JAR-Datei direkt lokal auf der Webseite!
-            // Da es lokal läuft, fängt der Browser den Tastatur-Fokus sofort fehlerfrei ab.
+            // KORREKTUR: Relativer Pfad ohne Slash, damit der Server die Datei direkt findet.
             cheerpjCreateDisplay(800, 500, container);
-            await cheerpjRunJar("/B5_Project.jar");
+            await cheerpjRunJar("B5_Project.jar");
         });
     </script>
 
