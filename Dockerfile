@@ -1,8 +1,11 @@
 # Nutzen eines offiziellen PHP-Images mit Apache-Webserver
 FROM php:8.2-apache
 
-# Aktiviert das Apache Rewrite-Modul (wichtig für saubere URLs, falls genutzt)
-RUN a2enmod rewrite
+# KORREKTUR: Aktiviert das Rewrite-Modul UND alle notwendigen Proxy-Tunnel im Verbund!
+RUN a2enmod rewrite \
+    && a2enmod proxy \
+    && a2enmod proxy_http \
+    && a2enmod proxy_wstunnel
 
 # Kopiert den gesamten Inhalt deines GitHub-Ordners in das Web-Verzeichnis des Apache-Servers
 COPY . /var/www/html/
@@ -11,7 +14,6 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html/
 
 # --- HIER DIE NEUE ZEILE FÜR DIE STARTSEITE ---
-# Ersetze 'gameplay.php' am Ende durch den Namen deiner echten Hauptseite (z.B. index.php oder main.php)
 RUN echo "DirectoryIndex Index.php" >> /etc/apache2/apache2.conf
 
 # Informiert Render, dass die Webseite über Port 80 erreichbar ist
