@@ -17,18 +17,36 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- Das iFrame bettet dein echtes Textadventure nahtlos in deine Seite ein -->
-    <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
+    <!-- Das iFrame bettet dein echtes Java-Textadventure nahtlos in deine Seite ein -->
+<div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
 
-        <!-- Ersetze die URL mit der echten Web-URL deines Python-Dienstes auf Render -->
-        <iframe src="https://the-shadows-within-a-b5-legacy-java.onrender.com"
-                style="width: 100%; height: 500px; border: none; background: #010203;"
-                scrolling="yes"
-                loading="lazy"
-                title="Sublink Core Terminal">
-        </iframe>
+    <!-- KORREKTUR: allow="fullscreen" und eine eindeutige ID hinzugefügt -->
+    <iframe id="gameTerminal" 
+            src="https://the-shadows-within-a-b5-legacy-java.onrender.com"
+            style="width: 100%; height: 500px; border: none; background: #010203;"
+            scrolling="yes"
+            loading="lazy"
+            allow="fullscreen"
+            title="Sublink Core Terminal">
+    </iframe>
 
-    </div>
+</div>
+
+<!-- KLEINES JAVASCRIPT: Zwingt den Browser dazu, deine Tastatureingaben direkt an das Terminal zu senden -->
+<script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const iframe = document.getElementById('gameTerminal');
+        // Sobald das iFrame geladen ist, wird der Cursor hineingeworfen
+        iframe.addEventListener('load', () => {
+            iframe.contentWindow.focus();
+        });
+        // Falls der User irgendwo anders hinklickt und wieder tippen will
+        window.addEventListener('click', () => {
+            iframe.contentWindow.focus();
+        });
+    });
+</script>
+
 
 <?php
 endif; // Schließt die Login-Prüfung aus Zeile 16
