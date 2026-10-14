@@ -17,7 +17,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- Das iFrame bettet dein echtes Python-Textadventure nahtlos in deine Seite ein -->
+    <!-- Das iFrame bettet dein echtes Textadventure nahtlos in deine Seite ein -->
     <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
 
         <!-- Ersetze die URL mit der echten Web-URL deines Python-Dienstes auf Render -->
