@@ -29,7 +29,6 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             allow="fullscreen"
             title="Sublink Core Terminal">
     </iframe>
-
 </div>
 
 <!-- KLEINES JAVASCRIPT: Zwingt den Browser dazu, deine Tastatureingaben direkt an das Terminal zu senden -->
