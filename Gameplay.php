@@ -10,6 +10,18 @@ $isLoggedIn = 0;
 if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
     $isLoggedIn = 1;
 }
+
+// =========================================================================
+// PROXY TUNNEL SETUP: Spiegelt den Java-Server direkt auf deine Domain!
+// =========================================================================
+if ($isLoggedIn === 1 && isset($_GET['proxy_stream'])) {
+    $targetUrl = "https://onrender.com";
+    // Holt die Terminal-Daten im Hintergrund vom Java-Server ab
+    $context = stream_context_create(['http' => ['header' => "User-Agent: PHP-Proxy\r\n"]]);
+    echo file_get_contents($targetUrl, false, $context);
+    exit; // Beendet das Skript, um nur den reinen Terminal-Stream auszugeben
+}
+// =========================================================================
 ?>
 
 <h2>Tactical Simulation Deck</h2>
@@ -17,12 +29,13 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- Das iFrame bettet dein echtes Java-Textadventure nahtlos und interaktiv ein -->
+    <!-- Das iFrame lädt das Terminal jetzt direkt von deiner EIGENEN Domain! -->
+    <!-- Dadurch fällt die Cross-Origin-Sperre des Browsers sofort in sich zusammen -->
     <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); overflow: hidden; background: #050505; max-width: 850px; margin: 15px auto;">
 
-        <!-- WICHTIG: Die ttyd-Live-URL mit automatischem Fokus-Befehl -->
+        <!-- WICHTIG: Die src zeigt auf deine eigene Datei mit dem Proxy-Parameter! -->
         <iframe id="gameTerminal" 
-                src="https://the-shadows-within-a-b5-legacy-java.onrender.com"
+                src="?proxy_stream=1"
                 style="width: 100%; height: 500px; border: none; background: #010203;"
                 scrolling="yes"
                 loading="lazy"
@@ -43,7 +56,6 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
                 }, 200);
             });
             
-            // Sobald der Spieler irgendwo auf das Terminal klickt, wird die Tastatur aktiv
             window.addEventListener('click', () => {
                 iframe.contentWindow.focus();
             });
