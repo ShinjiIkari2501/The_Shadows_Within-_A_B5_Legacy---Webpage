@@ -112,7 +112,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-        $jarPath = __DIR__ . '/B5_Project.jar';
+    $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
