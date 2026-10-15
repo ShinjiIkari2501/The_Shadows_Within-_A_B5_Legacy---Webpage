@@ -112,7 +112,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-    $jarPath = __DIR__ . '/B5_Project.jar';
+        $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
@@ -127,31 +127,34 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         if (is_resource($process)) {
             $inputString = "";
             
-            if (count($_SESSION['input_history']) > 0) {
+            // Reicht deine bisherigen Entscheidungen exakt eins zu eins an Java weiter
+            if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
                 foreach ($_SESSION['input_history'] as $pastInput) {
                     $inputString .= $pastInput . "\n";
                 }
             }
 
-            // KORREKTUR: Gezieltes Schreiben in den stdin-Kanal $pipes[0]
+            // Schreibt die gesammelten Befehle in das Datenrohr
             @fwrite($pipes[0], $inputString);
             @fflush($pipes[0]);
-            @fclose($pipes[0]);
+            @fclose($pipes[0]); // Schließt stdin, damit Java weiß, dass der Input für diesen Durchlauf fertig ist
 
-            // Synchrones Auslesen des stdout-Kanals
-            stream_set_blocking($pipes[1], 1);
-            usleep(150000);
+            // Schaltet den Ausgangskanal auf Non-Blocking, damit PHP beim fgets() niemals einfrieren kann
+            stream_set_blocking($pipes[1], 0);
+            
+            // Gibt Java ein kurzes Zeitfenster (180ms), um alle Texte bis zur aktuellen Szene zu generieren
+            usleep(180000);
 
-            while ($line = fgets($pipes[1])) {
-                $output .= $line;
-                $read = [$pipes[1]];
-                $write = null;
-                $except = null;
-                if (stream_select($read, $write, $except, 0, 50000) === 0) {
-                    break; 
+            // Liest alle bis zu dieser Millisekunde generierten Textzeilen aus dem Puffer
+            while (!feof($pipes[1])) {
+                $line = fgets($pipes[1]);
+                if ($line === false) {
+                    break;
                 }
+                $output .= $line;
             }
 
+            // Ressourcen sauber schließen
             @fclose($pipes[1]);
             @fclose($pipes[2]);
             @proc_close($process);
