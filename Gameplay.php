@@ -25,7 +25,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $useDatabase = true; // Verbindung erfolgreich!
 } catch (PDOException $e) {
-    // KEINE DATENBANK GEFUNDEN (z.B. auf Render): Das System schaltet geräuschlos auf Session-Sicherung um!
+    // KEINE DATENBANK GEFUNDEN (z.B. auf Render): Schaltet geräuschlos auf Session-Sicherung um
     $useDatabase = false;
 }
 
@@ -48,7 +48,7 @@ function getSaveSlots($pdo, $userId, $useDatabase) {
             }
             return $slots;
         } catch (Exception $e) {
-            // Falls die Tabelle in XAMPP noch nicht erzeugt wurde, Fallback nutzen
+            // Falls Tabelle in XAMPP noch fehlt
         }
     }
     return $_SESSION['fallback_slots'][$userId] ?? [];
@@ -139,11 +139,11 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
 ?>
 
 <h2>Tactical Simulation Deck</h2>
-<h3>Early-Concept-Alpha / Operation: Ultra-Fluid Matrix Link</h3>
+<h3>Early-Concept-Alpha / Operation: Pure Terminal Matrix</h3>
 
 <?php if ($isLoggedIn === 1): ?>
 
-    <!-- PANEL FÜR DIE 3 DATENBANK-SLOTS -->
+    <!-- PANEL FÜR DIE 3 SAVE-SLOTS -->
     <div style="max-width: 850px; margin: 15px auto; display: flex; gap: 15px; justify-content: space-between;">
         <?php 
         $currentSaves = getSaveSlots($pdo, $userId, $useDatabase);
@@ -176,14 +176,15 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
             
             <div style="color: #60acf3; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(96, 172, 243, 0.1); padding-bottom: 5px;">
                 <span>[SLOT ACTIVE: 0<?php echo $_SESSION['active_save_slot']; ?>] <?php echo $useDatabase ? '<span style="color:#00ffcc;">[SQL MODE]</span>' : '<span style="color:#ffcc00;">[SESSION MODE]</span>'; ?></span>
-                <span>Steuerung: [➔] / [Bild-Ab] Nächste Seite | [➔] / [Bild-Auf] Zurück</span>
+                <span>Nutze die normale Maus/Mausrad-Steuerung zum Scrollen</span>
             </div>
 
-            <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: hidden; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Verbinde mit lokaler Java-Engine...</pre>
+            <!-- KORREKTUR: overflow-y steht wieder auf 'auto' für unbegrenztes Scrollen! -->
+            <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Verbinde mit lokaler Java-Engine...</pre>
 
             <form id="terminal-form" style="display: flex; gap: 10px;">
                 <span style="color: #00ffcc; font-family: 'Courier New', monospace; font-size: 18px; line-height: 40px;">&gt;</span>
-                <input type="text" name="player_input" style="flex-grow: 1; background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; font-family: 'Courier New', monospace; font-size: 16px; border-radius: 4px;" placeholder="Zahl eingeben oder Enter drücken..." autocomplete="off" id="terminal-input">
+                <input type="text" name="player_input" style="flex-grow: 1; background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; font-family: 'Courier New', monospace; font-size: 16px; border-radius: 4px;" placeholder="Zahl eingeben oder einfach Enter drücken..." autocomplete="off" id="terminal-input">
                 <button type="submit" style="background: transparent; border: 1px solid #00ffcc; color: #00ffcc; padding: 0 20px; font-family: 'Courier New', monospace; font-size: 14px; cursor: pointer; border-radius: 4px;">Senden</button>
             </form>
         </div>
@@ -192,29 +193,8 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
             const form = document.getElementById('terminal-form');
             const input = document.getElementById('terminal-input');
             const screen = document.getElementById('terminal-screen');
-            
-            let allPages = [];
-            let currentPageIndex = 0;
 
-            function paginateText(text) {
-                const lines = text.split('\n');
-                const linesPerPage = 17;
-                const pages = [];
-                for (let i = 0; i < lines.length; i += linesPerPage) {
-                    pages.push(lines.slice(i, i + linesPerPage).join('\n'));
-                }
-                return pages;
-            }
-
-            function showPage(pageIndex) {
-                if (pageIndex < 0 || pageIndex >= allPages.length) return;
-                currentPageIndex = pageIndex;
-                screen.innerHTML = allPages[pageIndex];
-                if (currentPageIndex < allPages.length - 1) {
-                    screen.innerHTML += "\n\n\n[--- DRÜCKE PFEIL-RECHTS (➔) ODER BILD-AB FÜR NÄCHSTE SEITE (Seite " + (currentPageIndex + 1) + "/" + allPages.length + ") ---]";
-                }
-            }
-
+            // Zwingt den Fokus zurück ins Eingabefeld, egal wo man hinklickt
             window.addEventListener('click', () => {
                 if(input) input.focus();
             });
@@ -226,8 +206,14 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 fetch('?ajax_action=submit_input', { method: 'POST', body: formData })
                 .then(response => response.text())
                 .then(data => {
-                    allPages = paginateText(data);
-                    showPage(allPages.length - 1);
+                    // Der gesamte Java-Text wird unzensiert eingefügt
+                    screen.innerHTML = data;
+                    
+                    // KORREKTUR: Automatischer Scroll-Down zum aktuellen Geschehen!
+                    setTimeout(() => {
+                        screen.scrollTop = screen.scrollHeight;
+                    }, 50);
+                    
                     input.value = '';
                     input.focus();
                 });
@@ -235,15 +221,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
 
             window.addEventListener('DOMContentLoaded', () => { transmitData(''); });
             form.addEventListener('submit', (e) => { e.preventDefault(); transmitData(input.value); });
-
-            window.addEventListener('keydown', (e) => {
-                if (e.key === "ArrowRight" || e.key === "PageDown") {
-                    if (currentPageIndex < allPages.length - 1) { e.preventDefault(); showPage(currentPageIndex + 1); }
-                }
-                if (e.key === "ArrowLeft" || e.key === "PageUp") {
-                    if (currentPageIndex > 0) { e.preventDefault(); showPage(currentPageIndex - 1); }
-                }
-            });
+            
             input.focus();
         </script>
     <?php else: ?>
