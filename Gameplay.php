@@ -214,7 +214,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
             
             <div style="color: #60acf3; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(96, 172, 243, 0.1); padding-bottom: 5px;">
                 <span>[SLOT ACTIVE: 0<?php echo $_SESSION['active_save_slot']; ?>] <?php echo $useDatabase ? '<span style="color:#00ffcc;">[SQL MODE]</span>' : '<span style="color:#ffcc00;">[SESSION MODE]</span>'; ?></span>
-                <span>Nutze das Mausrad zum Scrollen der Historie</span>
+                <span>Automatischer Fokus auf die neueste Text-Transmission</span>
             </div>
 
             <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Matrix-Verbindung bereit. Sende leere Eingabe für Start...</pre>
@@ -239,15 +239,19 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 const formData = new FormData();
                 formData.append('player_input', inputValue);
 
+                // KORREKTUR: Wir merken uns die exakte Scroll-Position VOR dem Absenden der Entscheidung.
+                // Das ist genau die Stelle, an der die neue Szene angehängt wird!
+                const previousScrollPosition = screen.scrollHeight;
+
                 fetch('?ajax_action=submit_input', { method: 'POST', body: formData })
                 .then(response => response.text())
                 .then(data => {
                     screen.innerHTML = data;
                     
-                    // KORREKTUR: Wir springen nach einer Aktion IMMER nach GANZ OBEN (0),
-                    // damit man den neuen Szenentext sofort von Anfang an lesen kann!
                     setTimeout(() => {
-                        screen.scrollTop = 0;
+                        // KORREKTUR: Wir springen zentriert an die Stelle, wo der alte Text aufhörte 
+                        // und die neue Transmission beginnt. Kein manuelles Hoch- oder Runterscrollen mehr nötig!
+                        screen.scrollTop = previousScrollPosition - 30; 
                     }, 30);
                     
                     input.value = '';
@@ -278,3 +282,4 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
 $content = ob_get_clean();
 renderLayout("Tactical Simulation Deck", $content);
 ?>
+
