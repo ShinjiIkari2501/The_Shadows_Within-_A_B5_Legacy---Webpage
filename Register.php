@@ -16,45 +16,50 @@ if (isset($_POST['registerSubmit'])) {
     $regPass = $_POST['reg_password'] ?? '';
     $regPassConfirm = $_POST['reg_password_confirm'] ?? '';
 
-    // DIE ZENTRALE CREW-DATENBANK (Muss exakt mit der login.php übereinstimmen)
+    // DIE ZENTRALE CREW-DATENBANK (Muss exakt mit der Login.php übereinstimmen)
     $existierendeCrew = [
         'Shinji2501' => 'Test1234',
         'Sheridan'   => 'Tuzanor2261',
         'Lochley'    => 'Babcom5'
     ];
 
-    // 1. UNSCHLÄGBARE SICHERHEITS-PRÜFUNG: Existiert der Username bereits?
+    // 1. SICHERHEITS-PRÜFUNG: Existiert der Username bereits?
     if (array_key_exists($regUser, $existierendeCrew)) {
         $_SESSION['flash_message_error'] = "⚠️ SECURITY VIOLATION: Callsign '" . htmlspecialchars($regUser) . "' is a permanent crew entity. Overwriting credentials denied.";
-        header("Location: Register.php");
+        // KORREKTUR: register.php kleingeschrieben
+        header("Location: register.php");
         exit();
     }
 
     // Zusätzlicher Check: Hat sich in dieser laufenden Session bereits jemand so genannt?
     elseif (isset($_SESSION['registrierter_user']) && $_SESSION['registrierter_user'] === $regUser) {
         $_SESSION['flash_message_error'] = "⚠️ TRANSMISSION FAILURE: Identity is already allocated in temporary buffer.";
-        header("Location: Register.php");
+        // KORREKTUR: register.php kleingeschrieben
+        header("Location: register.php");
         exit();
     }
 
     // 2. VALIDIERUNG: Längenprüfung für den Benutzernamen (Min: 8, Max: 20)
     elseif (strlen($regUser) < 8 || strlen($regUser) > 20) {
         $_SESSION['flash_message_error'] = "⚠️ REGISTRATION ERROR: Username must be between 8 and 20 characters.";
-        header("Location: Register.php");
+        // KORREKTUR: register.php kleingeschrieben
+        header("Location: register.php");
         exit();
     }
 
     // 3. VALIDIERUNG: Längenprüfung für das Passwort (Min: 8, Max: 20)
     elseif (strlen($regPass) < 8 || strlen($regPass) > 20) {
         $_SESSION['flash_message_error'] = "⚠️ REGISTRATION ERROR: Password must be between 8 and 20 characters.";
-        header("Location: Register.php");
+        // KORREKTUR: register.php kleingeschrieben
+        header("Location: register.php");
         exit();
     }
 
     // 4. VALIDIERUNG: Stimmen die Passwörter übereinstimmen?
     elseif ($regPass !== $regPassConfirm) {
         $_SESSION['flash_message_error'] = "⚠️ REGISTRATION ERROR: Passwords do not match. Re-enter credentials.";
-        header("Location: Register.php");
+        // KORREKTUR: register.php kleingeschrieben
+        header("Location: register.php");
         exit();
     } 
     
@@ -65,7 +70,8 @@ if (isset($_POST['registerSubmit'])) {
 
         // Grüne Erfolgsmeldung zünden
         $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. Transmission routed to Command Deck.";
-        header("Location: Index.php");
+        // KORREKTUR: index.php kleingeschrieben
+        header("Location: index.php");
         exit();
     }
 }
@@ -82,7 +88,8 @@ ob_start();
     <fieldset class="contact-fieldset" style="max-width: 500px; margin: 0 auto; background-color: rgba(13, 20, 59, 0.4); border: 1px solid rgba(96, 172, 243, 0.3); padding: 20px; border-radius: 6px;">
         <legend>New Entity Enrollment:</legend>
         
-        <form action="Register.php" method="post">
+        <!-- KORREKTUR: action auf register.php kleingeschrieben -->
+        <form action="register.php" method="post">
             
             <!-- Benutzername mit Min/Max-Sicherung im HTML -->
             <div class="form-row" style="margin-bottom: 15px;">
@@ -117,8 +124,9 @@ ob_start();
     </fieldset>
 </section>
 
+<!-- KORREKTUR: Link auf index.php kleingeschrieben -->
 <p style="text-align: center; margin-top: 20px;">
-    Already have clearance? <a href="Index.php" style="color: #ff9900; text-decoration: none;">Return to Main Terminal</a>
+    Already have clearance? <a href="index.php" style="color: #ff9900; text-decoration: none;">Return to Main Terminal</a>
 </p>
 
 <?php 
