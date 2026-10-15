@@ -134,24 +134,28 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 }
             }
 
-            // Schreibt die gesammelten Befehle in das Datenrohr
+            // Schreibt die Befehle in die Engine
             @fwrite($pipes[0], $inputString);
             @fflush($pipes[0]);
-            @fclose($pipes[0]); // Schließt stdin, damit Java weiß, dass der Input für diesen Durchlauf fertig ist
+            @fclose($pipes[0]); // Schließt den Eingang, damit Java weiß, dass die Eingabe fertig ist
 
-            // Schaltet den Ausgangskanal auf Non-Blocking, damit PHP beim fgets() niemals einfrieren kann
-            stream_set_blocking($pipes[1], 0);
-            
-            // Gibt Java ein kurzes Zeitfenster (180ms), um alle Texte bis zur aktuellen Szene zu generieren
-            usleep(180000);
+            // REPARATUR: Wir lassen den Kanal blockierend, setzen aber ein festes Lese-Timeout von 250ms!
+            stream_set_blocking($pipes[1], 1);
+            stream_set_timeout($pipes[1], 0, 250000); // 250 Millisekunden maximale Wartezeit
 
-            // Liest alle bis zu dieser Millisekunde generierten Textzeilen aus dem Puffer
+            // Liest den Text sicher aus, bis der aktuelle Szenen-Halt erreicht ist
             while (!feof($pipes[1])) {
                 $line = fgets($pipes[1]);
                 if ($line === false) {
                     break;
                 }
                 $output .= $line;
+                
+                // Prüft, ob das Timeout erreicht wurde (Java wartet auf den nächsten Input)
+                $info = stream_get_meta_data($pipes[1]);
+                if ($info['timed_out']) {
+                    break;
+                }
             }
 
             // Ressourcen sauber schließen
@@ -168,6 +172,8 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
     echo htmlspecialchars($output);
     exit;
 }
+?>
+
 ?>
     
 <h2>Tactical Simulation Deck</h2>
