@@ -138,7 +138,7 @@ function renderLayout($seitenTitel, $inhaltHtml) {
 <body>
     <header>
         <div>
-            <a href="index.php">
+            <a href="Index.php">
                 <img src="Images/Test1.jpg" width="1450" height="300" alt="Logo">
             </a>
         </div>
