@@ -17,7 +17,7 @@ if (isset($_POST['loginSubmit'])) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Die feste Crew-Datenbank (Bleibt absolut unberührt!)
+    // Die feste Crew-Datenbank
     $crewDatenbank = [
         'Shinji2501' => 'Test1234',
         'Sheridan'   => 'Tuzanor2261',
@@ -44,18 +44,18 @@ if (isset($_POST['loginSubmit'])) {
         
         $_SESSION['flash_message'] = "🔒 UPLINK ESTABLISHED: Security Clearance Granted. Terminal Sync Complete.";
         
-        // KORREKTUR: index.php komplett kleingeschrieben für Linux-Server
-        header("Location: index.php");
+        // ANPASSUNG: Verweist strikt auf deine Index.php (Großes I)
+        header("Location: Index.php");
         exit();
     } else {
         $_SESSION['flash_message_error'] = "⚠️ ACCESS DENIED: Invalid Security Credentials or Unknown Sector Entity.";
-        // KORREKTUR: index.php komplett kleingeschrieben für Linux-Server
+        // ANPASSUNG: Verweist strikt auf deine Index.php (Großes I)
         header("Location: Index.php");
         exit();
     }
 
 } else {
-    // KORREKTUR: index.php komplett kleingeschrieben für Linux-Server
+    // ANPASSUNG: Verweist strikt auf deine Index.php (Großes I)
     header("Location: Index.php");
     exit();
 }
