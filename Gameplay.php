@@ -24,11 +24,11 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $useDatabase = true;
 } catch (PDOException $e) {
-    $useDatabase = false;
+    $useDatabase = false; // Geräuschloser Fallback auf Session-Sicherung (z.B. auf Render)
 }
 
 // -------------------------------------------------------------------------
-// SLOT-STEUERUNG (Liest entweder aus SQL oder simuliert über die Session)
+// SLOT-STEUERUNG (Verwaltet den festen Szenen-Zustand des Spielers)
 // -------------------------------------------------------------------------
 function getSaveSlots($pdo, $userId, $useDatabase) {
     if ($useDatabase && $pdo !== null) {
@@ -50,10 +50,10 @@ function getSaveSlots($pdo, $userId, $useDatabase) {
     return $_SESSION['fallback_slots'][$userId] ?? [];
 }
 
-function saveSlotData($pdo, $userId, $slot, $history, $useDatabase) {
+function saveSlotData($pdo, $userId, $slot, $stateData, $useDatabase) {
     if ($useDatabase && $pdo !== null) {
         try {
-            $jsonData = json_encode($history);
+            $jsonData = json_encode($stateData);
             $stmt = $pdo->prepare("INSERT INTO game_saves (user_id, slot_number, save_data) 
                                    VALUES (?, ?, ?) 
                                    ON DUPLICATE KEY UPDATE save_data = ?, updated_at = CURRENT_TIMESTAMP");
@@ -63,7 +63,7 @@ function saveSlotData($pdo, $userId, $slot, $history, $useDatabase) {
     }
     $_SESSION['fallback_slots'][$userId][$slot] = [
         'date' => date('d.m.Y H:i'),
-        'data' => $history
+        'data' => $stateData
     ];
 }
 
@@ -73,7 +73,10 @@ if ($isLoggedIn === 1) {
         $slot = (int)$_GET['select_slot'];
         $_SESSION['active_save_slot'] = $slot;
         $saves = getSaveSlots($pdo, $userId, $useDatabase);
-        $_SESSION['input_history'] = $saves[$slot]['data'] ?? [];
+        
+        // Lädt den exakten Zustand aus der Datenbank-Matrix
+        $_SESSION['b5_current_scene'] = $saves[$slot]['data']['scene'] ?? "CREATION";
+        $_SESSION['b5_player_origin'] = $saves[$slot]['data']['origin'] ?? "Standard";
         header("Location: Gameplay.php");
         exit;
     }
@@ -81,17 +84,13 @@ if ($isLoggedIn === 1) {
     if (isset($_GET['delete_slot'])) {
         $slot = (int)$_GET['delete_slot'];
         if ($useDatabase && $pdo !== null) {
-            try {
-                $stmt = $pdo->prepare("DELETE FROM game_saves WHERE user_id = ? AND slot_number = ?");
-                $stmt->execute([$userId, $slot]);
-            } catch (Exception $e) {}
+            try { $stmt = $pdo->prepare("DELETE FROM game_saves WHERE user_id = ? AND slot_number = ?"); $stmt->execute([$userId, $slot]); } catch (Exception $e) {}
         }
-        if (isset($_SESSION['fallback_slots'][$userId][$slot])) {
-            unset($_SESSION['fallback_slots'][$userId][$slot]);
-        }
+        unset($_SESSION['fallback_slots'][$userId][$slot]);
         if (isset($_SESSION['active_save_slot']) && $_SESSION['active_save_slot'] === $slot) {
             unset($_SESSION['active_save_slot']);
-            unset($_SESSION['input_history']);
+            unset($_SESSION['b5_current_scene']);
+            unset($_SESSION['b5_player_origin']);
         }
         header("Location: Gameplay.php");
         exit;
@@ -99,81 +98,77 @@ if ($isLoggedIn === 1) {
 }
 
 // =========================================================================
-// ASYNCHRONER LIVE-INPUT (AJAX-HUB VIA COMMAND REPLAY)
+// ASYNCHRONER LIVE-INPUT (DIREKTES SZNEN-ARRAY STATT FEHLERHAFTER PIPES)
 // =========================================================================
 if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_input') {
-    if (!isset($_SESSION['input_history'])) {
-        $_SESSION['input_history'] = [];
+    if (!isset($_SESSION['b5_current_scene'])) {
+        $_SESSION['b5_current_scene'] = "CREATION";
+        $_SESSION['b5_player_origin'] = "Standard";
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $rawInput = isset($_POST['player_input']) ? $_POST['player_input'] : '';
-        $_SESSION['input_history'][] = $rawInput;
+        $rawInput = isset($_POST['player_input']) ? trim($_POST['player_input']) : '';
         
+        // DAS COMPREHENSIVE ROUTING-ARRAY (Alle Szenen 1 bis 32 lückenlos abgedeckt!)
+        switch ($_SESSION['b5_current_scene']) {
+            case "CREATION":
+                if ($rawInput === "1") { $_SESSION['b5_player_origin'] = "Intelligence"; $_SESSION['b5_current_scene'] = "PROLOGUE"; }
+                if ($rawInput === "2") { $_SESSION['b5_player_origin'] = "Underworld"; $_SESSION['b5_current_scene'] = "PROLOGUE"; }
+                break;
+            case "PROLOGUE":   $_SESSION['b5_current_scene'] = "SCENE_2"; break;
+            case "SCENE_2":    $_SESSION['b5_current_scene'] = "SCENE_3"; break;
+            case "SCENE_3":    $_SESSION['b5_current_scene'] = "SCENE_4"; break;
+            case "SCENE_4":    $_SESSION['b5_current_scene'] = "SCENE_5"; break;
+            case "SCENE_5":    $_SESSION['b5_current_scene'] = "SCENE_6"; break;
+            case "SCENE_6":    $_SESSION['b5_current_scene'] = "SCENE_7"; break;
+            case "SCENE_7":    $_SESSION['b5_current_scene'] = "SCENE_8"; break;
+            case "SCENE_8":    $_SESSION['b5_current_scene'] = "SCENE_9"; break;
+            case "SCENE_9":    $_SESSION['b5_current_scene'] = "SCENE_10"; break;
+            case "SCENE_10":   $_SESSION['b5_current_scene'] = "SCENE_11"; break;
+            case "SCENE_11":   $_SESSION['b5_current_scene'] = "SCENE_12"; break;
+            case "SCENE_12":   $_SESSION['b5_current_scene'] = "SCENE_13"; break;
+            case "SCENE_13":   $_SESSION['b5_current_scene'] = "SCENE_14"; break;
+            case "SCENE_14":   $_SESSION['b5_current_scene'] = "SCENE_15"; break;
+            
+            // LÜCKENLOSE WEICHEN FÜR DIE ZWEITE HÄLFTE
+            case "SCENE_15":   $_SESSION['b5_current_scene'] = "SCENE_16"; break;
+            case "SCENE_16":   $_SESSION['b5_current_scene'] = "SCENE_17"; break;
+            case "SCENE_17":   $_SESSION['b5_current_scene'] = "SCENE_18"; break;
+            case "SCENE_18":   $_SESSION['b5_current_scene'] = "SCENE_19"; break;
+            case "SCENE_19":   $_SESSION['b5_current_scene'] = "SCENE_20"; break;
+            case "SCENE_20":   $_SESSION['b5_current_scene'] = "SCENE_21"; break;
+            case "SCENE_21":   $_SESSION['b5_current_scene'] = "SCENE_22"; break;
+            case "SCENE_22":   $_SESSION['b5_current_scene'] = "SCENE_23"; break;
+            case "SCENE_23":   $_SESSION['b5_current_scene'] = "SCENE_24"; break;
+            case "SCENE_24":   $_SESSION['b5_current_scene'] = "SCENE_25"; break;
+            case "SCENE_25":   $_SESSION['b5_current_scene'] = "REUNION"; break;
+            
+            // ACT V GENEVA SHOWDOWN CORRIDOR
+            case "REUNION":    $_SESSION['b5_current_scene'] = "GENEVA"; break;
+            case "GENEVA":     $_SESSION['b5_current_scene'] = "CEILING"; break;
+            case "CEILING":    $_SESSION['b5_current_scene'] = "BATTLE"; break;
+            case "BATTLE":     $_SESSION['b5_current_scene'] = "CONCLUSION"; break;
+            case "CONCLUSION": $_SESSION['b5_current_scene'] = "EPILOGUE"; break;
+        }
+        
+        // Zustand im aktuellen SQL-Slot sichern
         if (isset($_SESSION['active_save_slot'])) {
-            saveSlotData($pdo, $userId, $_SESSION['active_save_slot'], $_SESSION['input_history'], $useDatabase);
+            $saveState = ['scene' => $_SESSION['b5_current_scene'], 'origin' => $_SESSION['b5_player_origin']];
+            saveSlotData($pdo, $userId, $_SESSION['active_save_slot'], $saveState, $useDatabase);
         }
     }
 
+    // Java als saubere API aufrufen – Blitzschnell, sicher und ohne Pipes!
     $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
-        $descriptorspec = [
-            0 => ["pipe", "r"], // stdin
-            1 => ["pipe", "w"], // stdout
-            2 => ["pipe", "w"]  // stderr
-        ];
-
-        $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
-
-        if (is_resource($process)) {
-            $inputString = "";
-            
-            // Wenn die Historie komplett leer ist (allererster Seitenaufruf im Slot),
-            // schicken wir ein Start-Enter mit, um direkt in die Charakterwahl zu springen!
-            if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
-                $inputString = "\n";
-            } else {
-                // Wenn der Spieler bereits Eingaben getätigt hat, bauen wir die Kette exakt auf
-                foreach ($_SESSION['input_history'] as $pastInput) {
-                    $inputString .= $pastInput . "\n";
-                }
-            }
-
-            // KORREKTUR: Wir hängen einen massiven Puffer von 50 leeren Zeilenumbrüchen an das ENDE der Kette!
-            // Das hält deine Menüschleifen in Scene15Hub künstlich im Hintergrund offen, 
-            // verhindert das vorzeitige Schließen des Java-Prozesses und stoppt den Backloop zur Charakterwahl permanent!
-            for ($p = 0; $p < 50; $p++) {
-                $inputString .= "\n";
-            }
-
-            // Sende den präzise gepufferten Input an Java
-            @fwrite($pipes, $inputString);
-            @fflush($pipes);
-            @fclose($pipes);
-
-            // Stabile Leseschleife mit Mikro-Timeout aus dem Ausgangskanal $pipes
-            stream_set_blocking($pipes, 1);
-            usleep(200000);
-
-            while ($line = fgets($pipes)) {
-                $output .= $line;
-                $read = [$pipes];
-                $write = null;
-                $except = null;
-                $num_changed_streams = stream_select($read, $write, $except, 0, 50000);
-                if ($num_changed_streams === 0) {
-                    break; 
-                }
-            }
-
-            @fclose($pipes);
-            @fclose($pipes);
-            @proc_close($process);
-        } else {
-            $output = "[ERROR]: Das Java-Triebwerk konnte nicht initialisiert werden.";
-        }
+        $scene = escapeshellarg($_SESSION['b5_current_scene']);
+        $origin = escapeshellarg($_SESSION['b5_player_origin']);
+        
+        // Die Parameter werden als sichere Start-Argumente übergeben
+        $command = "java -jar " . escapeshellarg($jarPath) . " $scene $origin 2>&1";
+        $output = shell_exec($command);
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
     }
@@ -181,9 +176,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
     echo htmlspecialchars($output);
     exit;
 }
-
 ?>
-
 <h2>Tactical Simulation Deck</h2>
 <h3>Early-Concept-Alpha / Operation: Pure Terminal Matrix</h3>
 
@@ -222,7 +215,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
             
             <div style="color: #60acf3; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(96, 172, 243, 0.1); padding-bottom: 5px;">
                 <span>[SLOT ACTIVE: 0<?php echo $_SESSION['active_save_slot']; ?>] <?php echo $useDatabase ? '<span style="color:#00ffcc;">[SQL MODE]</span>' : '<span style="color:#ffcc00;">[SESSION MODE]</span>'; ?></span>
-                <span>Nutze das Mausrad zum Scrollen der gesamten Historie</span>
+                <span>Nutze das Mausrad zum Scrollen der Historie</span>
             </div>
 
             <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Initialisiere Matrix-Verbindung...</pre>
