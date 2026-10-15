@@ -119,20 +119,31 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-    $jarPath = __DIR__ . '/B5_Project.jar';
+$jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
-        $inputString = "";
-        foreach ($_SESSION['input_history'] as $pastInput) {
-            $inputString .= $pastInput . "\n";
+        // KORREKTUR: Wenn die Historie komplett leer ist (allerster Seitenaufruf im Slot),
+        // schicken wir Java ein virtuelles, leeres Signal, damit der allererste Scanner (nextLine) 
+        // in deiner Main.java nicht ins Leere greift und sofort abstürzt!
+        if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
+            $command = "printf '\n\n' | java -jar " . escapeshellarg($jarPath) . " 2>&1";
+        } else {
+            $inputString = "";
+            foreach ($_SESSION['input_history'] as $pastInput) {
+                $inputString .= $pastInput . "\n";
+            }
+            // Wir hängen einen Sicherheits-Puffer an, um Folgescanner aufzufangen
+            $inputString .= "\n";
+            $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
         }
-        $command = "echo " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
+        
         $output = shell_exec($command);
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
     }
 
+    // Hier wird das Ergebnis der Java-Engine sauber an das JavaScript gesendet
     echo htmlspecialchars($output);
     exit;
 }
