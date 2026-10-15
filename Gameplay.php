@@ -21,7 +21,6 @@ $pdo = null;
 
 try {
     // Versucht deine lokale XAMPP-Datenbank zu erreichen
-    // Sobald du später eine Online-Datenbank hast, trägst du einfach hier die neuen Daten ein!
     $pdo = new PDO("mysql:host=localhost;dbname=deine_datenbank;charset=utf8", "root", "");
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $useDatabase = true; // Verbindung erfolgreich!
@@ -52,7 +51,6 @@ function getSaveSlots($pdo, $userId, $useDatabase) {
             // Falls die Tabelle in XAMPP noch nicht erzeugt wurde, Fallback nutzen
         }
     }
-    // Fallback-Simulation, falls keine DB läuft
     return $_SESSION['fallback_slots'][$userId] ?? [];
 }
 
@@ -67,7 +65,6 @@ function saveSlotData($pdo, $userId, $slot, $history, $useDatabase) {
             return;
         } catch (Exception $e) {}
     }
-    // In der Session sichern, falls keine DB läuft
     $_SESSION['fallback_slots'][$userId][$slot] = [
         'date' => date('d.m.Y H:i'),
         'data' => $history
@@ -194,3 +191,77 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         <script>
             const form = document.getElementById('terminal-form');
             const input = document.getElementById('terminal-input');
+            const screen = document.getElementById('terminal-screen');
+            
+            let allPages = [];
+            let currentPageIndex = 0;
+
+            function paginateText(text) {
+                const lines = text.split('\n');
+                const linesPerPage = 17;
+                const pages = [];
+                for (let i = 0; i < lines.length; i += linesPerPage) {
+                    pages.push(lines.slice(i, i + linesPerPage).join('\n'));
+                }
+                return pages;
+            }
+
+            function showPage(pageIndex) {
+                if (pageIndex < 0 || pageIndex >= allPages.length) return;
+                currentPageIndex = pageIndex;
+                screen.innerHTML = allPages[pageIndex];
+                if (currentPageIndex < allPages.length - 1) {
+                    screen.innerHTML += "\n\n\n[--- DRÜCKE PFEIL-RECHTS (➔) ODER BILD-AB FÜR NÄCHSTE SEITE (Seite " + (currentPageIndex + 1) + "/" + allPages.length + ") ---]";
+                }
+            }
+
+            window.addEventListener('click', () => {
+                if(input) input.focus();
+            });
+
+            function transmitData(inputValue) {
+                const formData = new FormData();
+                formData.append('player_input', inputValue);
+
+                fetch('?ajax_action=submit_input', { method: 'POST', body: formData })
+                .then(response => response.text())
+                .then(data => {
+                    allPages = paginateText(data);
+                    showPage(allPages.length - 1);
+                    input.value = '';
+                    input.focus();
+                });
+            }
+
+            window.addEventListener('DOMContentLoaded', () => { transmitData(''); });
+            form.addEventListener('submit', (e) => { e.preventDefault(); transmitData(input.value); });
+
+            window.addEventListener('keydown', (e) => {
+                if (e.key === "ArrowRight" || e.key === "PageDown") {
+                    if (currentPageIndex < allPages.length - 1) { e.preventDefault(); showPage(currentPageIndex + 1); }
+                }
+                if (e.key === "ArrowLeft" || e.key === "PageUp") {
+                    if (currentPageIndex > 0) { e.preventDefault(); showPage(currentPageIndex - 1); }
+                }
+            });
+            input.focus();
+        </script>
+    <?php else: ?>
+        <div style="max-width: 850px; margin: 40px auto; text-align: center; font-family: 'Courier New', monospace; color: #888; border: 1px dashed rgba(96, 172, 243, 0.3); padding: 30px; border-radius: 4px; background: #050508;">
+            [SYSTEM ALERT]: Keine aktive Verbindung zur Simulationsmatrix.<br><br>
+            <span style="color: #00ffcc;">Bitte wähle oben einen SLOT aus, um eine parallele Simulation zu starten!</span>
+        </div>
+    <?php endif; ?>
+
+<?php else: ?>
+    <div style="max-width: 850px; margin: 40px auto; text-align: center; font-family: 'Courier New', monospace; color: #888; border: 1px dashed rgba(96, 172, 243, 0.3); padding: 30px; border-radius: 4px; background: #050508;">
+        [SYSTEM matrix]: Verbindung zur Simulationsmatrix bereit.<br><br>
+        <span style="color: #00ffcc;">Bitte logge dich ein, um das Tactical Simulation Deck zu initialisieren.</span>
+    </div>
+<?php endif; ?>
+
+<?php
+// 4. Holt den HTML-Code aus dem Puffer und baut das Layout final zusammen
+$content = ob_get_clean();
+renderLayout("Tactical Simulation Deck", $content);
+?>
