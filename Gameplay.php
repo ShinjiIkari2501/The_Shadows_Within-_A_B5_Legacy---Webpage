@@ -115,7 +115,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-    $jarPath = __DIR__ . '/B5_Project.jar';
+        $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
@@ -130,9 +130,8 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         if (is_resource($process)) {
             $inputString = "";
             
-            // KORREKTUR: Wenn die Historie komplett leer ist (allererster Seitenaufruf im Slot),
-            // schicken wir automatisch ein virtuelles Enter mit! Das schaltet deinen Prolog
-            // sofort im Hintergrund frei und bringt die Charakterauswahl direkt auf den Bildschirm.
+            // Wenn die Historie komplett leer ist (allererster Seitenaufruf im Slot),
+            // schicken wir automatisch ein virtuelles Enter mit, um den Prolog freizuschalten!
             if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
                 $inputString = "\n";
             } else {
@@ -142,18 +141,18 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 }
             }
 
-            // Sende den Input an Java
-            @fwrite($pipes, $inputString);
-            @fflush($pipes);
-            @fclose($pipes);
+            // KORREKTUR: Wir schreiben gezielt in den Eingangskanal $pipes[0], nicht in das gesamte Array!
+            @fwrite($pipes[0], $inputString);
+            @fflush($pipes[0]);
+            @fclose($pipes[0]);
 
-            // Stabile Leseschleife mit Mikro-Timeout
-            stream_set_blocking($pipes, 1);
+            // Stabile Leseschleife mit Mikro-Timeout aus dem Ausgangskanal $pipes[1]
+            stream_set_blocking($pipes[1], 1);
             usleep(200000);
 
-            while ($line = fgets($pipes)) {
+            while ($line = fgets($pipes[1])) {
                 $output .= $line;
-                $read = [$pipes];
+                $read = [$pipes[1]];
                 $write = null;
                 $except = null;
                 $num_changed_streams = stream_select($read, $write, $except, 0, 50000);
@@ -162,8 +161,8 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 }
             }
 
-            @fclose($pipes);
-            @fclose($pipes);
+            @fclose($pipes[1]);
+            @fclose($pipes[2]);
             @proc_close($process);
         } else {
             $output = "[ERROR]: Das Java-Triebwerk konnte nicht initialisiert werden.";
