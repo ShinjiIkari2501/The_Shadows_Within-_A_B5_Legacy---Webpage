@@ -13,7 +13,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 ?>
 
 <h2>Tactical Simulation Deck</h2>
-<h3>Early-Concept-Alpha / Operation: Pure Java Engine</h3>
+<h3>Early-Concept-Alpha / Operation: Real Java Link</h3>
 
 <?php 
 if ($isLoggedIn === 1): 
@@ -31,37 +31,22 @@ if ($isLoggedIn === 1):
         $_SESSION['input_history'][] = trim($_POST['player_input']);
     }
 
-    // --- JAVA CORE EXECUTION ---
+    // --- EXECUTION VIA COMMAND-LINE INJECTION ---
     if (file_exists($jarPath)) {
-        // Wir definieren die standardmäßigen Ein- und Ausgabekanäle für das Betriebssystem
-        $descriptorspec = [
-            0 => ["pipe", "r"], // stdin (Hier flüstert PHP deine Eingaben an Java)
-            1 => ["pipe", "w"], // stdout (Hier liest PHP die echten Texte aus deiner JAR)
-            2 => ["pipe", "w"]  // stderr (Fehlerausgabe)
-        ];
-
-        // Startet dein echtes Java-Spiel als Hintergrundprozess auf dem Server
-        $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
-
-        if (is_resource($process)) {
-            // Wir jagen alle bisherigen Entscheidungen nacheinander in Javas Scanner,
-            // um das Spiel exakt an die Stelle zu bringen, wo der Spieler gerade steht!
-            foreach ($_SESSION['input_history'] as $pastInput) {
-                @fwrite($pipes[0], $pastInput . "\n");
-            }
-            
-            // Ein abschließender Zeilenumbruch simuliert das finale Enter-Drücken
-            @fwrite($pipes[0], "\n");
-            @fflush($pipes[0]);
-            fclose($pipes[0]); // Signalisiert Java: Eingabe fertig. Bitte berechnen!
-
-            // Jetzt lesen wir die echten Texte aus deinen System.out.println-Klassen aus
-            $output = stream_get_contents($pipes[1]);
-            
-            fclose($pipes[1]);
-            fclose($pipes[2]);
-            proc_close($process);
+        // Wir bauen die Kette deiner bisherigen Eingaben zusammen (z.B. "1\n2\n")
+        $inputString = "";
+        foreach ($_SESSION['input_history'] as $pastInput) {
+            $inputString .= $pastInput . "\n";
         }
+        // Ein finales Enter anhängen, um eventuell wartende Scanner anzustoßen
+        $inputString .= "\n";
+
+        // UNZERSTÖRBARER TRICK: Wir pipen die gesamte Historie direkt beim Start in Java hinein!
+        // escapeshellarg sorgt dafür, dass keine Sonderzeichen den Linux-Server zum Absturz bringen.
+        $command = "echo " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
+        
+        // Führt den Befehl aus und fängt die echten System.out.println-Texte aus deiner JAR ab
+        $output = shell_exec($command);
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!\nPfad: " . $jarPath;
     }
@@ -81,7 +66,8 @@ if ($isLoggedIn === 1):
                    style="flex-grow: 1; background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; font-family: 'Courier New', monospace; font-size: 16px; border-radius: 4px;" 
                    placeholder="Zahl eintippen und Enter drücken..." 
                    autocomplete="off"
-                   id="terminal-input">
+                   id="terminal-input"
+                   required>
             <button type="submit" style="background: transparent; border: 1px solid #00ffcc; color: #00ffcc; padding: 0 20px; font-family: 'Courier New', monospace; font-size: 14px; cursor: pointer; border-radius: 4px;">Transmit</button>
         </form>
 
