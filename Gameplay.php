@@ -115,7 +115,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-        $jarPath = __DIR__ . '/B5_Project.jar';
+    $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
@@ -128,40 +128,42 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
 
         if (is_resource($process)) {
-            // 1. Sicheres Schreiben: Jage alle getroffenen Entscheidungen nacheinander in Javas Scanner
-            if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
+            $inputString = "";
+            
+            // KORREKTUR: Wenn die Historie komplett leer ist (allererster Seitenaufruf im Slot),
+            // schicken wir automatisch ein virtuelles Enter mit! Das schaltet deinen Prolog
+            // sofort im Hintergrund frei und bringt die Charakterauswahl direkt auf den Bildschirm.
+            if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
+                $inputString = "\n";
+            } else {
+                // Wenn der Spieler bereits Eingaben getätigt hat, bauen wir die Kette eins zu eins auf
                 foreach ($_SESSION['input_history'] as $pastInput) {
-                    @fwrite($pipes[0], $pastInput . "\n");
+                    $inputString .= $pastInput . "\n";
                 }
-                @fflush($pipes[0]);
             }
 
-            // Wir schließen den Eingangskanal, damit Java weiß, dass die Eingabe für diesen Schritt fertig ist
-            @fclose($pipes[0]);
+            // Sende den Input an Java
+            @fwrite($pipes, $inputString);
+            @fflush($pipes);
+            @fclose($pipes);
 
-            // 2. Sicheres Lesen: Wir aktivieren den blockierenden Modus für stabiles Auslesen
-            stream_set_blocking($pipes[1], 1);
-            
-            // Wir geben Java ein kurzes Zeitfenster (200ms), um alle Szenentexte zu generieren
+            // Stabile Leseschleife mit Mikro-Timeout
+            stream_set_blocking($pipes, 1);
             usleep(200000);
 
-            // Kontrollierte Schleife: Liest den Text zeilenweise aus, bis der aktuelle Puffer leer ist
-            while ($line = fgets($pipes[1])) {
+            while ($line = fgets($pipes)) {
                 $output .= $line;
-                // Sicherheitsbremse: Wenn Java auf den nächsten echten Scanner trifft und stoppt,
-                // bricht stream_select oder der Timeout ab, damit PHP nicht einfriert
-                $read = [$pipes[1]];
+                $read = [$pipes];
                 $write = null;
                 $except = null;
-                $num_changed_streams = stream_select($read, $write, $except, 0, 50000); // 50ms Mikro-Timeout
+                $num_changed_streams = stream_select($read, $write, $except, 0, 50000);
                 if ($num_changed_streams === 0) {
-                    break; // Keine neuen Daten im Rohr, Java wartet auf den nächsten Input!
+                    break; 
                 }
             }
 
-            // Ressourcen sauber freigeben
-            @fclose($pipes[1]);
-            @fclose($pipes[2]);
+            @fclose($pipes);
+            @fclose($pipes);
             @proc_close($process);
         } else {
             $output = "[ERROR]: Das Java-Triebwerk konnte nicht initialisiert werden.";
