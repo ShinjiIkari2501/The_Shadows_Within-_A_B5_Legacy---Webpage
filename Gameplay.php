@@ -1,103 +1,4 @@
 <?php
-// Datenbankverbindung bereitstellen
-if (!isset($pdo)) {
-    try {
-        // Passe hier bei Bedarf Host, DB-Name, User und Passwort an
-        $pdo = new PDO("mysql:host=localhost;dbname=deine_datenbank;charset=utf8", "root", "");
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    } catch (PDOException $e) {
-        die("[CRITICAL ERROR]: Secure database link failure.");
-    }
-}
-
-// User-ID aus der Session abgreifen
-$userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1; 
-
-// ECHTE DATENBANK-FUNKTIONEN
-function getSaveSlots($pdo, $userId) {
-    $stmt = $pdo->prepare("SELECT slot_number, updated_at, save_data FROM game_saves WHERE user_id = ?");
-    $stmt->execute([$userId]);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    $slots = [];
-    foreach ($results as $row) {
-        $slots[$row['slot_number']] = [
-            'date' => date('d.m.Y H:i', strtotime($row['updated_at'])),
-            'data' => json_decode($row['save_data'], true)
-        ];
-    }
-    return $slots;
-}
-
-function saveSlotData($pdo, $userId, $slot, $history) {
-    $jsonData = json_encode($history);
-    $stmt = $pdo->prepare("INSERT INTO game_saves (user_id, slot_number, save_data) 
-                           VALUES (?, ?, ?) 
-                           ON DUPLICATE KEY UPDATE save_data = ?, updated_at = CURRENT_TIMESTAMP");
-    $stmt->execute([$userId, $slot, $jsonData, $jsonData]);
-}
-
-function deleteSlotData($pdo, $userId, $slot) {
-    $stmt = $pdo->prepare("DELETE FROM game_saves WHERE user_id = ? AND slot_number = ?");
-    $stmt->execute([$userId, $slot]);
-}
-
-// SLOT COMMAND INTERCEPTOR (Laden und Löschen)
-if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
-    if (isset($_GET['select_slot'])) {
-        $slot = (int)$_GET['select_slot'];
-        $_SESSION['active_save_slot'] = $slot;
-        $saves = getSaveSlots($pdo, $userId);
-        $_SESSION['input_history'] = $saves[$slot]['data'] ?? [];
-        header("Location: gameplay.php");
-        exit;
-    }
-    
-    if (isset($_GET['delete_slot'])) {
-        $slot = (int)$_GET['delete_slot'];
-        deleteSlotData($pdo, $userId, $slot);
-        if (isset($_SESSION['active_save_slot']) && $_SESSION['active_save_slot'] === $slot) {
-            unset($_SESSION['active_save_slot']);
-            unset($_SESSION['input_history']);
-        }
-        header("Location: gameplay.php");
-        exit;
-    }
-}
-
-// LOGIK-HUB FÜR ASYNCHRONEN LIVE-INPUT (AJAX)
-if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true && isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_input') {
-    if (!isset($_SESSION['input_history'])) {
-        $_SESSION['input_history'] = [];
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $rawInput = isset($_POST['player_input']) ? $_POST['player_input'] : '';
-        $_SESSION['input_history'][] = $rawInput;
-        
-        if (isset($_SESSION['active_save_slot'])) {
-            saveSlotData($pdo, $userId, $_SESSION['active_save_slot'], $_SESSION['input_history']);
-        }
-    }
-
-    $jarPath = __DIR__ . '/B5_Project.jar';
-    $output = "";
-
-    if (file_exists($jarPath)) {
-        $inputString = "";
-        foreach ($_SESSION['input_history'] as $pastInput) {
-            $inputString .= $pastInput . "\n";
-        }
-        $command = "echo " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
-        $output = shell_exec($command);
-    } else {
-        $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
-    }
-
-    echo htmlspecialchars($output);
-    exit;
-}
-<?php
 // 1. Die Layout-Zentrale laden (Startet auch die Session)
 require_once 'Includes/layout.php';
 
@@ -193,6 +94,11 @@ $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1;
                 }
             }
 
+            // Stellt sicher, dass das Eingabefeld nach Klicks fokussiert bleibt
+            window.addEventListener('click', () => {
+                if(input) input.focus();
+            });
+
             function transmitData(inputValue) {
                 const formData = new FormData();
                 formData.append('player_input', inputValue);
@@ -228,7 +134,7 @@ $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1;
     <?php endif; ?>
 
 <?php
-endif;
+endif; // Schließt das if ($isLoggedIn === 1) aus Zeile 25
 
 // 4. Holt den HTML-Code aus dem Puffer und baut das Layout
 $content = ob_get_clean();
