@@ -1,117 +1,3 @@
-<?php
-// 1. Die Layout-Zentrale laden (Startet auch die Session)
-require_once 'Includes/layout.php';
-
-// 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
-ob_start();
-
-// LOGIN-PRÜFUNG
-$isLoggedIn = 0;
-$userId = 0;
-if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
-    $isLoggedIn = 1;
-    $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1; 
-}
-
-// =========================================================================
-// DATENBANK-DETEKTOR & FALLBACK-SYSTEM
-// =========================================================================
-$useDatabase = false;
-$pdo = null;
-
-try {
-    $pdo = new PDO("mysql:host=localhost;dbname=deine_datenbank;charset=utf8", "root", "");
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $useDatabase = true;
-} catch (PDOException $e) {
-    $useDatabase = false; // Fallback auf Session-Sicherung für Render.com
-}
-
-// -------------------------------------------------------------------------
-// SLOT-STEUERUNG
-// -------------------------------------------------------------------------
-function getSaveSlots($pdo, $userId, $useDatabase) {
-    if ($useDatabase && $pdo !== null) {
-        try {
-            $stmt = $pdo->prepare("SELECT slot_number, updated_at, save_data FROM game_saves WHERE user_id = ?");
-            $stmt->execute([$userId]);
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
-            $slots = [];
-            foreach ($results as $row) {
-                $slots[$row['slot_number']] = [
-                    'date' => date('d.m.Y H:i', strtotime($row['updated_at'])),
-                    'data' => json_decode($row['save_data'], true)
-                ];
-            }
-            return $slots;
-        } catch (Exception $e) {}
-    }
-    return $_SESSION['fallback_slots'][$userId] ?? [];
-}
-
-function saveSlotData($pdo, $userId, $slot, $history, $useDatabase) {
-    if ($useDatabase && $pdo !== null) {
-        try {
-            $jsonData = json_encode($history);
-            $stmt = $pdo->prepare("INSERT INTO game_saves (user_id, slot_number, save_data) 
-                                   VALUES (?, ?, ?) 
-                                   ON DUPLICATE KEY UPDATE save_data = ?, updated_at = CURRENT_TIMESTAMP");
-            $stmt->execute([$userId, $slot, $jsonData, $jsonData]);
-            return;
-        } catch (Exception $e) {}
-    }
-    $_SESSION['fallback_slots'][$userId][$slot] = [
-        'date' => date('d.m.Y H:i'),
-        'data' => $history
-    ];
-}
-
-// SLOT INTERCEPTOR (Laden und Löschen von Speicherständen)
-if ($isLoggedIn === 1) {
-    if (isset($_GET['select_slot'])) {
-        $slot = (int)$_GET['select_slot'];
-        $_SESSION['active_save_slot'] = $slot;
-        $saves = getSaveSlots($pdo, $userId, $useDatabase);
-        $_SESSION['input_history'] = $saves[$slot]['data'] ?? [];
-        header("Location: Gameplay.php");
-        exit;
-    }
-    
-    if (isset($_GET['delete_slot'])) {
-        $slot = (int)$_GET['delete_slot'];
-        if ($useDatabase && $pdo !== null) {
-            try { $stmt = $pdo->prepare("DELETE FROM game_saves WHERE user_id = ? AND slot_number = ?"); $stmt->execute([$userId, $slot]); } catch (Exception $e) {}
-        }
-        if (isset($_SESSION['fallback_slots'][$userId][$slot])) {
-            unset($_SESSION['fallback_slots'][$userId][$slot]);
-        }
-        if (isset($_SESSION['active_save_slot']) && $_SESSION['active_save_slot'] === $slot) {
-            unset($_SESSION['active_save_slot']);
-            unset($_SESSION['input_history']);
-        }
-        header("Location: Gameplay.php");
-        exit;
-    }
-}
-
-// =========================================================================
-// ASYNCHRONER LIVE-INPUT HUB
-// =========================================================================
-if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_input') {
-    if (!isset($_SESSION['input_history'])) {
-        $_SESSION['input_history'] = [];
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $rawInput = isset($_POST['player_input']) ? trim($_POST['player_input']) : '';
-        $_SESSION['input_history'][] = $rawInput;
-        
-        if (isset($_SESSION['active_save_slot'])) {
-            saveSlotData($pdo, $userId, $_SESSION['active_save_slot'], $_SESSION['input_history'], $useDatabase);
-        }
-    }
-
     $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
@@ -127,38 +13,35 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         if (is_resource($process)) {
             $inputString = "";
             
-            if (count($_SESSION['input_history']) > 0) {
+            // Reicht deine bisherigen getroffenen Entscheidungen exakt eins zu eins an Java weiter
+            if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
                 foreach ($_SESSION['input_history'] as $pastInput) {
                     $inputString .= $pastInput . "\n";
                 }
             }
-            
-            // Ein Puffer füttert nachfolgende Scanner-Abfragen der aktuellen Szene
-            for ($p = 0; $p < 100; $p++) {
-                $inputString .= "\n";
-            }
 
-            // Korrektur: Wir schreiben dediziert in den Kanal-Index [0]
-            @fwrite($pipes[0], $inputString);
-            @fflush($pipes[0]);
-            @fclose($pipes[0]);
+            // KORREKTUR: Keine Schleife mit 100 Enters mehr! Wir senden nur den echten Input-String.
+            @fwrite($pipes, $inputString);
+            @fflush($pipes);
+            @fclose($pipes);
 
-            // Synchrones Auslesen des stdout-Kanals [1]
-            stream_set_blocking($pipes[1], 1);
+            // Stabile Leseschleife aus dem Ausgangskanal
+            stream_set_blocking($pipes, 1);
             usleep(150000);
 
-            while ($line = fgets($pipes[1])) {
+            while ($line = fgets($pipes)) {
                 $output .= $line;
-                $read = [$pipes[1]];
+                $read = [$pipes];
                 $write = null;
                 $except = null;
+                // Sobald Java aufhört zu senden und am nächsten Scanner wartet, bricht PHP ab
                 if (stream_select($read, $write, $except, 0, 50000) === 0) {
                     break; 
                 }
             }
 
-            @fclose($pipes[1]);
-            @fclose($pipes[2]);
+            @fclose($pipes);
+            @fclose($pipes);
             @proc_close($process);
         } else {
             $output = "[ERROR]: Das Java-Triebwerk konnte nicht gestartet werden.";
