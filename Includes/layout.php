@@ -153,27 +153,26 @@ function renderLayout($seitenTitel, $inhaltHtml) {
              DYNAMISCHES TERMINAL-FLASH-MESSAGE-SYSTEM (INTEGRIERT)
              ========================================================================== -->
         
-        <!-- 1. PRÜFUNG AUF ROTEN ALARM (Fehlerfall via isset) -->
+                <!-- ==========================================================================
+             DYNAMISCHES TERMINAL-FLASH-MESSAGE-SYSTEM (OPTIMIERT)
+             ========================================================================== -->
+        
+        <!-- 1. PRÜFUNG AUF ROTEN ALARM (Fehlerfall) -->
         <?php if (isset($_SESSION['flash_message_error'])): ?>
-            <div style="background-color: rgba(255, 51, 51, 0.2) !important; border: 1px solid #ff3333 !important; color: #ff3333 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 5px #ff3333 !important; letter-spacing: 0.5px !important;">
+            <div class="flash-message-error">
                 <?php echo $_SESSION['flash_message_error']; ?>
             </div>
-            <?php 
-            // Automatische Vernichtung: Setzt die Variable für die Zukunft auf null
-            unset($_SESSION['flash_message_error']); 
-            ?>
+            <?php unset($_SESSION['flash_message_error']); ?>
         <?php endif; ?>
 
-        <!-- 2. BESTÄTIGUNG: Login war erfolgreich (KORREKTUR: Jetzt in lesbarem B5-Gold!) -->
+        <!-- 2. BESTÄTIGUNG: Erfolg (Login / Registrierung) -->
         <?php if (isset($_SESSION['flash_message'])): ?>
-            <div style="background-color: rgba(0, 200, 80, 0.15) !important; border: 1px solid #00c850 !important; color: #ff9900 !important; padding: 12px !important; margin-bottom: 20px !important; border-radius: 6px !important; text-align: center !important; font-family: 'B5Station', Arial, sans-serif !important; font-weight: bold !important; text-shadow: 0 0 6px rgba(255, 153, 0, 0.6) !important; letter-spacing: 0.5px !important;">
+            <div class="flash-message-success">
                 <?php echo $_SESSION['flash_message']; ?>
             </div>
-            <?php 
-            // Einmal zeigen, danach sofort aus dem Speicher löschen
-            unset($_SESSION['flash_message']); 
-            ?>
+            <?php unset($_SESSION['flash_message']); ?>
         <?php endif; ?>
+
 
 
         <!-- Hier injiziert PHP den exklusiven Inhalt der jeweiligen Seite hinein -->
