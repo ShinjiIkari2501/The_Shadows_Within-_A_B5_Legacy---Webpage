@@ -74,14 +74,6 @@ if ($isLoggedIn === 1) {
         $_SESSION['active_save_slot'] = $slot;
         $saves = getSaveSlots($pdo, $userId, $useDatabase);
         $_SESSION['input_history'] = $saves[$slot]['data'] ?? [];
-        
-        // Killt eventuelle alte verwaiste Prozesse im RAM vor dem Laden
-        if (isset($_SESSION['java_process']) && is_resource($_SESSION['java_process'])) {
-            @proc_close($_SESSION['java_process']);
-        }
-        unset($_SESSION['java_process']);
-        unset($_SESSION['java_pipes']);
-        
         header("Location: Gameplay.php");
         exit;
     }
@@ -98,12 +90,8 @@ if ($isLoggedIn === 1) {
             unset($_SESSION['fallback_slots'][$userId][$slot]);
         }
         if (isset($_SESSION['active_save_slot']) && $_SESSION['active_save_slot'] === $slot) {
-            if (isset($_SESSION['java_process']) && is_resource($_SESSION['java_process'])) {
-                @proc_close($_SESSION['java_process']);
-            }
             unset($_SESSION['active_save_slot']);
             unset($_SESSION['input_history']);
-            unset($_SESSION['java_process']);
         }
         header("Location: Gameplay.php");
         exit;
@@ -111,64 +99,48 @@ if ($isLoggedIn === 1) {
 }
 
 // =========================================================================
-// ASYNCHRONER LIVE-KERNEL (AJAX-HUB VIA PERSISTENT PIPES)
+// ASYNCHRONER LIVE-INPUT (AJAX-HUB VIA COMMAND REPLAY)
 // =========================================================================
 if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] === 'submit_input') {
+    if (!isset($_SESSION['input_history'])) {
+        $_SESSION['input_history'] = [];
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $rawInput = isset($_POST['player_input']) ? $_POST['player_input'] : '';
+        $_SESSION['input_history'][] = $rawInput;
+        
+        if (isset($_SESSION['active_save_slot'])) {
+            saveSlotData($pdo, $userId, $_SESSION['active_save_slot'], $_SESSION['input_history'], $useDatabase);
+        }
+    }
+
     $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
-        // Falls der Live-Prozess noch nicht im RAM atmet, starten wir ihn JETZT ein einziges Mal!
-        if (!isset($_SESSION['java_process']) || !is_resource($_SESSION['java_process'])) {
-            $descriptorspec = [
-                0 => ["pipe", "r"], // stdin
-                1 => ["pipe", "w"], // stdout
-                2 => ["pipe", "w"]  // stderr
-            ];
-            
-            $_SESSION['java_process'] = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
-            stream_set_blocking($pipes[1], 0); // Non-blocking, damit PHP nicht einfriert
-            $_SESSION['java_pipes'] = $pipes;
-            $_SESSION['terminal_log_buffer'] = "";
-            
-            // Wenn der Spieler bereits einen alten Spielstand geladen hat, spielen wir die Historie blitzschnell ein
-            if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
-                foreach ($_SESSION['input_history'] as $pastInput) {
-                    @fwrite($pipes[0], $pastInput . "\n");
-                    @fflush($pipes[0]);
-                }
-            }
-            usleep(150000); // 150ms Synchronisationspuffer
-        }
-
-        $pipes = $_SESSION['java_pipes'] ?? null;
-
-        // Wenn ein echter Tastendruck vom Web-Formular reinkommt
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['is_submitting'])) {
-            $rawInput = isset($_POST['player_input']) ? $_POST['player_input'] : '';
-            
-            if ($pipes && is_resource($_SESSION['java_process'])) {
-                // Sende den Input DIREKT live an den wartenden Java-Scanner!
-                @fwrite($pipes[0], $rawInput . "\n");
-                @fflush($pipes[0]);
+        $inputString = "";
+        
+        // KORREKTUR: Wir bauen den Input-Stream absolut synchronisiert auf.
+        // Falls die Historie leer ist, senden wir ein leeres Signal, um das Menü anzuzeigen.
+        if (count($_SESSION['input_history']) === 0) {
+            $inputString = "\n";
+        } else {
+            foreach ($_SESSION['input_history'] as $index => $pastInput) {
+                $inputString .= $pastInput . "\n";
                 
-                // Speichere die Entscheidung im virtuellen DB-Savegame ab
-                $_SESSION['input_history'][] = $rawInput;
-                if (isset($_SESSION['active_save_slot'])) {
-                    saveSlotData($pdo, $userId, $_SESSION['active_save_slot'], $_SESSION['input_history'], $useDatabase);
+                // UNZERSTÖRBARER WEICHEN-TRICK: Deine Main.java verlangt nach der Klassenwahl (Index 0) 
+                // ein zusätzliches Enter für den Prolog-Sicherheits-Scanner ("Press Enter to ignite...").
+                // Wir schieben dieses Enter AUTOMATISCH genau an Position 1 ein, damit Java niemals asynchron wird!
+                if ($index === 0) {
+                    $inputString .= "\n"; 
                 }
-                usleep(150000); // Dem Java-Triebwerk Zeit zum Rechnen geben
             }
         }
 
-        // Sammle die aktuellen Textausgaben live aus der Pipe
-        if ($pipes && is_resource($_SESSION['java_process'])) {
-            $newText = stream_get_contents($pipes[1]);
-            if ($newText !== false && $newText !== "") {
-                $_SESSION['terminal_log_buffer'] .= $newText;
-            }
-            $output = $_SESSION['terminal_log_buffer'];
-        }
+        // printf schickt den Bytestrom stabil und blitzschnell an deine JAR-Klassen
+        $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
+        $output = shell_exec($command);
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
     }
@@ -215,15 +187,15 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         <div style="border: 1px solid rgba(96, 172, 243, 0.3); border-radius: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.7); background: #010203; max-width: 850px; margin: 20px auto; padding: 20px;">
             
             <div style="color: #60acf3; font-family: 'Courier New', monospace; font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(96, 172, 243, 0.1); padding-bottom: 5px;">
-                <span>[LIVE STREAM ACTIVE - SLOT: 0<?php echo $_SESSION['active_save_slot']; ?>] <?php echo $useDatabase ? '<span style="color:#00ffcc;">[SQL MODE]</span>' : '<span style="color:#ffcc00;">[SESSION MODE]</span>'; ?></span>
-                <span>Nutze die normale Maus/Mausrad-Steuerung zum Scrollen</span>
+                <span>[SLOT ACTIVE: 0<?php echo $_SESSION['active_save_slot']; ?>] <?php echo $useDatabase ? '<span style="color:#00ffcc;">[SQL MODE]</span>' : '<span style="color:#ffcc00;">[SESSION MODE]</span>'; ?></span>
+                <span>Nutze das Mausrad zum Scrollen der gesamten Historie</span>
             </div>
 
-            <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Initialisiere persistenten RAM-Kern...</pre>
+            <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Initialisiere Matrix-Verbindung...</pre>
 
             <form id="terminal-form" style="display: flex; gap: 10px;">
                 <span style="color: #00ffcc; font-family: 'Courier New', monospace; font-size: 18px; line-height: 40px;">&gt;</span>
-                <input type="text" name="player_input" style="flex-grow: 1; background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; font-family: 'Courier New', monospace; font-size: 16px; border-radius: 4px;" placeholder="Zahl eingeben oder einfach Enter drücken..." autocomplete="off" id="terminal-input">
+                <input type="text" name="player_input" style="flex-grow: 1; background: #000; border: 1px solid #00ffcc; color: #00ffcc; padding: 10px; font-family: 'Courier New', monospace; font-size: 16px; border-radius: 4px;" placeholder="Option eintippen und Enter drücken..." autocomplete="off" id="terminal-input">
                 <button type="submit" style="background: transparent; border: 1px solid #00ffcc; color: #00ffcc; padding: 0 20px; font-family: 'Courier New', monospace; font-size: 14px; cursor: pointer; border-radius: 4px;">Senden</button>
             </form>
         </div>
@@ -237,52 +209,30 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 if(input) input.focus();
             });
 
-            // Asynchroner Datenstrom-Handler
-            function transmitLive(inputValue, isSubmitting = false) {
+            function transmitData(inputValue) {
                 const formData = new FormData();
                 formData.append('player_input', inputValue);
-                if (isSubmitting) {
-                    formData.append('is_submitting', '1');
-                }
 
                 fetch('?ajax_action=submit_input', { method: 'POST', body: formData })
                 .then(response => response.text())
                 .then(data => {
-                    if (data.trim() !== "") {
-                        screen.innerHTML = data;
-                        setTimeout(() => {
-                            screen.scrollTop = screen.scrollHeight;
-                        }, 30);
-                    }
-                    if (isSubmitting) {
-                        input.value = '';
-                    }
+                    screen.innerHTML = data;
+                    setTimeout(() => {
+                        screen.scrollTop = screen.scrollHeight;
+                    }, 30);
+                    input.value = '';
                     input.focus();
                 });
             }
 
-            // Startet die Überwachung beim Laden der Seite
-            window.addEventListener('DOMContentLoaded', () => { 
-                transmitLive('', false); 
-                
-                // Polling-Schleife: Liest alle 500ms den Java-Ausgabe-Buffer aus,
-                // falls Java im Hintergrund Texte nachschiebt (z.B. Lade-Meldungen)!
-                setInterval(() => {
-                    transmitLive('', false);
-                }, 500);
-            });
-
-            form.addEventListener('submit', (e) => { 
-                e.preventDefault(); 
-                transmitLive(input.value, true); 
-            });
-            
+            window.addEventListener('DOMContentLoaded', () => { transmitData(''); });
+            form.addEventListener('submit', (e) => { e.preventDefault(); transmitData(input.value); });
             input.focus();
         </script>
     <?php else: ?>
         <div style="max-width: 850px; margin: 40px auto; text-align: center; font-family: 'Courier New', monospace; color: #888; border: 1px dashed rgba(96, 172, 243, 0.3); padding: 30px; border-radius: 4px; background: #050508;">
             [SYSTEM matrix]: Verbindung zur Simulationsmatrix bereit.<br><br>
-            <span style="color: #00ffcc;">Bitte wähle oben einen SLOT aus, um eine parallele Live-Simulation zu starten!</span>
+            <span style="color: #00ffcc;">Bitte wähle oben einen SLOT aus, um eine parallele Simulation zu starten!</span>
         </div>
     <?php endif; ?>
 
