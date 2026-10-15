@@ -63,15 +63,15 @@ if (isset($_POST['registerSubmit'])) {
         exit();
     } 
     
-    else {
+        else {
         // ERFOLG: Wir simulieren das Speichern in der Session
         $_SESSION['registrierter_user'] = $regUser;
         $_SESSION['registriertes_passw'] = $regPass;
 
-        // Grüne Erfolgsmeldung zünden
         $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. Transmission routed to Command Deck.";
-        // index.php bleibt kleingeschrieben, da deine Hauptdatei index.php heißt
-        header("Location: index.php");
+        
+        // ANPASSUNG: Verweist strikt auf deine Index.php (Großes I)
+        header("Location: Index.php");
         exit();
     }
 }
