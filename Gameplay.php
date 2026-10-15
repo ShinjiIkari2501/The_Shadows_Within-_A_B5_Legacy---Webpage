@@ -115,20 +115,33 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-            $jarPath = __DIR__ . '/B5_Project.jar';
+                $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
         $inputString = "";
         
-        // Wenn die Historie nicht leer ist, bauen wir die Kette der echten Entscheidungen auf
+        // Wenn die Historie nicht leer ist, bauen wir die Kette synchronisiert auf
         if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
             foreach ($_SESSION['input_history'] as $pastInput) {
+                // 1. Schicke deine echte getroffene Entscheidung an Java
                 $inputString .= $pastInput . "\n";
+                
+                // 2. UNZERSTÖRBARER FLUSHER: Nach JEDER echten Entscheidung schicken wir 
+                // automatisch ein leeres Enter hinterher! Das bedient die blockierenden 
+                // scanner.nextLine()-Pausen am Ende deiner Szenen-Klassen im Hintergrund,
+                // ohne dass du den Java-Code anpassen musst.
+                $inputString .= "\n";
             }
+            
+            // Ein kleiner Sicherheits-Puffer am Ende, damit der allerletzte Scanner nicht ins Leere greift
+            $inputString .= "\n\n";
+        } else {
+            // Beim allerersten Laden starten wir Java nackt für den Prolog
+            $inputString = "\n";
         }
 
-        // printf feuert die echten Entscheidungen eins zu eins an Java
+        // printf feuert den perfekt getakteten Bytestrom an deine JAR
         $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
         $output = shell_exec($command);
     } else {
@@ -138,6 +151,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
     echo htmlspecialchars($output);
     exit;
 }
+
 
 ?>
 
