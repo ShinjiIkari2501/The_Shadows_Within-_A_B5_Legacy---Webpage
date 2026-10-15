@@ -115,31 +115,33 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-    $jarPath = __DIR__ . '/B5_Project.jar';
+        $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
         $inputString = "";
         
-        // KORREKTUR: Wir bauen den Input-Stream absolut synchronisiert auf.
-        // Falls die Historie leer ist, senden wir ein leeres Signal, um das Menü anzuzeigen.
-        if (count($_SESSION['input_history']) === 0) {
-            $inputString = "\n";
+        // Wenn die Historie komplett leer ist (allererster Seitenaufruf im Slot):
+        if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
+            // Wir starten Java ganz normal nackt, um den Prolog anzuzeigen
+            $command = "sleep 0.2 | java -jar " . escapeshellarg($jarPath) . " 2>&1";
         } else {
-            foreach ($_SESSION['input_history'] as $index => $pastInput) {
+            // Wenn der Spieler bereits Eingaben getätigt hat, bauen wir die Kette AUF JEDEN FALL
+            // absolut linear und eins zu eins auf – ohne künstliche Extra-Enters!
+            foreach ($_SESSION['input_history'] as $pastInput) {
                 $inputString .= $pastInput . "\n";
-                
-                // UNZERSTÖRBARER WEICHEN-TRICK: Deine Main.java verlangt nach der Klassenwahl (Index 0) 
-                // ein zusätzliches Enter für den Prolog-Sicherheits-Scanner ("Press Enter to ignite...").
-                // Wir schieben dieses Enter AUTOMATISCH genau an Position 1 ein, damit Java niemals asynchron wird!
-                if ($index === 0) {
-                    $inputString .= "\n"; 
-                }
             }
+            
+            // Ein einziger, normaler Sicherheits-Puffer am Ende, damit nachfolgende 
+            // Scanner-Abfragen die Pipeline beim Generieren des aktuellen Menüs nicht abwürgen.
+            for ($p = 0; $p < 20; $p++) {
+                $inputString .= "\n";
+            }
+            
+            // Nutzen von printf für den stabilen, unverfälschten Bytestrom
+            $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
         }
-
-        // printf schickt den Bytestrom stabil und blitzschnell an deine JAR-Klassen
-        $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
+        
         $output = shell_exec($command);
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
