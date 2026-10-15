@@ -30,4 +30,55 @@ footer ul li a,
     text-transform: uppercase !important; /* Zwingt alle Menüs in B5-Großbuchstaben */
     letter-spacing: 1px !important;      /* Taktischer Zeichenabstand */
 }
+/* ==========================================================================
+   TERMINAL FLASH MESSAGES: ATMOSPHÄRISCHER CORE-ALARM
+   ========================================================================== */
+
+/* --- ERFOLGSMELDUNG (Uplink Active / Credentials Verified) --- */
+.flash-message-success {
+    display: block !important;
+    width: 100% !important;
+    max-width: 850px !important;
+    margin: 10px auto 25px auto !important;
+    padding: 12px 20px !important;
+    text-align: center !important;
+    border-radius: 6px !important;
+    
+    /* Schriftdesign: Klassisches BabCom-Echtzeit-Grün mit Leuchtkraft */
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: #00ffcc !important;
+    text-shadow: 0 0 6px rgba(0, 255, 204, 0.6) !important;
+    
+    /* Transluzentes Konsolen-Gehäuse mit grüner Lichtkante */
+    background-color: rgba(5, 26, 21, 0.5) !important;
+    border: 1px solid rgba(0, 255, 204, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(0, 255, 204, 0.1) !important;
+}
+
+/* --- FEHLERMELDUNG (Access Denied / Security Violation) --- */
+.flash-message-error {
+    display: block !important;
+    width: 100% !important;
+    max-width: 850px !important;
+    margin: 10px auto 25px auto !important;
+    padding: 12px 20px !important;
+    text-align: center !important;
+    border-radius: 6px !important;
+    
+    /* Schriftdesign: Warn-Rot mit intensivem Alarm-Glühen */
+    font-family: 'B5Station', Arial, sans-serif !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    color: #ff3333 !important;
+    text-shadow: 0 0 6px rgba(255, 51, 51, 0.6) !important;
+    
+    /* Transluzentes Konsolen-Gehäuse mit roter Alarm-Lichtkante */
+    background-color: rgba(26, 5, 5, 0.5) !important;
+    border: 1px solid rgba(255, 51, 51, 0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 51, 51, 0.1) !important;
+}
 
