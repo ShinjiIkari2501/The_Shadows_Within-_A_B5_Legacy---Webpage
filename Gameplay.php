@@ -123,18 +123,22 @@ $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
-        // KORREKTUR: Wenn die Historie komplett leer ist (allerster Seitenaufruf im Slot),
-        // schicken wir Java ein virtuelles, leeres Signal, damit der allererste Scanner (nextLine) 
-        // in deiner Main.java nicht ins Leere greift und sofort abstürzt!
+        // Wenn die Historie komplett leer ist (allerster Seitenaufruf im Slot):
         if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
-            $command = "printf '\n\n' | java -jar " . escapeshellarg($jarPath) . " 2>&1";
+            $command = "sleep 0.2 | java -jar " . escapeshellarg($jarPath) . " 2>&1";
         } else {
+            // Wenn der Spieler bereits Eingaben getätigt hat, bauen wir die Kette auf
             $inputString = "";
             foreach ($_SESSION['input_history'] as $pastInput) {
                 $inputString .= $pastInput . "\n";
             }
-            // Wir hängen einen Sicherheits-Puffer an, um Folgescanner aufzufangen
+            
+            // KORREKTUR: Wir reduzieren den Puffer auf genau 1 zusätzliches Enter!
+            // Das gibt Java genug Futter, um nicht abzustürzen, verhindert aber, 
+            // dass nachfolgende switch-case-Szenen blind mit leeren Zeilen übersprungen werden.
             $inputString .= "\n";
+            
+            // Wir nutzen printf für den stabilen Rohdatenstrom
             $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
         }
         
@@ -143,7 +147,6 @@ $jarPath = __DIR__ . '/B5_Project.jar';
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
     }
 
-    // Hier wird das Ergebnis der Java-Engine sauber an das JavaScript gesendet
     echo htmlspecialchars($output);
     exit;
 }
