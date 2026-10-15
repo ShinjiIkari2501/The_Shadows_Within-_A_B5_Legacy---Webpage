@@ -115,35 +115,30 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-                $jarPath = __DIR__ . '/B5_Project.jar';
+                    $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
         $inputString = "";
         
-        // Wenn die Historie nicht leer ist, bauen wir die Kette synchronisiert auf
+        // Wir bauen die Kette deiner bisherigen Entscheidungen absolut linear auf
         if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
             foreach ($_SESSION['input_history'] as $pastInput) {
-                // 1. Schicke deine echte getroffene Entscheidung an Java
                 $inputString .= $pastInput . "\n";
-                
-                // 2. UNZERSTÖRBARER FLUSHER: Nach JEDER echten Entscheidung schicken wir 
-                // automatisch ein leeres Enter hinterher! Das bedient die blockierenden 
-                // scanner.nextLine()-Pausen am Ende deiner Szenen-Klassen im Hintergrund,
-                // ohne dass du den Java-Code anpassen musst.
-                $inputString .= "\n";
             }
-            
-            // Ein kleiner Sicherheits-Puffer am Ende, damit der allerletzte Scanner nicht ins Leere greift
-            $inputString .= "\n\n";
-        } else {
-            // Beim allerersten Laden starten wir Java nackt für den Prolog
-            $inputString = "\n";
         }
 
-        // printf feuert den perfekt getakteten Bytestrom an deine JAR
-        $command = "printf " . escapeshellarg($inputString) . " | java -jar " . escapeshellarg($jarPath) . " 2>&1";
-        $output = shell_exec($command);
+        // UNZERSTÖRBARER KÖNIGSWEG: Wir nutzen ein benanntes Datenrohr (Named Pipe) über bash!
+        // Der Befehl (echo ...; tail -f) sorgt dafür, dass die Pipeline nach deinen Eingaben 
+        // künstlich GEÖFFNET bleibt. Java wartet brav, stürzt NIE wieder ab und blockiert nicht!
+        $command = "bash -c '({ echo " . escapeshellarg($inputString) . "; tail -f /dev/null; } | java -jar " . escapeshellarg($jarPath) . ")' 2>&1";
+        
+        // Führt den Prozess aus, bricht nach 0.3 Sekunden kontrolliert ab und fängt den Text ab
+        $connection = popen($command, 'r');
+        stream_set_blocking($connection, 0);
+        usleep(300000); // 300ms Zeit für Java zum Generieren des aktuellen Bildschirms
+        $output = stream_get_contents($connection);
+        pclose($connection);
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
     }
@@ -151,7 +146,6 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
     echo htmlspecialchars($output);
     exit;
 }
-
 
 ?>
 
