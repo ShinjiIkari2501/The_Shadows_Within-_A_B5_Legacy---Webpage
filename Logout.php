@@ -15,7 +15,7 @@ $_SESSION = array();
 // 3. Die Session auf dem Server komplett zerstören
 session_destroy();
 
-// 4. Den User zurück zur Startseite schicken (komplett kleingeschrieben)
+// ANPASSUNG: Verweist strikt auf deine Index.php (Großes I)
 header("Location: Index.php");
 exit();
 ?>
