@@ -125,7 +125,7 @@ ob_start();
 </section>
 
 <p style="text-align: center; margin-top: 20px;">
-    Already have clearance? <a href="index.php" style="color: #ff9900; text-decoration: none;">Return to Main Terminal</a>
+    Already have clearance? <a href="Index.php" style="color: #ff9900; text-decoration: none;">Return to Main Terminal</a>
 </p>
 
 <?php 
