@@ -115,37 +115,57 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-                    $jarPath = __DIR__ . '/B5_Project.jar';
+    $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
-        $inputString = "";
-        
-        // Wir bauen die Kette deiner bisherigen Entscheidungen absolut linear auf
-        if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
-            foreach ($_SESSION['input_history'] as $pastInput) {
-                $inputString .= $pastInput . "\n";
-            }
-        }
+        // Wir definieren die standardmäßigen Ein- und Ausgabekanäle für Java
+        $descriptorspec = [
+            0 => ["pipe", "r"], // stdin (Schreiben an Java)
+            1 => ["pipe", "w"], // stdout (Lesen aus Java)
+            2 => ["pipe", "w"]  // stderr
+        ];
 
-        // UNZERSTÖRBARER KÖNIGSWEG: Wir nutzen ein benanntes Datenrohr (Named Pipe) über bash!
-        // Der Befehl (echo ...; tail -f) sorgt dafür, dass die Pipeline nach deinen Eingaben 
-        // künstlich GEÖFFNET bleibt. Java wartet brav, stürzt NIE wieder ab und blockiert nicht!
-        $command = "bash -c '({ echo " . escapeshellarg($inputString) . "; tail -f /dev/null; } | java -jar " . escapeshellarg($jarPath) . ")' 2>&1";
-        
-        // Führt den Prozess aus, bricht nach 0.3 Sekunden kontrolliert ab und fängt den Text ab
-        $connection = popen($command, 'r');
-        stream_set_blocking($connection, 0);
-        usleep(300000); // 300ms Zeit für Java zum Generieren des aktuellen Bildschirms
-        $output = stream_get_contents($connection);
-        pclose($connection);
+        // Startet deine originale JAR-Datei als sauberen Hintergrundprozess
+        $process = proc_open("java -jar " . escapeshellarg($jarPath), $descriptorspec, $pipes);
+
+        if (is_resource($process)) {
+            // Wir jagen alle deine bisherigen Entscheidungen nacheinander in Javas Scanner
+            if (isset($_SESSION['input_history']) && count($_SESSION['input_history']) > 0) {
+                foreach ($_SESSION['input_history'] as $pastInput) {
+                    fwrite($pipes[0], $pastInput . "\n");
+                    fflush($pipes[0]);
+                }
+            }
+
+            // Wir signalisieren Java, dass für DIESEN Ladedurchgang keine weiteren Zeichen kommen
+            fclose($pipes[0]);
+
+            // Wir aktivieren den Non-Blocking-Modus beim Auslesen, damit PHP niemals einfriert
+            stream_set_blocking($pipes[1], 0);
+
+            // Wir geben dem Java-Triebwerk ein kurzes Zeitfenster (150ms), um den Text zu generieren
+            usleep(150000);
+
+            // Holt den vollständigen, unverfälschten Text aus deinen System.out.println-Klassen
+            $output = stream_get_contents($pipes[1]);
+
+            // Schließt alle Kanäle und beendet den Prozess sauber, ohne den RAM zu belasten
+            fclose($pipes[1]);
+            fclose($pipes[2]);
+            proc_close($process);
+        } else {
+            $output = "[ERROR]: Das Java-Triebwerk konnte nicht gestartet werden.";
+        }
     } else {
         $output = "[ERROR]: B5_Project.jar wurde im Webverzeichnis nicht gefunden!";
     }
 
+    // Sendet das echte Ergebnis deiner IntelliJ-Konsole an deine Webseite
     echo htmlspecialchars($output);
     exit;
 }
+
 
 ?>
 
