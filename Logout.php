@@ -16,6 +16,6 @@ $_SESSION = array();
 session_destroy();
 
 // 4. Den User zurück zur Startseite schicken (Groß-/Kleinschreibung angeglichen)
-header("Location: index.php");
+header("Location: Index.php");
 exit();
 ?>
