@@ -50,13 +50,13 @@ if (isset($_POST['loginSubmit'])) {
     } else {
         $_SESSION['flash_message_error'] = "⚠️ ACCESS DENIED: Invalid Security Credentials or Unknown Sector Entity.";
         // KORREKTUR: index.php komplett kleingeschrieben für Linux-Server
-        header("Location: index.php");
+        header("Location: Index.php");
         exit();
     }
 
 } else {
     // KORREKTUR: index.php komplett kleingeschrieben für Linux-Server
-    header("Location: index.php");
+    header("Location: Index.php");
     exit();
 }
 ?>
