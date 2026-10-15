@@ -12,7 +12,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
 }
 
 // 3. Echte Datenbank- und JAR-Logik aus der ausgelagerten Datei laden
-require_once 'gameplay_db.php';
+require_once __DIR__ . '/Gameplay_db.php';
 
 $userId = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 1;
 ?>
