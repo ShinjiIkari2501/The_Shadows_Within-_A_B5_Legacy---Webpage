@@ -47,7 +47,7 @@ $current_page = strtolower(basename($_SERVER['SCRIPT_NAME']));
     
     <ul> 
         <!-- DYNAMISCHES HIGHLIGHT: Prüft die aktuelle Seite und verpasst ihr ein Inline-Design, ohne das CSS zu verändern! -->
-        <li><a href="index.php" style="<?php echo ($current_page == 'index.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Main Terminal</a></li>
+        <li><a href="Index.php" style="<?php echo ($current_page == 'index.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Main Terminal</a></li>
         <li><a href="Project_Idea.php" style="<?php echo ($current_page == 'project_idea.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Project Idea</a></li>
         <li><a href="Story_Timeline.php" style="<?php echo ($current_page == 'story_timeline.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Story & Timeline</a></li>
         <li><a href="Characters.php" style="<?php echo ($current_page == 'characters.php') ? 'color: #ff9900 !important; text-shadow: 0 0 8px rgba(255, 153, 0, 0.8) !important; font-weight: bold !important;' : ''; ?>">Characters</a></li>
