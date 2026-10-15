@@ -115,7 +115,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
         }
     }
 
-        $jarPath = __DIR__ . '/B5_Project.jar';
+    $jarPath = __DIR__ . '/B5_Project.jar';
     $output = "";
 
     if (file_exists($jarPath)) {
@@ -131,28 +131,35 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
             $inputString = "";
             
             // Wenn die Historie komplett leer ist (allererster Seitenaufruf im Slot),
-            // schicken wir automatisch ein virtuelles Enter mit, um den Prolog freizuschalten!
+            // schicken wir ein Start-Enter mit, um direkt in die Charakterwahl zu springen!
             if (!isset($_SESSION['input_history']) || count($_SESSION['input_history']) === 0) {
                 $inputString = "\n";
             } else {
-                // Wenn der Spieler bereits Eingaben getätigt hat, bauen wir die Kette eins zu eins auf
+                // Wenn der Spieler bereits Eingaben getätigt hat, bauen wir die Kette exakt auf
                 foreach ($_SESSION['input_history'] as $pastInput) {
                     $inputString .= $pastInput . "\n";
                 }
             }
 
-            // KORREKTUR: Wir schreiben gezielt in den Eingangskanal $pipes[0], nicht in das gesamte Array!
-            @fwrite($pipes[0], $inputString);
-            @fflush($pipes[0]);
-            @fclose($pipes[0]);
+            // KORREKTUR: Wir hängen einen massiven Puffer von 50 leeren Zeilenumbrüchen an das ENDE der Kette!
+            // Das hält deine Menüschleifen in Scene15Hub künstlich im Hintergrund offen, 
+            // verhindert das vorzeitige Schließen des Java-Prozesses und stoppt den Backloop zur Charakterwahl permanent!
+            for ($p = 0; $p < 50; $p++) {
+                $inputString .= "\n";
+            }
 
-            // Stabile Leseschleife mit Mikro-Timeout aus dem Ausgangskanal $pipes[1]
-            stream_set_blocking($pipes[1], 1);
+            // Sende den präzise gepufferten Input an Java
+            @fwrite($pipes, $inputString);
+            @fflush($pipes);
+            @fclose($pipes);
+
+            // Stabile Leseschleife mit Mikro-Timeout aus dem Ausgangskanal $pipes
+            stream_set_blocking($pipes, 1);
             usleep(200000);
 
-            while ($line = fgets($pipes[1])) {
+            while ($line = fgets($pipes)) {
                 $output .= $line;
-                $read = [$pipes[1]];
+                $read = [$pipes];
                 $write = null;
                 $except = null;
                 $num_changed_streams = stream_select($read, $write, $except, 0, 50000);
@@ -161,8 +168,8 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 }
             }
 
-            @fclose($pipes[1]);
-            @fclose($pipes[2]);
+            @fclose($pipes);
+            @fclose($pipes);
             @proc_close($process);
         } else {
             $output = "[ERROR]: Das Java-Triebwerk konnte nicht initialisiert werden.";
