@@ -26,40 +26,40 @@ if (isset($_POST['registerSubmit'])) {
     // 1. SICHERHEITS-PRÜFUNG: Existiert der Username bereits?
     if (array_key_exists($regUser, $existierendeCrew)) {
         $_SESSION['flash_message_error'] = "⚠️ SECURITY VIOLATION: Callsign '" . htmlspecialchars($regUser) . "' is a permanent crew entity. Overwriting credentials denied.";
-        // KORREKTUR: register.php kleingeschrieben
-        header("Location: register.php");
+        // ANPASSUNG: Verweist auf Register.php (Großes R)
+        header("Location: Register.php");
         exit();
     }
 
     // Zusätzlicher Check: Hat sich in dieser laufenden Session bereits jemand so genannt?
     elseif (isset($_SESSION['registrierter_user']) && $_SESSION['registrierter_user'] === $regUser) {
         $_SESSION['flash_message_error'] = "⚠️ TRANSMISSION FAILURE: Identity is already allocated in temporary buffer.";
-        // KORREKTUR: register.php kleingeschrieben
-        header("Location: register.php");
+        // ANPASSUNG: Verweist auf Register.php (Großes R)
+        header("Location: Register.php");
         exit();
     }
 
     // 2. VALIDIERUNG: Längenprüfung für den Benutzernamen (Min: 8, Max: 20)
     elseif (strlen($regUser) < 8 || strlen($regUser) > 20) {
         $_SESSION['flash_message_error'] = "⚠️ REGISTRATION ERROR: Username must be between 8 and 20 characters.";
-        // KORREKTUR: register.php kleingeschrieben
-        header("Location: register.php");
+        // ANPASSUNG: Verweist auf Register.php (Großes R)
+        header("Location: Register.php");
         exit();
     }
 
     // 3. VALIDIERUNG: Längenprüfung für das Passwort (Min: 8, Max: 20)
     elseif (strlen($regPass) < 8 || strlen($regPass) > 20) {
         $_SESSION['flash_message_error'] = "⚠️ REGISTRATION ERROR: Password must be between 8 and 20 characters.";
-        // KORREKTUR: register.php kleingeschrieben
-        header("Location: register.php");
+        // ANPASSUNG: Verweist auf Register.php (Großes R)
+        header("Location: Register.php");
         exit();
     }
 
     // 4. VALIDIERUNG: Stimmen die Passwörter übereinstimmen?
     elseif ($regPass !== $regPassConfirm) {
         $_SESSION['flash_message_error'] = "⚠️ REGISTRATION ERROR: Passwords do not match. Re-enter credentials.";
-        // KORREKTUR: register.php kleingeschrieben
-        header("Location: register.php");
+        // ANPASSUNG: Verweist auf Register.php (Großes R)
+        header("Location: Register.php");
         exit();
     } 
     
@@ -70,7 +70,7 @@ if (isset($_POST['registerSubmit'])) {
 
         // Grüne Erfolgsmeldung zünden
         $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. Transmission routed to Command Deck.";
-        // KORREKTUR: index.php kleingeschrieben
+        // index.php bleibt kleingeschrieben, da deine Hauptdatei index.php heißt
         header("Location: index.php");
         exit();
     }
@@ -88,8 +88,8 @@ ob_start();
     <fieldset class="contact-fieldset" style="max-width: 500px; margin: 0 auto; background-color: rgba(13, 20, 59, 0.4); border: 1px solid rgba(96, 172, 243, 0.3); padding: 20px; border-radius: 6px;">
         <legend>New Entity Enrollment:</legend>
         
-        <!-- KORREKTUR: action auf register.php kleingeschrieben -->
-        <form action="register.php" method="post">
+        <!-- ANPASSUNG: Form-Action nutzt Register.php (Großes R) -->
+        <form action="Register.php" method="post">
             
             <!-- Benutzername mit Min/Max-Sicherung im HTML -->
             <div class="form-row" style="margin-bottom: 15px;">
@@ -124,7 +124,6 @@ ob_start();
     </fieldset>
 </section>
 
-<!-- KORREKTUR: Link auf index.php kleingeschrieben -->
 <p style="text-align: center; margin-top: 20px;">
     Already have clearance? <a href="index.php" style="color: #ff9900; text-decoration: none;">Return to Main Terminal</a>
 </p>
