@@ -5,7 +5,7 @@ require_once 'Includes/layout.php';
 // 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
 ob_start();
 
-// LOGIN-PRÜFUNG (Korrektur der Groß-/Kleinschreibung aus der Fehlermeldung)
+// LOGIN-PRÜFUNG
 $isLoggedIn = 0;
 $userId = 0;
 if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
@@ -67,7 +67,7 @@ function saveSlotData($pdo, $userId, $slot, $history, $useDatabase) {
     ];
 }
 
-// SLOT INTERCEPTOR
+// SLOT INTERCEPTOR (Laden und Löschen von Speicherständen)
 if ($isLoggedIn === 1) {
     if (isset($_GET['select_slot'])) {
         $slot = (int)$_GET['select_slot'];
@@ -133,10 +133,12 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 }
             }
 
-            @fwrite($pipes, $inputString);
-            @fflush($pipes);
+            // KORREKTUR: Gezieltes Schreiben in den stdin-Kanal $pipes[0]
+            @fwrite($pipes[0], $inputString);
+            @fflush($pipes[0]);
             @fclose($pipes[0]);
 
+            // Synchrones Auslesen des stdout-Kanals
             stream_set_blocking($pipes[1], 1);
             usleep(150000);
 
@@ -206,7 +208,7 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 <span>Nutze das Mausrad zum Scrollen der Historie</span>
             </div>
 
-            <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Initialisiere Matrix-Verbindung...</pre>
+            <pre id="terminal-screen" style="width: 100%; height: 450px; overflow-y: auto; color: #00ffcc; font-family: 'Courier New', monospace; font-size: 16px; white-space: pre-wrap; margin: 0 0 20px 0; background: #000; padding: 15px; border-radius: 4px; border: 1px solid #111;">[SYSTEM]: Matrix-Verbindung bereit. Sende leere Eingabe für Start...</pre>
 
             <form id="terminal-form" style="display: flex; gap: 10px;">
                 <span style="color: #00ffcc; font-family: 'Courier New', monospace; font-size: 18px; line-height: 40px;">&gt;</span>
