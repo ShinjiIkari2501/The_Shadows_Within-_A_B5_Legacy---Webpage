@@ -243,9 +243,13 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
                 .then(response => response.text())
                 .then(data => {
                     screen.innerHTML = data;
+                    
+                    // KORREKTUR: Wir springen nach einer Aktion IMMER nach GANZ OBEN (0),
+                    // damit man den neuen Szenentext sofort von Anfang an lesen kann!
                     setTimeout(() => {
-                        screen.scrollTop = screen.scrollHeight;
+                        screen.scrollTop = 0;
                     }, 30);
+                    
                     input.value = '';
                     input.focus();
                 });
