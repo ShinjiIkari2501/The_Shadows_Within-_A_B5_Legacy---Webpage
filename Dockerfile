@@ -8,12 +8,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install pdo pdo_sqlite \
     && rm -rf /var/lib/apt/lists/*
 
+# ERZWINGE PHP-VERARBEITUNG IN APACHE:
+# Diese Zeilen stellen sicher, dass Apache .php-Dateien als PHP ausführt, statt sie als Text anzuzeigen.
+RUN echo "<FilesMatch \.php$>" > /etc/apache2/mods-available/php.conf \
+    && echo "    SetHandler application/x-httpd-php" >> /etc/apache2/mods-available/php.conf \
+    && echo "</FilesMatch>" >> /etc/apache2/mods-available/php.conf \
+    && a2enmod proxy 2>/dev/null || true
+
 # Aktiviert das Apache Rewrite-Modul
 RUN a2enmod rewrite
 
 # Access protection: the web server must never hand out the database, SQL files, source files etc.
-# PHP can still read the database from disk, only direct downloads via URL are blocked.
-# The rules live in apache-protect.conf (see the comments in that file).
 COPY apache-protect.conf /etc/apache2/conf-available/b5-protect.conf
 RUN a2enconf b5-protect
 
