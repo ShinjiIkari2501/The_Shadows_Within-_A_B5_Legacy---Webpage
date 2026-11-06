@@ -1,0 +1,84 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: B5 GLASS LOOK (header, mainNav, footer, cards, fieldsets)
+
+   WHY THE GLASS WAS INVISIBLE BEFORE
+   Frosted glass only shows when something bright and colourful is BEHIND the panel
+   for the blur to smear. The old background was almost flat dark blue, so header, mainNav
+   and footer looked like plain dark boxes (cards looked ok only because they sat on text).
+   Now: a fixed space background with bright nebula clouds and glowing light spots sits
+   behind everything, and every panel gets blur + light edge + reflection.
+   Change the variables and all panels change together.
+   ========================================================================== */
+
+:root {
+    --glass-bg:     linear-gradient(135deg, rgba(96, 150, 255, 0.13) 0%, rgba(26, 40, 120, 0.22) 55%, rgba(8, 12, 48, 0.40) 100%);
+    --glass-blur:   blur(14px) saturate(150%);
+    --glass-border: rgba(96, 172, 243, 0.32);
+    --glass-shadow: 0 6px 18px rgba(0, 0, 0, 0.55),
+                    0 0 12px rgba(26, 47, 122, 0.30),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+/* --- space background: its own fixed layer behind everything --------------------------- */
+html { background-color: hsl(245, 93%, 5%); }
+body { background: transparent; }   /* so the fixed space layer (z-index -1) is not painted over by the body colour */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Ccircle cx='865' cy='728' r='0.8' fill='white' fill-opacity='0.17'/%3E%3Ccircle cx='117' cy='859' r='0.6' fill='rgb(170,205,255)' fill-opacity='0.24'/%3E%3Ccircle cx='63' cy='605' r='0.6' fill='white' fill-opacity='0.24'/%3E%3Ccircle cx='17' cy='869' r='0.5' fill='white' fill-opacity='0.36'/%3E%3Ccircle cx='348' cy='212' r='0.5' fill='rgb(170,205,255)' fill-opacity='0.15'/%3E%3Ccircle cx='309' cy='270' r='0.7' fill='rgb(170,205,255)' fill-opacity='0.34'/%3E%3Ccircle cx='297' cy='469' r='1.1' fill='white' fill-opacity='0.45'/%3E%3Ccircle cx='812' cy='816' r='0.9' fill='rgb(170,205,255)' fill-opacity='0.51'/%3E%3Ccircle cx='845' cy='508' r='0.5' fill='white' fill-opacity='0.23'/%3E%3Ccircle cx='640' cy='341' r='1.1' fill='white' fill-opacity='0.4'/%3E%3Ccircle cx='324' cy='755' r='0.5' fill='rgb(170,205,255)' fill-opacity='0.15'/%3E%3Ccircle cx='664' cy='198' r='1.1' fill='white' fill-opacity='0.22'/%3E%3Ccircle cx='701' cy='95' r='0.8' fill='white' fill-opacity='0.26'/%3E%3Ccircle cx='627' cy='400' r='0.5' fill='rgb(255,220,170)' fill-opacity='0.22'/%3E%3Ccircle cx='532' cy='701' r='0.5' fill='rgb(255,220,170)' fill-opacity='0.25'/%3E%3Ccircle cx='541' cy='751' r='0.5' fill='rgb(170,205,255)' fill-opacity='0.4'/%3E%3Ccircle cx='898' cy='271' r='0.8' fill='rgb(170,205,255)' fill-opacity='0.43'/%3E%3Ccircle cx='465' cy='259' r='0.6' fill='white' fill-opacity='0.17'/%3E%3Ccircle cx='673' cy='11' r='0.9' fill='white' fill-opacity='0.18'/%3E%3Ccircle cx='685' cy='67' r='0.7' fill='white' fill-opacity='0.24'/%3E%3Ccircle cx='622' cy='262' r='1.1' fill='white' fill-opacity='0.48'/%3E%3Ccircle cx='307' cy='429' r='0.8' fill='white' fill-opacity='0.31'/%3E%3Ccircle cx='772' cy='388' r='0.8' fill='rgb(170,205,255)' fill-opacity='0.22'/%3E%3Ccircle cx='52' cy='303' r='1.1' fill='rgb(255,220,170)' fill-opacity='0.32'/%3E%3Ccircle cx='595' cy='672' r='0.5' fill='white' fill-opacity='0.36'/%3E%3Ccircle cx='395' cy='645' r='1.1' fill='white' fill-opacity='0.28'/%3E%3Ccircle cx='31' cy='96' r='0.8' fill='white' fill-opacity='0.16'/%3E%3Ccircle cx='487' cy='297' r='0.8' fill='white' fill-opacity='0.36'/%3E%3Ccircle cx='590' cy='487' r='0.8' fill='white' fill-opacity='0.17'/%3E%3Ccircle cx='11' cy='295' r='0.5' fill='white' fill-opacity='0.3'/%3E%3Ccircle cx='855' cy='405' r='0.9' fill='rgb(170,205,255)' fill-opacity='0.17'/%3E%3Ccircle cx='254' cy='632' r='0.5' fill='white' fill-opacity='0.32'/%3E%3Ccircle cx='53' cy='435' r='0.5' fill='white' fill-opacity='0.54'/%3E%3Ccircle cx='655' cy='647' r='1.1' fill='rgb(255,220,170)' fill-opacity='0.45'/%3E%3Ccircle cx='408' cy='848' r='1.1' fill='white' fill-opacity='0.36'/%3E%3Ccircle cx='118' cy='225' r='0.7' fill='white' fill-opacity='0.39'/%3E%3Ccircle cx='197' cy='304' r='0.9' fill='rgb(170,205,255)' fill-opacity='0.33'/%3E%3Ccircle cx='226' cy='143' r='0.9' fill='white' fill-opacity='0.39'/%3E%3Ccircle cx='694' cy='473' r='1.1' fill='white' fill-opacity='0.39'/%3E%3Ccircle cx='551' cy='815' r='0.8' fill='white' fill-opacity='0.41'/%3E%3Ccircle cx='656' cy='868' r='0.7' fill='rgb(255,220,170)' fill-opacity='0.22'/%3E%3Ccircle cx='538' cy='561' r='0.5' fill='white' fill-opacity='0.17'/%3E%3Ccircle cx='777' cy='72' r='0.9' fill='white' fill-opacity='0.37'/%3E%3Ccircle cx='311' cy='407' r='0.6' fill='white' fill-opacity='0.52'/%3E%3Ccircle cx='460' cy='27' r='0.9' fill='rgb(170,205,255)' fill-opacity='0.54'/%3E%3Ccircle cx='9' cy='839' r='0.8' fill='white' fill-opacity='0.26'/%3E%3Ccircle cx='588' cy='19' r='0.5' fill='white' fill-opacity='0.22'/%3E%3Ccircle cx='326' cy='117' r='0.5' fill='white' fill-opacity='0.51'/%3E%3Ccircle cx='727' cy='278' r='0.5' fill='white' fill-opacity='0.3'/%3E%3Ccircle cx='183' cy='730' r='0.6' fill='white' fill-opacity='0.26'/%3E%3Ccircle cx='850' cy='391' r='0.5' fill='white' fill-opacity='0.46'/%3E%3Ccircle cx='224' cy='657' r='0.6' fill='white' fill-opacity='0.4'/%3E%3Ccircle cx='649' cy='539' r='0.5' fill='white' fill-opacity='0.52'/%3E%3Ccircle cx='372' cy='798' r='0.7' fill='rgb(170,205,255)' fill-opacity='0.48'/%3E%3Ccircle cx='612' cy='652' r='0.5' fill='rgb(255,220,170)' fill-opacity='0.16'/%3E%3Ccircle cx='718' cy='623' r='0.7' fill='white' fill-opacity='0.43'/%3E%3Ccircle cx='93' cy='186' r='1.1' fill='white' fill-opacity='0.46'/%3E%3Ccircle cx='270' cy='117' r='1.1' fill='white' fill-opacity='0.25'/%3E%3Ccircle cx='588' cy='439' r='0.9' fill='rgb(255,220,170)' fill-opacity='0.36'/%3E%3Ccircle cx='592' cy='490' r='0.5' fill='white' fill-opacity='0.31'/%3E%3Ccircle cx='873' cy='460' r='0.8' fill='rgb(255,220,170)' fill-opacity='0.42'/%3E%3Ccircle cx='201' cy='717' r='0.7' fill='rgb(255,220,170)' fill-opacity='0.49'/%3E%3Ccircle cx='524' cy='637' r='0.8' fill='white' fill-opacity='0.3'/%3E%3Ccircle cx='836' cy='102' r='0.8' fill='white' fill-opacity='0.37'/%3E%3Ccircle cx='751' cy='642' r='0.5' fill='white' fill-opacity='0.34'/%3E%3Ccircle cx='212' cy='294' r='0.6' fill='white' fill-opacity='0.34'/%3E%3Ccircle cx='577' cy='448' r='0.9' fill='rgb(170,205,255)' fill-opacity='0.28'/%3E%3Ccircle cx='812' cy='863' r='0.8' fill='white' fill-opacity='0.23'/%3E%3Ccircle cx='434' cy='227' r='0.7' fill='rgb(255,220,170)' fill-opacity='0.36'/%3E%3Ccircle cx='347' cy='314' r='0.6' fill='rgb(170,205,255)' fill-opacity='0.48'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse 60% 50% at 12% 22%, rgba(60, 110, 220, 0.30), transparent 70%),
+        radial-gradient(ellipse 50% 45% at 88% 35%, rgba(150, 60, 200, 0.24), transparent 70%),
+        radial-gradient(ellipse 70% 40% at 55% 105%, rgba(255, 153, 0, 0.12), transparent 70%);
+    background-size: 900px 900px, auto, auto, auto;
+}
+
+/* --- THE glass rule: header, mainNav and footer, no !important wars ----------------------- */
+header,
+mainNav,
+footer,
+.glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 0.6rem;
+}
+
+/* diagonal light reflection across the panel */
+header::after,
+mainNav::after,
+footer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(115deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 28%, transparent 46%);
+}
+
+/* inner elements sit above the reflection */
+header > *,
+mainNav > *,
+footer > * { position: relative; z-index: 1; }
+
+/* --- inner glass: cards, timeline boxes, fieldsets, stat panels -------------------------------- */
+.char-card,
+.timeline-content,
+.panel,
+.stat-card,
+.media-card,
+.notice,
+main fieldset {
+    background: rgba(5, 8, 26, 0.55);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(96, 172, 243, 0.28);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    border-radius: 0.6rem;
+}

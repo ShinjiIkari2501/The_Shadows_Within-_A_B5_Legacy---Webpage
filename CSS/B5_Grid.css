@@ -1,0 +1,166 @@
+/* ==========================================================================
+   THE SHADOWS WITHIN: B5 LAYOUT (grid on large screens, stacked on tablets and phones)
+
+   >= 64em (about 1024 px and wider):  header on top, mainNav left, content right, footer below.
+                                       The window itself never scrolls, only <main> does.
+   <  64em (tablets, phones):          everything stacked, the page scrolls normally,
+                                       the navigation folds into a menu button.
+   Sizes are rem, so they grow with the fluid font size from B5_Base.css.
+   The glass look of the boxes lives in B5_Glass.css. No !important needed here:
+   layout.php does not contain any CSS any more.
+   ========================================================================== */
+
+mainNav, bottomNav { display: block; }
+
+/* the invisible checkbox behind the menu button (phones and tablets) */
+.nav-toggle-box {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* --- banner (header) -------------------------------------------------------------------- */
+/* The glass frame hugs the picture: exactly 10px between picture and frame on every side.
+   Desktop: the frame is as wide as the picture (the picture grows with the window height).
+   Tablet/phone: frame and picture use the full width. */
+header {
+    position: relative;
+    width: calc(100% - 1.2rem);
+    margin: 0.6rem;
+    padding: 10px;
+}
+
+header div, header a { display: block; }
+
+header img {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* --- menu button (only below 64em) ----------------------------------------------------------- */
+.nav-toggle {
+    display: block;
+    margin: 0 0.6rem 0.6rem;
+    padding: 0.7rem 1rem;
+    text-align: center;
+    font-family: var(--font-title);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--blue-bright);
+    cursor: pointer;
+    border: 1px solid var(--glass-border);
+    border-radius: 0.6rem;
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ---------- tablets and phones: stacked ---------------------------------------------------- */
+@media (max-width: 63.99em) {
+    body { min-height: 100vh; }
+
+    mainNav {
+        display: none;
+        position: relative;
+        margin: 0 0.6rem 0.6rem;
+        padding: 1rem;
+    }
+    .nav-toggle-box:checked ~ mainNav { display: block; }
+    .nav-toggle-box:checked ~ .nav-toggle {
+        color: var(--gold);
+        box-shadow: var(--gold-frame);
+    }
+
+    main {
+        display: block;
+        margin: 0 0.6rem 0.6rem;
+        padding: 0.4rem 0.2rem 1rem;
+        overflow-wrap: anywhere;
+    }
+
+    footer {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        margin: 0.6rem;
+        padding: 1rem;
+        text-align: center;
+    }
+    footer p { padding: 0; text-align: center; font-size: 0.8rem; }
+    footer bottomNav ul { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.2rem; }
+}
+
+/* ---------- desktop: the locked grid ---------------------------------------------------------- */
+@media (min-width: 64em) {
+    .nav-toggle { display: none; }
+
+    body {
+        display: grid;
+        grid-template-columns: 15rem minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        column-gap: 1rem;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;            /* the window never scrolls, only <main> does */
+    }
+
+    header {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        margin: 0.7rem auto;
+    }
+
+    mainNav {
+        grid-column: 1;
+        grid-row: 2;
+        align-self: start;
+        max-height: 100%;
+        overflow-y: auto;
+        margin: 0 0 0.7rem 1rem;
+        padding: 1.2rem 0.9rem;
+    }
+
+    main {
+        grid-column: 2;
+        grid-row: 2;
+        min-height: 0;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        padding: 0 1.2rem 2rem 0.4rem;
+        margin: 0 0.6rem 0 0;
+    }
+
+    footer {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1.5rem;
+        margin: 0 1rem 0.5rem 1rem;
+        padding: 0.8rem 1.4rem;
+    }
+    footer p { padding: 0; margin: 0; text-align: right; font-size: 0.8rem; }
+    footer bottomNav ul { list-style: none; display: flex; gap: 1.4rem; }
+}
+
+/* desktop: the picture height follows the window height, the frame shrinks/grows around it */
+@media (min-width: 64em) {
+    header {
+        width: fit-content;
+        max-width: calc(100% - 2rem);
+        justify-self: center;
+    }
+    header img { width: auto; max-width: 100%; height: clamp(9rem, 32vh, 30rem); }
+}
+@media (min-width: 64em) and (max-height: 900px) {
+    header img { height: clamp(6rem, 24vh, 12rem); }
+}
