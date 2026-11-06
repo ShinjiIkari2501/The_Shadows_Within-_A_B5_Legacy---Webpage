@@ -67,8 +67,6 @@ if (isset($_POST['registerSubmit'])) {
         $newUserId = $pdo->lastInsertId();
 
         // Transaction Step B: Initialize exactly 3 fresh, empty save slots.
-        // New slots start at node 100 (the prologue). The prologue leads to node 10 (the choice between
-        // Intelligence and Underworld), so the character selection comes AFTER the prologue.
         $insertSlotsStmt = $pdo->prepare("INSERT INTO player_slots (user_id, slot_number, current_node_id) VALUES (:user_id, :slot_number, 100)");
 
         // Populate Slots 1, 2, and 3 sequentially
@@ -79,16 +77,26 @@ if (isset($_POST['registerSubmit'])) {
             ]);
         }
 
-               // Commit transaction data securely to the disk
+        // Commit transaction data securely to the disk
         $pdo->commit();
 
-        // AUTOMATISCHER LOGIN NACH ERGOLGREICHER REGISTRIERUNG:
+        // AUTOMATISCHER LOGIN NACH ERFOLGREICHER REGISTRIERUNG
         $_SESSION['eingeloggt'] = true;
         $_SESSION['username']   = $regUser;
-        $_SESSION['user_id']    = (int)$newUserId; // Verknüpft sofort die korrekten 3 Save-Slots!
+        $_SESSION['user_id']    = (int)$newUserId; 
 
-        $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. 3 tactical save slots allocated.";
+        $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. 3 tactical save slots allocated. Transmission routed to Command Deck.";
         header("Location: Index.php");
+        exit();
+
+    } catch (\Exception $exception) {
+        // Rollback active structural inserts if an unexpected database core failure drops out
+        if (isset($pdo) && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+
+        $_SESSION['flash_message_error'] = "🚨 CRITICAL ENGINE RECOIL: Registration transaction failed. Error: " . htmlspecialchars($exception->getMessage());
+        header("Location: Register.php");
         exit();
     }
 }
@@ -96,7 +104,7 @@ if (isset($_POST['registerSubmit'])) {
 // 3. Initiate internal content layout buffering
 ob_start();
 ?>
-<!-- REINE INHALT FÜR DEN MAIN-BEREICH -->
+<!-- REINER INHALT FÜR DEN MAIN-BEREICH -->
 <h2>Alliance Recruitment Grid</h2>
 <h3>Database Enrollment / Security Phalanx</h3>
 
