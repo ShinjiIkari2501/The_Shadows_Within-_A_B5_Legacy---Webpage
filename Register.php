@@ -83,7 +83,8 @@ if (isset($_POST['registerSubmit'])) {
         // AUTOMATISCHER LOGIN NACH ERFOLGREICHER REGISTRIERUNG
         $_SESSION['eingeloggt'] = true;
         $_SESSION['username']   = $regUser;
-        $_SESSION['user_id']    = (int)$newUserId; 
+        $_SESSION['user_id']    = (int)$newUserId;
+        $_SESSION['db_verified'] = true; // password is stored in the database (needed by auth.php)
 
         $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. 3 tactical save slots allocated. Transmission routed to Command Deck.";
         header("Location: Index.php");
