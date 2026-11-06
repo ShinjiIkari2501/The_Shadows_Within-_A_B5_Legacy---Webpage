@@ -108,6 +108,39 @@ if ($isLoggedIn === 1 && isset($_GET['select_slot'])) {
         #choices-container {
             flex-shrink: 0; /* Verhindert, dass das Entscheidungsfenster zusammengedrückt wird */
         }
+                #choices-container {
+            flex-shrink: 0; /* Verhindert, dass das Entscheidungsfenster zusammengedrückt wird */
+        }
+
+        /* === NEUE CUSTOM SCROLLBAR HIER HINZUFÜGEN === */
+        .terminal-text-scroll-container::-webkit-scrollbar {
+            width: 10px;
+            background: rgba(13, 20, 59, 0.3);
+        }
+
+        .terminal-text-scroll-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 4px;
+            margin-top: 5px;
+            margin-bottom: 5px;
+            border: 1px solid rgba(96, 172, 243, 0.1);
+        }
+
+        .terminal-text-scroll-container::-webkit-scrollbar-thumb {
+            background: rgba(96, 172, 243, 0.4);
+            border-radius: 4px;
+            border: 1px solid rgba(13, 20, 59, 0.6);
+        }
+
+        .terminal-text-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 153, 0, 0.6);
+            border: 1px solid rgba(255, 153, 0, 0.2);
+        }
+
+        .terminal-text-scroll-container {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(96, 172, 243, 0.4) rgba(0, 0, 0, 0.4);
+        }
     </style>
 
     <div class="babcom-viewport">
