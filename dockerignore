@@ -1,0 +1,19 @@
+# .dockerignore - files that are NOT copied into the Docker image (keeps it small and safe).
+# Patterns are relative to the project root.
+
+# Git history is not needed to run the site
+.git
+.gitignore
+
+# Java part is not used on Render (no Java in the image, the game runs completely in PHP)
+Java_Src
+*.java
+entrypoint.sh
+
+# Duplicate of Database/b5_project.sqlite. Only the copy inside Database/ is used.
+b5_project.sqlite
+
+# Test scripts are not part of the running site
+Database/PhysicalIntergationTests
+
+README.md
