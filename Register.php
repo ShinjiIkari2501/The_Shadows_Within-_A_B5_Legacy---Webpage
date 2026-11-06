@@ -79,24 +79,16 @@ if (isset($_POST['registerSubmit'])) {
             ]);
         }
 
-        // Commit transaction data securely to the disk
+               // Commit transaction data securely to the disk
         $pdo->commit();
 
-        // Establish session variables for unified web login matching successful registration
-        $_SESSION['registrierter_user'] = $regUser;
+        // AUTOMATISCHER LOGIN NACH ERGOLGREICHER REGISTRIERUNG:
+        $_SESSION['eingeloggt'] = true;
+        $_SESSION['username']   = $regUser;
+        $_SESSION['user_id']    = (int)$newUserId; // Verknüpft sofort die korrekten 3 Save-Slots!
 
-        $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. 3 tactical save slots allocated. Transmission routed to Command Deck.";
+        $_SESSION['flash_message'] = "✅ REGISTRATION COMPLETE: Entity $regUser secured. 3 tactical save slots allocated.";
         header("Location: Index.php");
-        exit();
-
-    } catch (\Exception $exception) {
-        // Rollback active structural inserts if an unexpected database core failure drops out
-        if (isset($pdo) && $pdo->inTransaction()) {
-            $pdo->rollBack();
-        }
-
-        $_SESSION['flash_message_error'] = "🚨 CRITICAL ENGINE RECOIL: Registration transaction failed. Error: " . htmlspecialchars($exception->getMessage());
-        header("Location: Register.php");
         exit();
     }
 }
