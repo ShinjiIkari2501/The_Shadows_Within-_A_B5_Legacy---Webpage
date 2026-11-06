@@ -11,7 +11,7 @@ prepare("SELECT user_id, password_hash FROM users WHERE username = :username");
             throw new Exception("Database connection module missing.");
         }
     } catch (Exception $e) {
-        // Log background engine failures silently, don't expose paths to the browser
+        // Log background engine failures silently
         error_log('[B5 Auth Error] ' . $e->getMessage());
     }
 
