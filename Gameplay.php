@@ -41,33 +41,9 @@ if ($isLoggedIn === 1 && isset($_GET['ajax_action']) && $_GET['ajax_action'] ===
     define('B5_BRIDGE_INTERNAL', true);
 
     if (file_exists(__DIR__ . '/Game-Bridge.php')) {
-        // Wir fangen die JSON-Ausgabe der Brücke ab, um die Texte mit storyscript.php zu synchronisieren
-        ob_start();
+        // Game-Bridge.php answers with JSON itself. The long story texts come from the database
+        // (copied there from Includes/storyscript.php by Includes/db_migrate.php).
         include __DIR__ . '/Game-Bridge.php';
-        $bridgeJson = ob_get_clean();
-
-        $data = json_decode($bridgeJson, true);
-
-        // Wenn die Brücke erfolgreich war, überschreiben wir die Texte mit den Daten aus der storyscript.php
-        if (isset($data['status']) && $data['status'] === 'SUCCESS' && isset($data['node_id'])) {
-            $storyscriptPath = __DIR__ . '/storyscript.php';
-            if (file_exists($storyscriptPath)) {
-                $storyScript = include $storyscriptPath;
-                $currentNodeId = $data['node_id'];
-
-                // Falls Node-ID im Array existiert (z.B. SETUP oder numerischer Key)
-                $scriptKey = ($currentNodeId === 10) ? 'SETUP' : $currentNodeId;
-
-                if (isset($storyScript[$scriptKey])) {
-                    $data['title'] = $storyScript[$scriptKey]['title'] ?? $data['title'];
-                    $data['description'] = $storyScript[$scriptKey]['script'] ?? $data['description'];
-                    if (isset($storyScript[$scriptKey]['location'])) {
-                        $data['active_sector'] = $storyScript[$scriptKey]['location'];
-                    }
-                }
-            }
-        }
-        echo json_encode($data);
     } else {
         echo json_encode([
                 "status" => "ERROR",
@@ -88,60 +64,6 @@ if ($isLoggedIn === 1 && isset($_GET['select_slot'])) {
 ?>
 
 <main class="game-main">
-    <!-- Inline-CSS um die Terminalgröße einzufrieren und das Scrollen zu erzwingen -->
-    <style>
-        .terminal-display-area {
-            height: 550px !important; /* Verhindert das Ändern der Terminalgröße permanent */
-            max-height: 550px !important;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-sizing: border-box;
-        }
-        .terminal-text-scroll-container {
-            flex: 1;
-            overflow-y: auto !important; /* Erzwingt die vertikale Scrollleiste */
-            padding-right: 10px;
-            margin-bottom: 15px;
-            white-space: pre-wrap; /* Behält die exakten Zeilenumbrüche des Drehbuchs bei */
-        }
-        #choices-container {
-            flex-shrink: 0; /* Verhindert, dass das Entscheidungsfenster zusammengedrückt wird */
-        }
-                #choices-container {
-            flex-shrink: 0; /* Verhindert, dass das Entscheidungsfenster zusammengedrückt wird */
-        }
-
-        /* === NEUE CUSTOM SCROLLBAR HIER HINZUFÜGEN === */
-        .terminal-text-scroll-container::-webkit-scrollbar {
-            width: 10px;
-            background: rgba(13, 20, 59, 0.3);
-        }
-
-        .terminal-text-scroll-container::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 4px;
-            margin-top: 5px;
-            margin-bottom: 5px;
-            border: 1px solid rgba(96, 172, 243, 0.1);
-        }
-
-        .terminal-text-scroll-container::-webkit-scrollbar-thumb {
-            background: rgba(96, 172, 243, 0.4);
-            border-radius: 4px;
-            border: 1px solid rgba(13, 20, 59, 0.6);
-        }
-
-        .terminal-text-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 153, 0, 0.6);
-            border: 1px solid rgba(255, 153, 0, 0.2);
-        }
-
-        .terminal-text-scroll-container {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(96, 172, 243, 0.4) rgba(0, 0, 0, 0.4);
-        }
-    </style>
 
     <div class="babcom-viewport">
         <div class="babcom-header-bar">

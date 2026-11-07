@@ -2,11 +2,16 @@
 /**
  * Login.php
  * Login gateway for 'The Shadows Within - A B5 Legacy'.
- * Real-time dynamic fallback hashes ensuring 100% environment compatibility.
+ * The password is checked ONLY against the hash stored in the database (no fallback list, no demo users).
+ * Why no fallback: a fallback login can log in a user who does not exist in the database. The game then
+ * has no save slots for this user and crashes. It would also put passwords into the public GitHub repo.
  */
 
-// Enforce secure session cookie attributes
-ini_set('session.cookie_secure', '1');
+// The "secure" cookie flag only works on https:// pages. On plain http:// the browser would throw the
+// session cookie away and nobody could log in. So switch it on only when the page is really on https.
+$onHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+ini_set('session.cookie_secure', $onHttps ? '1' : '0');
 ini_set('session.cookie_httponly', '1');
 ini_set('session.use_only_cookies', '1');
 
@@ -25,54 +30,30 @@ if (isset($_POST['loginSubmit'])) {
     $loginSuccess = false;
     $authenticatedUserId = null;
 
-    // 1. VERSUCH: Authentifizierung über die MySQL-Datenbank
     try {
-        if (file_exists(__DIR__ . '/Includes/db_connect.php')) {
-            require_once __DIR__ . '/Includes/db_connect.php'; // creates $pdo
+        require_once __DIR__ . '/Includes/db_connect.php'; // creates $pdo
 
-            if (isset($pdo)) {
-                $stmt = $pdo->prepare("SELECT user_id, password_hash FROM users WHERE username = :username");
-                $stmt->execute([':username' => $username]);
-                $userRecord = $stmt->fetch();
+        $stmt = $pdo->prepare("SELECT user_id, username, password_hash FROM users WHERE username = :username");
+        $stmt->execute([':username' => $username]);
+        $userRecord = $stmt->fetch();
 
-                if ($userRecord && password_verify($password, $userRecord['password_hash'])) {
-                    $loginSuccess = true;
-                    $authenticatedUserId = (int)$userRecord['user_id'];
-                }
-            }
+        // password_verify compares the typed password with the stored hash
+        if ($userRecord && password_verify($password, $userRecord['password_hash'])) {
+            $loginSuccess = true;
+            $authenticatedUserId = (int)$userRecord['user_id'];
+            $username = $userRecord['username']; // spelling as stored (MySQL ignores upper/lower case when searching)
         }
     } catch (Throwable $e) {
-        error_log('[B5 Auth Error] DB connection failed. Using runtime fallback.');
+        // The technical reason goes only to the server log, not to the browser
+        error_log('[B5 Auth Error] ' . $e->getMessage());
     }
 
-    // 2. VERSUCH: Dynamischer Laufzeit-Fallback (Unabhängig von Server-Versionen)
-    if (!$loginSuccess) {
-        // Exakte Definition deiner Zugangsdaten
-        $validFallbackUsers = [
-            'Shinji2501' => ['id' => 1, 'plain_password' => 'Commander@2026'],
-            'Tiny1983'   => ['id' => 2, 'plain_password' => 'Weed@2022'],
-            'Test'       => ['id' => 3, 'plain_password' => '1234']
-        ];
-
-        // Case-sensitive Abgleich der Benutzereingabe
-        if (array_key_exists($username, $validFallbackUsers)) {
-            $expectedPassword = $validFallbackUsers[$username]['plain_password'];
-            
-            // Direkter, sicherer Passwortvergleich
-            if ($password === $expectedPassword) {
-                $loginSuccess = true;
-                $authenticatedUserId = $validFallbackUsers[$username]['id'];
-            }
-        }
-    }
-
-    // Login-Auswertung und Session-Erstellung
     if ($loginSuccess) {
-        session_regenerate_id(true); // Schützt vor Session-Fixation
+        session_regenerate_id(true); // new session id after login (protects against session fixation)
         $_SESSION['eingeloggt']  = true;
         $_SESSION['username']    = $username;
-        $_SESSION['user_id']     = $authenticatedUserId; 
-        $_SESSION['db_verified'] = true;                 
+        $_SESSION['user_id']     = $authenticatedUserId; // links the player to the rows in player_slots
+        $_SESSION['db_verified'] = true;                 // needed by auth.php for admin rights
 
         $_SESSION['flash_message'] = "🔒 UPLINK ESTABLISHED: Security Clearance Granted. Terminal Sync Complete.";
     } else {

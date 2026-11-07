@@ -10,7 +10,6 @@ if (isset($_POST['contactSubmit'])) {
     // SPAM-BOT SCHUTZ: Prüfen, ob das unsichtbare Honeypot-Feld befüllt wurde
     $honeypot = $_POST['zusatzinfo_kontakt'] ?? '';
     if (!empty($honeypot)) {
-        // Ein Bot hat reingetappt -> Übertragung unkommentiert abbrechen
         die("Transmission blocked: Automated bot activity detected by BabCom-Grid.");
     }
 
@@ -23,21 +22,22 @@ if (isset($_POST['contactSubmit'])) {
     // VALIDIERUNG: Sind die Pflichtfelder ausgefüllt?
     if (!empty($senderName) && !empty($senderEmail) && !empty($senderMessage)) {
         
-        /* 
-           HINWEIS FÜR SPÄTER / SCHULE:
-           Hier könnte jetzt Code stehen, um die Nachricht in einer Datenbank zu speichern
-           oder eine echte E-Mail per mail() oder PHPMailer an dich zu senden.
-        */
+        try {
+            // Verbindung über dein bestehendes PDO-Framework herstellen
+            $pdo = b5_pdo();
+            $stmt = $pdo->prepare("INSERT INTO contact_messages (sender_name, sender_email, subject, message) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$senderName, $senderEmail, $senderSubject, $senderMessage]);
 
-        // DYNAMISCHE FLASH-MESSAGE IN DIE SESSION SPEICHERN
-        $_SESSION['flash_message'] = "📡 TRANSMISSION SUCCESSFUL: Secure sub-space uplink established. Message routed to Command Deck.";
+            // DYNAMISCHE FLASH-MESSAGE IN DIE SESSION SPEICHERN
+            $_SESSION['flash_message'] = "📡 TRANSMISSION SUCCESSFUL: Secure sub-space uplink established. Message routed to Command Deck.";
+        } catch (Exception $e) {
+            $_SESSION['flash_message_error'] = "⚠️ TRANSMISSION CRITICAL: Sub-space array offline. DB-Error.";
+        }
         
-        // Seite neu laden, um die Formulardaten aus dem Speicher zu löschen (PRG-Pattern)
         header("Location: Contact.php");
         exit();
         
     } else {
-        // Falls im Backend doch ein Pflichtfeld gefehlt hat (Sicherheitsnetz)
         $_SESSION['flash_message_error'] = "⚠️ TRANSMISSION FAILURE: Required telemetry fields missing. Check Name, Email, and Message.";
         header("Location: Contact.php");
         exit();
@@ -56,10 +56,7 @@ ob_start();
     <fieldset class="contact-fieldset">
         <legend>Transmission Grid:</legend>
         
-        <!-- Das Formular schickt die Daten an sich selbst (Contact.php) zurück -->
         <form action="Contact.php" method="post">
-            
-            <!-- 1. REIHE: Name und E-Mail nebeneinander -->
             <div class="form-row">
                 <div class="form-group">
                     <label for="contact-name">Name: *</label>
@@ -71,7 +68,6 @@ ob_start();
                 </div>
             </div>
             
-            <!-- 2. REIHE: Betreff geht über die volle Breite -->
             <div class="form-row">
                 <div class="form-group full-width">
                     <label for="contact-subject">Subject:</label>
@@ -79,7 +75,6 @@ ob_start();
                 </div>
             </div>
             
-            <!-- 3. REIHE: Die Nachricht -->
             <div class="form-row">
                 <div class="form-group full-width">
                     <label for="contact-message">Message: *</label>
@@ -87,19 +82,13 @@ ob_start();
                 </div>
             </div>
             
-            <!-- Unsichtbarer Honeypot gegen Spam-Bots (Muss mit name="zusatzinfo_kontakt" übereinstimmen) -->
             <input type="text" id="zusatzinfo_kontakt" name="zusatzinfo_kontakt" tabindex="-1" autocomplete="off">
-            
-            <!-- Absendebutton im B5-Design -->
             <button type="submit" name="contactSubmit" class="formButton">Transmit</button>
         </form>
     </fieldset>
 </section>
 
 <?php 
-// 3. Den Inhalt aus dem Zwischenspeicher in eine Variable packen
 $seitenInhalt = ob_get_clean(); 
-
-// 4. Das Layout aufrufen und den Titel der Seite + den Inhalt übergeben
 renderLayout("B5 Legacy - Secure Contact Uplink", $seitenInhalt); 
 ?>

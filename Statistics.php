@@ -16,6 +16,18 @@ $pdo      = null;
 if ($loggedIn) {
     $pdo = b5_pdo();
     if ($isAdmin) {
+        // AKTIONEN FÜR DIE NACHRICHTEN-VERWALTUNG (Gelesen / Löschen)
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['msg_op'])) {
+            $msgId = (int)$_POST['msg_id'];
+            if ($_POST['msg_op'] === 'read') {
+                $pdo->prepare("UPDATE contact_messages SET is_read = 1 WHERE id = ?")->execute([$msgId]);
+            } elseif ($_POST['msg_op'] === 'delete') {
+                $pdo->prepare("DELETE FROM contact_messages WHERE id = ?")->execute([$msgId]);
+            }
+            header("Location: Statistics.php?view=messages");
+            exit();
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['op'] ?? '') !== 'sql') {
             b5_handle_admin_post($pdo);          // ends with a redirect
         }
@@ -38,14 +50,11 @@ function b5_bars(string $title, array $rows, string $unit = ''): string {
         $w = $max > 0 ? round(100 * (float)$value / $max, 1) : 0;
         $o .= '<div class="bar-row" role="listitem" title="' . b5_h($label) . ': ' . b5_h($value) . b5_h($unit) . '">'
             . '<span class="bar-label">' . b5_h($label) . '</span>'
+            . '<span class="bar-value">' . b5_h($value) . b5_h($unit) . '</span>'
             . '<span class="bar-track"><span class="bar-fill" style="width:' . $w . '%"></span></span>'
-            . '<span class="bar-value">' . b5_h($value) . b5_h($unit) . '</span></div>';
+            . '</div>';
     }
-    $o .= '</div><details><summary>Table view</summary><div class="table-wrap"><table class="data"><tbody>';
-    foreach ($rows as [$label, $value]) {
-        $o .= '<tr><td>' . b5_h($label) . '</td><td>' . b5_h($value) . b5_h($unit) . '</td></tr>';
-    }
-    return $o . '</tbody></table></div></details></section>';
+    return $o . '</div></section>';
 }
 
 function b5_tile(string $label, $value): string {
@@ -59,27 +68,75 @@ if (!$loggedIn) {
 } else {
     $uid  = (int)$_SESSION['user_id'];
     $view = (string)($_GET['view'] ?? ($_SERVER['REQUEST_METHOD'] === 'POST' ? ($_POST['view'] ?? 'overview') : 'overview'));
-    $adminViews = ['users' => 'Users', 'db' => 'Database', 'sql' => 'SQL console'];
+    
+    // Wir fügen "messages" fest in die Admin-Ansichten ein
+    $adminViews = ['users' => 'Users', 'messages' => 'Messages ✉'];
+    if (!b5_is_mysql($pdo)) {
+        $adminViews += ['db' => 'Database', 'sql' => 'SQL console'];
+    }
     if (!$isAdmin || !isset($adminViews[$view])) {
-        $view = 'overview';
+        if ($view !== 'messages' || !$isAdmin) {
+            $view = 'overview';
+        }
     }
 
-    echo '<h2>Statistics</h2><h3>' . ($isAdmin ? 'Administrator access: full database' : 'Your game and the Alliance totals') . '</h3>';
+    echo '<h2>Statistics</h2>' . ($isAdmin ? '<p class="muted">Administrator access: full database</p>' : '');
 
     if ($isAdmin) {
         echo '<div class="chips"><a class="chip' . ($view === 'overview' ? ' active' : '') . '" href="Statistics.php">Overview</a>';
         foreach ($adminViews as $k => $label) {
+            if ($k === 'messages') {
+                $unreadCount = (int)$pdo->query("SELECT COUNT(*) FROM contact_messages WHERE is_read = 0")->fetchColumn();
+                if ($unreadCount > 0) { $label .= " ($unreadCount)"; }
+            }
             echo '<a class="chip' . ($view === $k ? ' active' : '') . '" href="?view=' . $k . '">' . $label . '</a>';
         }
-        echo '<a class="chip" href="?download=backup">Backup download</a></div>';
+        if (!b5_is_mysql($pdo)) {
+            echo '<a class="chip" href="?download=backup">Backup download</a>';
+        }
+        echo '</div>';
     }
 
-    if ($view === 'users') {
+        if ($view === 'users') {
         echo b5_admin_users($pdo);
     } elseif ($view === 'db') {
         echo b5_admin_db($pdo);
     } elseif ($view === 'sql') {
         echo b5_admin_sql($pdo);
+    } elseif ($view === 'messages' && $isAdmin) {
+        /* ---------------- MESSAGES VIEW (ADMIN ONLY) ---------------- */
+        echo '<h4>BabCom Transmission Logs (Contact Messages)</h4>';
+        $messages = $pdo->query("SELECT * FROM contact_messages ORDER BY is_read ASC, created_at DESC")->fetchAll();
+        
+        if (!$messages) {
+            echo '<div class="notice"><p>No subspace transmissions in log buffers.</p></div>';
+        } else {
+            foreach ($messages as $msg) {
+                $unreadClass = $msg['is_read'] ? '' : 'box-active'; // Nutzt deine glühende Timeline-Klasse!
+                echo '<div class="panel timeline-content ' . $unreadClass . '" style="margin-bottom: 1.5rem; text-align: left;">'
+                    . '<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--blue-line); padding-bottom:5px; margin-bottom:10px;">'
+                    . '<strong>' . b5_h($msg['sender_name']) . ' (<a href="mailto:' . b5_h($msg['sender_email']) . '?subject=Re: ' . urlencode($msg['subject']) . '" style="color:var(--gold); text-decoration:underline;">' . b5_h($msg['sender_email']) . '</a>)</strong>'
+                    . '<span class="muted">' . b5_h($msg['created_at']) . '</span>'
+                    . '</div>'
+                    . '<h5 style="color:var(--gold); margin-bottom:8px;">Subject: ' . b5_h($msg['subject']) . '</h5>'
+                    . '<p style="text-align:left; white-space:pre-wrap; background:rgba(0,0,0,0.3); padding:10px; border-radius:4px;">' . b5_h($msg['message']) . '</p>'
+                    . '<div style="display:flex; gap:10px; margin-top:10px; justify-content:flex-end;">';
+                
+                if (!$msg['is_read']) {
+                    echo '<form action="Statistics.php" method="post" class="inline">'
+                        . '<input type="hidden" name="msg_id" value="' . (int)$msg['id'] . '">'
+                        . '<button type="submit" name="msg_op" value="read" class="btn btn-small" style="color:var(--ok); border-color:var(--ok);">Acknowledge</button>'
+                        . '</form>';
+                }
+                
+                echo '<form action="Statistics.php" method="post" class="inline">'
+                    . '<input type="hidden" name="msg_id" value="' . (int)$msg['id'] . '">'
+                    . '<button type="submit" name="msg_op" value="delete" class="btn btn-small btn-danger" onclick="return confirm(\'Purge transmission permanently?\')">Purge</button>'
+                    . '</form>'
+                    . '</div>'
+                    . '</div>';
+            }
+        }
     } else {
         /* ---------------- overview (everyone) ---------------- */
         $one = fn(string $sql, array $p = []) => (function () use ($pdo, $sql, $p) { $s = $pdo->prepare($sql); $s->execute($p); return $s->fetchColumn(); })();
@@ -108,7 +165,7 @@ if (!$loggedIn) {
             echo '<div class="notice"><p>You have not started a game yet. Open the Gameplay terminal to begin.</p></div>';
         }
 
-        $recent = $all("SELECT strftime('%Y-%m-%d %H:%M', h.selected_at), c.choice_text FROM player_history h JOIN story_choices c ON c.choice_id = h.chosen_choice_id WHERE h.user_id = ? ORDER BY h.history_id DESC LIMIT 8", [$uid]);
+        $recent = $all("SELECT " . (b5_is_mysql($pdo) ? "DATE_FORMAT(h.selected_at, '%Y-%m-%d %H:%i')" : "strftime('%Y-%m-%d %H:%M', h.selected_at)") . ", c.choice_text FROM player_history h JOIN story_choices c ON c.choice_id = h.chosen_choice_id WHERE h.user_id = ? ORDER BY h.history_id DESC LIMIT 8", [$uid]);
         if ($recent) {
             echo '<details class="panel"><summary>Your last choices</summary><div class="table-wrap"><table class="data"><tbody>';
             foreach ($recent as [$t, $txt]) { echo '<tr><td>' . b5_h($t) . '</td><td>' . b5_h($txt) . '</td></tr>'; }
@@ -126,24 +183,39 @@ if (!$loggedIn) {
 
         echo b5_bars('Endings reached', $all("SELECT n.title, COUNT(*) FROM player_slots s JOIN story_nodes n ON n.node_id = s.current_node_id WHERE n.is_ending = 1 GROUP BY n.node_id ORDER BY 2 DESC"));
         echo b5_bars('Character classes', $all("SELECT character_origin, COUNT(*) FROM player_slots GROUP BY 1 ORDER BY 2 DESC"));
-        echo b5_bars('Where the save games are now (sector)', $all("SELECT n.active_sector, COUNT(*) FROM player_slots s JOIN story_nodes n ON n.node_id = s.current_node_id GROUP BY 1 ORDER BY 2 DESC LIMIT 10"));
+        echo b5_bars('Save games by sector', $all("SELECT n.active_sector, COUNT(*) FROM player_slots s JOIN story_nodes n ON n.node_id = s.current_node_id GROUP BY 1 ORDER BY 2 DESC LIMIT 10"));
         echo b5_bars('Most chosen options', $all("SELECT c.choice_text, COUNT(*) FROM player_history h JOIN story_choices c ON c.choice_id = h.chosen_choice_id GROUP BY c.choice_id ORDER BY 2 DESC, 1 LIMIT 8"));
-        echo b5_bars('Crew survival', $all("SELECT CASE is_alive WHEN 1 THEN 'alive' ELSE 'lost' END, COUNT(*) FROM player_crew GROUP BY 1"));
         echo '</div>';
 
         if ($isAdmin) {
-            // ---- admin extras ----
+            // ---- ADMIN EXTRAS: Absolut krisensicher für MySQL umgeschrieben ----
             echo '<h4>Database, admin</h4><div class="chart-grid">';
             $tbl = [];
-            foreach (b5_tables($pdo) as $t) { $tbl[] = [$t, (int)$pdo->query('SELECT COUNT(*) FROM ' . b5_q($t))->fetchColumn()]; }
-            echo b5_bars('Rows per table', $tbl);
+            try {
+                $queryTables = b5_is_mysql($pdo) ? "SHOW TABLES" : "SELECT name FROM sqlite_master WHERE type='table'";
+                $tablesRes = $pdo->query($queryTables)->fetchAll(PDO::FETCH_COLUMN);
+                foreach ($tablesRes as $t) {
+                    $count = (int)$pdo->query("SELECT COUNT(*) FROM `$t`")->fetchColumn();
+                    $tbl[] = [$t, $count];
+                }
+                echo b5_bars('Rows per table', $tbl);
+            } catch (Exception $e) {
+                echo '<p class="muted">Tables could not be mapped.</p>';
+            }
+            
             echo b5_bars('Choices per player', $all("SELECT u.username, COUNT(h.history_id) FROM users u LEFT JOIN player_history h ON h.user_id = u.user_id GROUP BY u.user_id ORDER BY 2 DESC"));
             echo '</div>';
-            $file = $pdo->query('PRAGMA database_list')->fetch()['file'] ?? '';
-            echo '<p class="muted">Database file: ' . b5_h(basename($file)) . ' · ' . (is_file($file) ? number_format(filesize($file) / 1024, 1) . ' KB' : '?') . ' · SQLite ' . b5_h($pdo->query('SELECT sqlite_version()')->fetchColumn()) . '</p>';
+            
+            if (b5_is_mysql($pdo)) {
+                echo '<p class="muted">Database: MySQL ' . b5_h($pdo->query('SELECT VERSION()')->fetchColumn()) . '</p>';
+            } else {
+                $file = $pdo->query('PRAGMA database_list')->fetch()['file'] ?? '';
+                echo '<p class="muted">Database file: ' . b5_h(basename($file)) . ' · ' . (is_file($file) ? number_format(filesize($file) / 1024, 1) . ' KB' : '?') . ' · SQLite ' . b5_h($pdo->query('SELECT sqlite_version()')->fetchColumn()) . '</p>';
+            }
         }
     }
 }
 
 $content = ob_get_clean();
 renderLayout('B5 Legacy - Statistics', $content);
+?>
