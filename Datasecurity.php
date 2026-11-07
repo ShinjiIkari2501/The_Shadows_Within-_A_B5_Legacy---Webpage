@@ -1,39 +1,38 @@
 <?php 
-// 1. Die Layout-Zentrale laden (Startet auch automatisch die Session)
+// 1. Load layout center (Includes header, nav, and footer)
 require_once 'Includes/layout.php'; 
 
-// 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
+// 2. Activate output buffering for main content
 ob_start(); 
 ?>
 
-<!-- AB HIER SCHREIBST DU DEN REINEN INHALT FÜR DEN MAIN-BEREICH -->
+<!-- PURE MAIN CONTENT BLOCK START -->
 <h2>Data Security & Privacy Policy</h2>
 <h3>International Compliance Protocol / Interstellar Alliance Archives</h3>
 
 <p>
-    This interface operates in accordance with global data protection standards. Below you will find the 
-    legal framework governing how this terminal processes, handles, and secures transmission telemetry 
-    and crew entity profiles.
+    This interface operates with a strict focus on user anonymity and data minimization. Below you will find the 
+    legal framework governing how this terminal processes, handles, and secures your gameplay telemetry.
 </p>
 
 <div style="margin-top: 25px; border-top: 1px solid rgba(96, 172, 243, 0.2); padding-top: 20px;">
     
-    <h4>1. General Framework & Jurisdiction</h4>
+    <h4>1. General Framework & Zero-PII Policy</h4>
     <p>
-        As a modern web application, this system is designed to comply with major international data privacy laws, 
-        ensuring a safe environment for all command personnel. This includes the European General Data Protection 
-        Regulation (<strong>GDPR / DSGVO</strong>) for users within the European Sector, as well as the California 
-        Consumer Privacy Act (<strong>CCPA</strong>) for users accessing the grid from Western Alliance sectors.
+        This system is engineered to protect user privacy by design. It complies with international data privacy principles 
+        (such as <strong>GDPR / DSGVO</strong>) by avoiding the collection of any personally identifiable information (PII). 
+        No real names, no email addresses, and no tracking coordinates are ever requested or stored on this grid.
     </p>
 
-    <h4>2. Collection of Personal Telemetry (Registration & Session)</h4>
+    <h4>2. Anonymized Telemetry & Profile Statistics</h4>
     <p>
-        When you enroll a new entity profile through our recruitment grid, the system temporarily saves data to 
-        authenticate your clearance level:
+        When you enroll a new entity profile through our recruitment grid, the system only processes custom gameplay metrics 
+        to track your progress and generate your station statistics:
     </p>
     <ul>
-        <li><strong>Username / Callsign:</strong> Used exclusively to identify your terminal session.</li>
-        <li><strong>Security Token (Password):</strong> Evaluated locally via server-side routines to grant access.</li>
+        <li><strong>Username / Callsign:</strong> A freely chosen, completely anonymous pseudonym used solely to identify your save state and compile public profile statistics.</li>
+        <li><strong>Security Token (Password):</strong> Encrypted using secure server-side hashing algorithms and stored within a relational database (MySQL/MariaDB) to secure your anonymous access.</li>
+        <li><strong>Gameplay Data:</strong> Internal variables (such as alignment scores, credits, and faction choices) are tracked to dynamically update your dashboard metrics.</li>
         <li><strong>Session Cookies:</strong> Temporary diagnostic tokens stored in your browser's local cache to keep your uplink active while navigating through different station sectors.</li>
     </ul>
 
@@ -44,12 +43,12 @@ ob_start();
         identifiable information is collected or shared during this threat-assessment procedure.
     </p>
 
-    <h4>4. Your Tactical Data Rights</h4>
+    <h4>4. Data Control & Sub-Space Contact</h4>
     <p>
-        Under international regulations (GDPR), you possess full control over your telemetry. You have the right to inspect 
-        your saved data profile, request modifications, or trigger a complete erasure of your record. By clicking the 
-        <strong>LOGOUT</strong> button on the left console, your active local session token is immediately destroyed 
-        and purged from the station's server memory.
+        You possess full control over your anonymous telemetry. By clicking the <strong>LOGOUT</strong> button on the left console, 
+        your active local session token is immediately destroyed and purged from the station's server memory. A secure 
+        contact vector is established directly through the database, allowing users to interact with the grid administrator 
+        without revealing external communication links.
     </p>
 
     <!-- LEGAL DISCLAIMER & INTELLECTUAL PROPERTY RECONSTRUCTION -->
@@ -58,22 +57,22 @@ ob_start();
             ⚖️ LEGAL DISCLAIMER & INTELLECTUAL PROPERTY NOTICE
         </h4>
         
-        <!-- SEKTOR A: DEIN GEISTIGES EIGENTUM (Vollständiger Urheberschutz) -->
+        <!-- SECTOR A: DANIEL BAEDORF COPYRIGHT -->
         <p style="font-size: 0.95em; line-height: 1.5; color: #ffffff; font-weight: bold; margin-bottom: 12px; text-shadow: 0 0 3px rgba(255, 255, 255, 0.3);">
             🔒 OWNERSHIP OF INTELLECTUAL PROPERTY (DANIEL BAEDORF):
         </p>
         <p style="font-size: 0.9em; line-height: 1.5; color: hsl(0, 9%, 90%); margin-top: 0; margin-bottom: 15px;">
             The entire custom source code (PHP, HTML, CSS architecture), the responsive visual user-interface design, 
-            the proprietary Python text-adventure game logic, as well as all original fan-fiction storylines (the sector 2264 blackout crisis) 
+            the relational database schema, as well as all original fan-fiction storylines (the sector 2264 blackout crisis) 
             and newly introduced characters created specifically for this project remain the **exclusive intellectual property and copyrighted work of Daniel Baedorf (aka Shinji2501)**. 
             Unauthorized replication, distribution, or commercial use of these custom assets is strictly prohibited under international copyright laws.
         </p>
         
         <div style="border-top: 1px dashed rgba(96, 172, 243, 0.2); margin: 15px 0; padding-top: 15px;"></div>
 
-        <!-- SEKTOR B: WARNER BROS. LIZENZEN -->
+        <!-- SECTOR B: WARNER BROS. LICENSES -->
         <p style="font-size: 0.95em; line-height: 1.5; color: #60acf3; font-weight: bold; margin-bottom: 12px;">
-            🛰️ THIRD-PARTY TRADEMARKS & UNIVERSAL LICIENCES:
+            🛰️ THIRD-PARTY TRADEMARKS & UNIVERSAL LICENSES:
         </p>
         <p style="font-size: 0.9em; line-height: 1.5; color: hsl(0, 9%, 85%); margin-top: 0; margin-bottom: 10px;">
             This website is a non-commercial, non-profit fan project created solely for educational and entertainment purposes. 
@@ -88,7 +87,6 @@ ob_start();
         </p>
     </div>
 
-
 </div>
 
 <p style="text-align: center; margin-top: 30px;">
@@ -96,9 +94,9 @@ ob_start();
 </p>
 
 <?php 
-// 3. Den Inhalt aus dem Zwischenspeicher holen und in eine Variable packen
+// 3. Store buffer content into variable
 $seitenInhalt = ob_get_clean(); 
 
-// 4. Das Layout aufrufen und den Titel + Inhalt übergeben
+// 4. Render page template with title and content vectors
 renderLayout("B5 Legacy - Data Security & Disclaimer", $seitenInhalt); 
 ?>

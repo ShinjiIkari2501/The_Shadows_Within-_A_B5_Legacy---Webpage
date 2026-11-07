@@ -30,7 +30,6 @@ ob_start();
         <tr>
             <td style="font-weight: bold; color: #60acf3; padding: 6px 0; vertical-align: top;">Postal Coordinates:</td>
             <td style="padding: 6px 0;">
-                [Karl-Russell-Straße 6]<br>
                 [56070 Koblenz]<br>
                 Germany / Sol Sector
             </td>

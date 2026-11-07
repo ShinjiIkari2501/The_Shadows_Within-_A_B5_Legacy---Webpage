@@ -1,50 +1,45 @@
 <?php 
-// 1. Die Layout-Zentrale laden (Sie beinhaltet bereits Header, Nav und Footer!)
-// Achte auf das große "I" bei "Includes", damit XAMPP die Datei sicher findet
+// 1. Load layout center (Includes header, nav, and footer)
 require_once 'Includes/layout.php'; 
 
-// 2. Den Zwischenspeicher für den HTML-Inhalt aktivieren
+// 2. Activate output buffering for main content
 ob_start(); 
 ?>
 
-<!-- HIER KOMMT NUR NOCH DER REINE INHALT FÜR DEN MAIN-BEREICH -->
+<!-- PURE MAIN CONTENT BLOCK START -->
 <h2>Strategic Development Vector & Horizons</h2>
-<h3>ISA Long-Range Forecast / Systems Upgrade Roadmap</h3>
+<h3>Interstellar Alliance Long-Range Forecast / Systems Upgrade Roadmap</h3>
 
 <p>
-    Building a legacy takes time, precision, and dedication. As a solo developer working within personal free time, the evolution of <strong>The Shadows within: A B5 Legacy</strong> is planned across several distinct structural phases.
+    Every journey through the deep black starts with a single line of code. As a solo developer handling this project, my approach is simple: focusing on what matters right now without building artificial corporate roadmaps.
 </p>
 
 <div class="char-container">
-    <!-- Phase 1: Expansion -->
+    <!-- Current Mission Goal -->
     <div class="char-card">
         <div class="char-info">
-            <h4>Phase I: Narrative Expansion & Choice Integration</h4>
-            <p>The primary focus is deep-coding the interactive decision matrix. This involves fully implementing the behavioral variables for the core factions (Earthforce, Psi-Corps, and the Technomages) to ensure that every moral crossroad reliably steers the narrative toward its designated cosmic epilogue.</p>
+            <h4>Current System Status: Under Running Construction</h4>
+            <p>The core framework is fully operational. The database architecture, all major choice vectors, and the logic pathways for all 7 distinct endings have been successfully built and cross-tested. The skeleton of the Liburnia is stable in flight—now the real engineering begins.</p>
         </div>
     </div>
 
-    <!-- Phase 2: Audiovisual -->
+    <!-- The Fine-Tuning Focus -->
     <div class="char-card">
         <div class="char-info">
-            <h4>Phase II: Audiovisual Immersive Systems</h4>
-            <p>Future iterations aim to enhance the atmospheric feedback of the interface. Plans include integrating a custom ambient synth score inspired by Christopher Franke's iconic arrangements, alongside localized voice-over logs to bring the encrypted sub-space transmissions to life.</p>
-        </div>
-    </div>
-
-    <!-- Phase 3: Deployment -->
-    <div class="char-card">
-        <div class="char-info">
-            <h4>Phase III: Tactical Combat & Database Launch</h4>
-            <p>The long-term objective introduces a text-based, sub-light tactical simulation deck. Players will be able to actively command the <em>Liburnia</em> through hyperraum anomalies, utilizing customized engineering choices to override enemy signals in real-time.</p>
+            <h4>Next Milestone: Dialogue Polish & Atmospheric Vectors</h4>
+            <p>The project is currently in a fluid Early Access phase. The main focus is shifting entirely toward deep narrative fine-tuning, fleshing out character-specific dialogues, and overall refinement. While the past week allowed for some rare, exceptional development time during class, further progress will strictly move forward during my personal free time. Although the atmospheric soundtrack inspired by the show's iconic synth elements is currently echoing only inside the maker's head, the structural paths to integrate these auditory sub-space loops are already waiting in the code.</p>
         </div>
     </div>
 </div>
 
+<p style="margin-top: 30px;">
+    The focus remains on clean code, absolute respect for the canon, and delivering a completed, meaningful experience for everyone who loves this universe. Step by step, during free hours, until the script is finished.
+</p>
+
 <?php 
-// 3. Den Inhalt aus dem Zwischenspeicher in eine Variable packen
+// 3. Store buffer content into variable
 $seitenInhalt = ob_get_clean(); 
 
-// 4. Das Layout aufrufen und den Titel der Seite + den Inhalt übergeben
+// 4. Render page template with title and content vectors
 renderLayout("B5 Legacy - Strategic Roadmap", $seitenInhalt); 
 ?>
