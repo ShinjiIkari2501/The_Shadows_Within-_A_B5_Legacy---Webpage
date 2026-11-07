@@ -25,12 +25,12 @@ function renderLayout($pageTitle, $bodyHtmlContent) {
 
         <title><?php echo htmlspecialchars($pageTitle); ?></title>
 
-        <!-- DER MASTER-LINK: Lädt exakt die eine neue Datei und verhindert Cache-Konflikte -->
+        <!-- THE MASTER LINK: Loads exactly the single design file and prevents cache conflicts -->
         <?php
         $cssFile = __DIR__ . '/../CSS/B5_Design_System.css';
         $version = is_file($cssFile) ? filemtime($cssFile) : time();
         echo '<link rel="stylesheet" href="CSS/B5_Design_System.css?v=' . $version . '">' . "\n";
-        // Die ikonische 5 aus dem Babylon-5-Schriftzug (siehe JS/b5_five.js)
+        // The iconic 5 from the Babylon 5 logo font (see JS/b5_five.js)
         $jsFile = __DIR__ . '/../JS/b5_five.js';
         $jsVersion = is_file($jsFile) ? filemtime($jsFile) : time();
         echo '<script defer src="JS/b5_five.js?v=' . $jsVersion . '"></script>' . "\n";
@@ -51,7 +51,7 @@ function renderLayout($pageTitle, $bodyHtmlContent) {
     <!-- Master Content Display Node -->
     <main>
         <!-- ==========================================================================
-             DYNAMIC TERMINAL FLASH-MESSAGE SYSTEM (INTEGRIERT)
+             DYNAMIC TERMINAL FLASH-MESSAGE SYSTEM (INTEGRATED)
              ========================================================================== -->
 
         <!-- 1. ALERT BLOCK: Severe Database Error or Security Infraction -->
@@ -83,8 +83,7 @@ function renderLayout($pageTitle, $bodyHtmlContent) {
                 <li><a href="Datasecurity.php">Datasecurity</a></li>
             </ul>
         </bottomNav>
-        <p>&copy; 2026 ShinjIkari2501. All rights reserved. Babylon 5 and all related indicia are trademarks of Warner Bros. Entertainment Inc.</p>
-    </footer>
+        <p>&copy; 2026 Daniel Baedorf. Non-profit fan project. Babylon 5 is TM & &copy; WB Ent. Inc.</p>
 
     </body>
     </html>
