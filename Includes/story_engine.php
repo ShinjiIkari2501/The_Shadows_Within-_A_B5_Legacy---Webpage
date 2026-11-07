@@ -236,7 +236,7 @@ function b5_first_rule_met(array $state, $json)
 function b5_visible_choices(PDO $pdo, $nodeId, array $state)
 {
     $stmt = $pdo->prepare(
-        "SELECT choice_id, choice_text, requires, locked_hint FROM story_choices WHERE from_node_id = ? ORDER BY choice_id"
+        "SELECT choice_id, choice_text, `requires`, locked_hint FROM story_choices WHERE from_node_id = ? ORDER BY choice_id"
     );
     $stmt->execute([$nodeId]);
 
@@ -267,7 +267,7 @@ function b5_visible_choices(PDO $pdo, $nodeId, array $state)
  */
 function b5_node_text(PDO $pdo, $nodeId, $baseText, array $state)
 {
-    $stmt = $pdo->prepare("SELECT requires, body, mode FROM story_node_text WHERE node_id = ? ORDER BY priority DESC, text_id");
+    $stmt = $pdo->prepare("SELECT `requires`, body, `mode` FROM story_node_text WHERE node_id = ? ORDER BY `priority` DESC, text_id");
     $stmt->execute([$nodeId]);
 
     $text = $baseText;

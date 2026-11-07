@@ -25,15 +25,15 @@ function renderLayout($pageTitle, $bodyHtmlContent) {
 
         <title><?php echo htmlspecialchars($pageTitle); ?></title>
 
-        <!-- All stylesheets. "?v=" + file date: after every change the browser loads the new file
-             instead of an old cached one (old cached CSS mixed with new pages looks "broken"). -->
+        <!-- DER MASTER-LINK: Lädt exakt die eine neue Datei und verhindert Cache-Konflikte -->
         <?php
-        foreach (['B5_Base', 'B5_Grid', 'B5_Glass', 'B5_mainNav', 'B5_Content', 'B5_Game', 'B5_Stats'] as $cssName) {
-            $cssFile = __DIR__ . '/../CSS/' . $cssName . '.css';
-            if (is_file($cssFile)) {
-                echo '<link rel="stylesheet" href="CSS/' . $cssName . '.css?v=' . filemtime($cssFile) . '">' . "\n        ";
-            }
-        }
+        $cssFile = __DIR__ . '/../CSS/B5_Design_System.css';
+        $version = is_file($cssFile) ? filemtime($cssFile) : time();
+        echo '<link rel="stylesheet" href="CSS/B5_Design_System.css?v=' . $version . '">' . "\n";
+        // Die ikonische 5 aus dem Babylon-5-Schriftzug (siehe JS/b5_five.js)
+        $jsFile = __DIR__ . '/../JS/b5_five.js';
+        $jsVersion = is_file($jsFile) ? filemtime($jsFile) : time();
+        echo '<script defer src="JS/b5_five.js?v=' . $jsVersion . '"></script>' . "\n";
         ?>
     </head>
     <body>

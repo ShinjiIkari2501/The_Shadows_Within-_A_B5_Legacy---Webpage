@@ -37,6 +37,9 @@ function b5_is_logged_in(): bool {
 
 /** Adds the column users.is_admin if it is missing (cheap check, runs only for admin features). */
 function b5_ensure_admin_column(PDO $pdo): void {
+    if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'sqlite') {
+        return; // MySQL: the column is part of the import file
+    }
     foreach ($pdo->query("PRAGMA table_info(users)") as $col) {
         if ($col['name'] === 'is_admin') {
             return;

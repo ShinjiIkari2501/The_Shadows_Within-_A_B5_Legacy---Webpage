@@ -14,7 +14,15 @@ function b5_h($v): string {
     return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 }
 
+/** True when the site runs on MySQL (the raw database tools below only work with SQLite). */
+function b5_is_mysql(PDO $pdo): bool {
+    return $pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'mysql';
+}
+
 function b5_tables(PDO $pdo): array {
+    if (b5_is_mysql($pdo)) {
+        return $pdo->query('SHOW TABLES')->fetchAll(PDO::FETCH_COLUMN);
+    }
     return $pdo->query("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")->fetchAll(PDO::FETCH_COLUMN);
 }
 
@@ -51,6 +59,11 @@ function b5_handle_admin_post(PDO $pdo): void {
     }
     $op = (string)($_POST['op'] ?? '');
     $me = (int)$_SESSION['user_id'];
+    // On MySQL there is no web database browser (use phpMyAdmin), only the user management works.
+    if (b5_is_mysql($pdo) && !in_array($op, ['toggle_admin', 'reset_pw', 'delete_user'], true)) {
+        b5_flash('This function is not available on MySQL. Use phpMyAdmin.', true);
+        b5_redirect('');
+    }
     $view = (string)($_POST['view'] ?? 'users');
     $back = '?view=' . urlencode($view);
 
@@ -152,6 +165,10 @@ function b5_handle_admin_post(PDO $pdo): void {
 
 /** Sends a consistent copy of the database as a download. */
 function b5_send_backup(PDO $pdo): void {
+    if (b5_is_mysql($pdo)) {
+        http_response_code(404); // on MySQL make the backup in phpMyAdmin (Export)
+        exit('Not available. Use the export function of phpMyAdmin.');
+    }
     $tmp = sys_get_temp_dir() . '/b5_backup_' . bin2hex(random_bytes(6)) . '.sqlite';
     try {
         $pdo->exec('VACUUM INTO ' . $pdo->quote($tmp));

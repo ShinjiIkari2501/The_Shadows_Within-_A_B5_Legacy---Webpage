@@ -17,11 +17,14 @@
  * It is safe to call b5_migrate() on EVERY request: when nothing is to do it costs one tiny query.
  */
 
-const B5_SCHEMA_VERSION = 8;
+const B5_SCHEMA_VERSION = 9;
 
 /** Entry point, called by db_connect.php right after the connection is open. */
 function b5_migrate(PDO $pdo)
 {
+    if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) !== 'sqlite') {
+        return; // MySQL: the database is created by importing Database/b5_mysql_import.sql
+    }
     $version = (int)$pdo->query('PRAGMA user_version')->fetchColumn();
     if ($version >= B5_SCHEMA_VERSION) {
         return; // nothing to do
@@ -39,9 +42,9 @@ function b5_migrate(PDO $pdo)
         // The story content (migration 2) is applied again whenever act3_content.php changed. Every time the
         // content file is edited, raise this number by one (and B5_SCHEMA_VERSION above), so that databases which
         // already ran an older content file get the new texts. Applying the content twice does no harm.
-        if ($version < 8) {
+        if ($version < 9) {
             b5_migration_2($pdo);
-            $pdo->exec('PRAGMA user_version = 8');
+            $pdo->exec('PRAGMA user_version = 9');
         }
         $pdo->exec('COMMIT');
     } catch (Throwable $e) {
@@ -182,7 +185,33 @@ function b5_migration_2(PDO $pdo)
         $variantStmt->execute([$v[0], $v[1], b5_json_or_null($v[2]), $v[3], $v[4]]);
     }
 
-    // ---- 7. small text fixes in old scenes ----
+    // ---- 7. the long story texts from storyscript.php ----
+    // storyscript.php holds the written film-script texts. Its keys are SCENE numbers (1, 2, 3 ... and 'SETUP'),
+    // but the database nodes have other ids (scene 1 = node 100). This list says which script entry belongs to
+    // which node: node id => key in storyscript.php.
+    // Only nodes WITHOUT an own text in act3_content.php are listed here. The other scenes (hub, Centauri, Narn,
+    // Lyta, Mars ...) were rewritten for the Act III decisions and keep the text from act3_content.php.
+    // The text variants from step 6 are still added on top of the script text when the game runs.
+    $script = require __DIR__ . '/storyscript.php';
+    $scriptNodes = [
+        10  => 'SETUP',
+        100 => 1,  101 => 2,  102 => 3,  103 => 4,  104 => 5,
+        105 => 6,  106 => 7,  107 => 8,  108 => 9,  109 => 10,
+        113 => 14,
+        123 => 27, 124 => 28, 125 => 29, 126 => 30, 127 => 31,
+    ];
+    $scriptStmt = $pdo->prepare("UPDATE story_nodes SET description = ?, active_sector = ? WHERE node_id = ?");
+    foreach ($scriptNodes as $nodeId => $scriptKey) {
+        if (!isset($script[$scriptKey])) {
+            throw new Exception("Migration: storyscript.php has no entry '$scriptKey' (node $nodeId).");
+        }
+        $entry = $script[$scriptKey];
+        // the location line is optional; keep the old sector if the script has none
+        $sector = $entry['location'] ?? $pdo->query("SELECT active_sector FROM story_nodes WHERE node_id = " . (int)$nodeId)->fetchColumn();
+        $scriptStmt->execute([trim($entry['script']), $sector, $nodeId]);
+    }
+
+    // ---- 8. small text fixes in old scenes ----
     // mixed German/English wording in scene 13
     $pdo->exec("UPDATE story_nodes SET description = replace(description, 'gewaltige,', 'massive,') WHERE node_id = 112");
     // Lore: the Drakh plague belongs to 2267 (Crusade). In 2264 Bester uses Drakh biotechnology. That it goes
