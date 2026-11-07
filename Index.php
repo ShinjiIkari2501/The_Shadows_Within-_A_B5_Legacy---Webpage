@@ -26,7 +26,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
     try {
         require_once 'Includes/db_connect.php';
 
-        // Fetch the newest active save node matching your normaliced database schema
+        // Fetch the newest active save node matching your normalized database schema
         $stmt = $pdo->prepare("SELECT slot_number, last_updated, current_node_id FROM player_slots WHERE user_id = ? ORDER BY last_updated DESC LIMIT 1");
         $stmt->execute([$userId]);
         $latestSave = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -71,7 +71,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
             <li><strong>Current Savegame Node:</strong> <strong><?php echo htmlspecialchars($currentSceneInfo); ?></strong></li>
         </ul>
         <p>
-            *Notice: To resume your adventure matrix coordinates, select the 'Tactical Simulation Deck' from the right navigation panel.
+            *Notice: To resume your adventure matrix coordinates, select the 'Tactical Simulation Deck' from the left navigation panel.
         </p>
     </div>
 
@@ -93,7 +93,7 @@ if (isset($_SESSION['eingeloggt']) && $_SESSION['eingeloggt'] === true) {
     <div class="notice">
         <h4>📢 STRATEGIC ROUTING NOTICE</h4>
         <p>
-            Via the **Command Matrix Terminal Menu on the right side** you have clear access to public data archives, including the historical Timeline and Fleet Manifest channels.
+            Via the **Command Matrix Terminal Menu on the left side** you have clear access to public data archives, including the historical Timeline and Fleet Manifest channels.
         </p>
         <p>
             ⚠️ ATTENTION: The tactical Gameplay channel (Simulation Deck Matrix) is strictly encrypted and requires a validated entity ID verification clearance (Registered Login Required)!
